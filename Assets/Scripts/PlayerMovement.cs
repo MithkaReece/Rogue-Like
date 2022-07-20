@@ -8,12 +8,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float scale = 10f;
     private Vector2 direction;
 
-    private Animator animator;
+    private Animator bodyAnimator;
+    private Animator swordAnimator;
+
+    private float AttackCooldown = 0.3f;
+    private float AttackCooldownCounter = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        animator = GetComponent<Animator>();
+        bodyAnimator = GetComponent<Animator>();
+        swordAnimator = transform.Find("Sword").GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -21,6 +26,12 @@ public class PlayerMovement : MonoBehaviour
     {
         TakeInput();
         Move();
+
+        if (AttackCooldownCounter > 0)
+        {
+            AttackCooldownCounter -= Time.deltaTime;
+        }
+
     }
 
     void TakeInput()
@@ -35,6 +46,16 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.localScale = new Vector2(scale, transform.localScale.y);
         }
+
+        if (Input.GetButton("Jump"))
+        {
+            Debug.Log(AttackCooldownCounter);
+            if (AttackCooldownCounter <= 0)
+            {
+                swordAnimator.SetTrigger("Attack");
+                AttackCooldownCounter = AttackCooldown;
+            }
+        }
     }
 
     void Move()
@@ -43,11 +64,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (direction.magnitude == 0)
         {
-            animator.SetLayerWeight(1, 0);
+            bodyAnimator.SetLayerWeight(1, 0);
         }
         else
         {
-            animator.SetLayerWeight(1, 1);
+            bodyAnimator.SetLayerWeight(1, 1);
             SetAnimatorMovement(direction);
         }
 
@@ -56,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
 
     void SetAnimatorMovement(Vector2 direction)
     {
-        animator.SetFloat("xDir", direction.x);
-        animator.SetFloat("yDir", direction.y);
+        bodyAnimator.SetFloat("xDir", direction.x);
+        bodyAnimator.SetFloat("yDir", direction.y);
     }
 }
