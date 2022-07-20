@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed;
-    [SerializeField] private float scale = 10f;
+    [SerializeField] private float scale = 4f;
     private Vector2 direction;
 
     private Animator bodyAnimator;
@@ -25,6 +25,9 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         TakeInput();
+
+        LeftRightFlip();
+
         Move();
 
         if (AttackCooldownCounter > 0)
@@ -38,18 +41,10 @@ public class PlayerMovement : MonoBehaviour
     {
         direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         direction = direction.normalized;
-        if (direction.x < 0)
-        {
-            transform.localScale = new Vector2(-scale, transform.localScale.y);
-        }
-        else if (direction.x > 0)
-        {
-            transform.localScale = new Vector2(scale, transform.localScale.y);
-        }
 
+        //Attack test with attack cool down
         if (Input.GetButton("Jump"))
         {
-            Debug.Log(AttackCooldownCounter);
             if (AttackCooldownCounter <= 0)
             {
                 swordAnimator.SetTrigger("Attack");
@@ -58,12 +53,25 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void LeftRightFlip()
+    {
+        if (direction.x < 0)
+        {
+            transform.localScale = new Vector2(-scale, scale);
+        }
+        else if (direction.x > 0)
+        {
+            transform.localScale = new Vector2(scale, scale);
+        }
+    }
+
     void Move()
     {
         transform.Translate(direction * speed * Time.deltaTime);
-
+        
+        
         if (direction.magnitude == 0)
-        {
+        { //Stop walk animation as not moving
             bodyAnimator.SetLayerWeight(1, 0);
         }
         else
