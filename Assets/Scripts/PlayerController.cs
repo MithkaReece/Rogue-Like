@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public Transform attackPoint;
+    public float attackRange = 0.5f;
+    public LayerMask enemyLayers;
+
     [SerializeField] private float speed;
     [SerializeField] private float scale = 4f;
     private Vector2 direction;
+
+    private Rigidbody2D rb;
 
     private Animator bodyAnimator;
     private Animator swordAnimator;
@@ -17,6 +23,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
         bodyAnimator = GetComponent<Animator>();
         swordAnimator = transform.Find("Sword").GetComponent<Animator>();
     }
@@ -25,10 +32,9 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         TakeInput();
-
         LeftRightFlip();
-
         Move();
+
 
         if (AttackCooldownCounter > 0)
         {
@@ -42,14 +48,9 @@ public class PlayerController : MonoBehaviour
         direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         direction = direction.normalized;
 
-        //Attack test with attack cool down
         if (Input.GetButton("Jump"))
         {
-            if (AttackCooldownCounter <= 0)
-            {
-                swordAnimator.SetTrigger("Attack");
-                AttackCooldownCounter = AttackCooldown;
-            }
+            Attack();
         }
     }
 
@@ -67,7 +68,7 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        transform.Translate(direction * speed * Time.deltaTime);
+        rb.MovePosition(rb.position + direction * speed * Time.deltaTime);
 
 
         if (direction.magnitude == 0)
@@ -90,10 +91,28 @@ public class PlayerController : MonoBehaviour
     }
 
 
-
-    void OnCollisionEnter2D(Collision2D collision)
+    void Attack()
     {
-        Vector3 dir = collision.transform.position;
-        Debug.Log(dir.x + "," + dir.y + "," + dir.z);
+        if (AttackCooldownCounter > 0) { return; }
+        swordAnimator.SetTrigger("Attack");
+        //Reset cooldown
+        AttackCooldownCounter = AttackCooldown;
+
+        Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+
+        foreach (Collider2D enemy in enemiesHit)
+        {
+            enemy.GetComponent<EnemyController>().TakeDamage(50);
+            Debug.Log("We hit" + enemy.name);
+        }
     }
+
+    void OnDrawGizmosSelected()
+    {
+        if (attackPoint)
+        {
+            Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        }
+    }
+
 }
