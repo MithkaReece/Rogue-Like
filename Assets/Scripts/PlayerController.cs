@@ -68,8 +68,8 @@ public class PlayerController : MonoBehaviour
     void Move()
     {
         transform.Translate(direction * speed * Time.deltaTime);
-        
-        
+
+
         if (direction.magnitude == 0)
         { //Stop walk animation as not moving
             bodyAnimator.SetLayerWeight(1, 0);
@@ -87,5 +87,13 @@ public class PlayerController : MonoBehaviour
     {
         bodyAnimator.SetFloat("xDir", direction.x);
         bodyAnimator.SetFloat("yDir", direction.y);
+    }
+
+
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        Vector3 dir = collision.transform.position;
+        Debug.Log(dir.x + "," + dir.y + "," + dir.z);
     }
 }
