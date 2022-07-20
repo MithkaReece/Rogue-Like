@@ -33,7 +33,7 @@ public class CameraController : MonoBehaviour
         }
         if (Mathf.Abs(diff.y) > PlayArea.y * 0.5f)
         {
-            newY = player.transform.position.y + (diff.y / Mathf.Abs(diff.y)) * PlayArea.y * 0.5f;
+            newY = player.transform.position .y + (diff.y / Mathf.Abs(diff.y)) * PlayArea.y * 0.5f;
         }
         transform.position = new Vector3(newX, newY, transform.position.z);
     }
