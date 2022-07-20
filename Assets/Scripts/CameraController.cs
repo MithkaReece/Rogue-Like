@@ -19,7 +19,7 @@ public class CameraController : MonoBehaviour
 
     //TODO: Could instead use percentage of the screen however would need to
     //TODO: know the current resolution
-    [SerializeField] private Vector2 PlayArea = new Vector2(8f, 5f);
+    [SerializeField] private Vector2 PlayArea = new Vector2(4f, 2.5f);
     //Keeps player centered within the PlayArea width and height
     //Snaps camera when player crosses boundary
     void keepPlayerInRect()
@@ -33,7 +33,7 @@ public class CameraController : MonoBehaviour
         }
         if (Mathf.Abs(diff.y) > PlayArea.y * 0.5f)
         {
-            newY = player.transform.position .y + (diff.y / Mathf.Abs(diff.y)) * PlayArea.y * 0.5f;
+            newY = player.transform.position.y + (diff.y / Mathf.Abs(diff.y)) * PlayArea.y * 0.5f;
         }
         transform.position = new Vector3(newX, newY, transform.position.z);
     }
