@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     public Transform attackPoint;
     public float attackRange = 0.5f;
+    public float attackStartAngle = 30f;
+    public float attackSwingAngle = 110f;
     public LayerMask enemyLayers;
 
     [SerializeField] private float speed;
@@ -97,14 +99,32 @@ public class PlayerController : MonoBehaviour
         swordAnimator.SetTrigger("Attack");
         //Reset cooldown
         AttackCooldownCounter = AttackCooldown;
-
+        /*
         Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
-
         foreach (Collider2D enemy in enemiesHit)
         {
+            Vector2 direction = (Vector2)attackPoint.position - enemy.ClosestPoint(attackPoint.position);
+            float angle = Vector2.SignedAngle(new Vector2(0, 1), direction);
+            //Debug.Log(angle);
+            float resultAngle;
+            //Debug.Log(transform.localScale.x);
+            if (transform.localScale.x >= 0)
+            {
+                resultAngle = angle - attackStartAngle;
+                Debug.Log(resultAngle);
+                if (resultAngle < 0 || resultAngle > attackSwingAngle) { return; }
+            }
+            else
+            {
+                resultAngle = angle + attackStartAngle;
+                Debug.Log(resultAngle);
+                if (resultAngle > 0 || resultAngle < -attackSwingAngle) { return; }
+            }
+
+
             enemy.GetComponent<EnemyController>().TakeDamage(50);
-            Debug.Log("We hit" + enemy.name);
-        }
+            //Debug.Log("We hit" + enemy.name);
+    }*/
     }
 
     void OnDrawGizmosSelected()
@@ -115,4 +135,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
+        {
+            collider.gameObject.GetComponent<EnemyController>().TakeDamage(50);
+        }
+
+    }
 }
