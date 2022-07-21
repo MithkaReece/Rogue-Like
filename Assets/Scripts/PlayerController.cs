@@ -4,23 +4,14 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Transform attackPoint;
-    public float attackRange = 0.5f;
-    public float attackStartAngle = 30f;
-    public float attackSwingAngle = 110f;
-    public LayerMask enemyLayers;
-
-    [SerializeField] private float speed;
     [SerializeField] private float scale = 4f;
-    private Vector2 direction;
-
     private Rigidbody2D rb;
-
     private Animator bodyAnimator;
-    private Animator swordAnimator;
 
-    private float AttackCooldown = 0.3f;
-    private float AttackCooldownCounter = 0f;
+    private bool canMove = true;
+
+    [SerializeField] private int maxHealth = 100;
+    private int currentHealth;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +19,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         bodyAnimator = GetComponent<Animator>();
         swordAnimator = transform.Find("Sword").GetComponent<Animator>();
+        currentHealth = maxHealth;
     }
 
     // Update is called once per frame
@@ -35,7 +27,8 @@ public class PlayerController : MonoBehaviour
     {
         TakeInput();
         LeftRightFlip();
-        Move();
+        if (canMove) { Move(); }
+
 
 
         if (AttackCooldownCounter > 0)
@@ -44,11 +37,11 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-
+    private Vector2 inputDirection;
     void TakeInput()
     {
-        direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        direction = direction.normalized;
+        inputDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        inputDirection = inputDirection.normalized;
 
         if (Input.GetButton("Jump"))
         {
@@ -58,32 +51,29 @@ public class PlayerController : MonoBehaviour
 
     void LeftRightFlip()
     {
-        if (direction.x < 0)
+        if (inputDirection.x < 0)
         {
             transform.localScale = new Vector2(-scale, scale);
         }
-        else if (direction.x > 0)
+        else if (inputDirection.x > 0)
         {
             transform.localScale = new Vector2(scale, scale);
         }
     }
-
+    [SerializeField] private float moveSpeed;
     void Move()
     {
-        rb.MovePosition(rb.position + direction * speed * Time.deltaTime);
+        rb.MovePosition(rb.position + inputDirection * moveSpeed * Time.deltaTime);
 
-
-        if (direction.magnitude == 0)
+        if (inputDirection.magnitude == 0)
         { //Stop walk animation as not moving
             bodyAnimator.SetLayerWeight(1, 0);
         }
         else
         {
             bodyAnimator.SetLayerWeight(1, 1);
-            SetAnimatorMovement(direction);
+            SetAnimatorMovement(inputDirection);
         }
-
-
     }
 
     void SetAnimatorMovement(Vector2 direction)
@@ -92,55 +82,41 @@ public class PlayerController : MonoBehaviour
         bodyAnimator.SetFloat("yDir", direction.y);
     }
 
-
+    private Animator swordAnimator;
+    private float AttackCooldown = 0.3f;
+    private float AttackCooldownCounter = 0f;
     void Attack()
     {
         if (AttackCooldownCounter > 0) { return; }
         swordAnimator.SetTrigger("Attack");
         //Reset cooldown
         AttackCooldownCounter = AttackCooldown;
-        /*
-        Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
-        foreach (Collider2D enemy in enemiesHit)
-        {
-            Vector2 direction = (Vector2)attackPoint.position - enemy.ClosestPoint(attackPoint.position);
-            float angle = Vector2.SignedAngle(new Vector2(0, 1), direction);
-            //Debug.Log(angle);
-            float resultAngle;
-            //Debug.Log(transform.localScale.x);
-            if (transform.localScale.x >= 0)
-            {
-                resultAngle = angle - attackStartAngle;
-                Debug.Log(resultAngle);
-                if (resultAngle < 0 || resultAngle > attackSwingAngle) { return; }
-            }
-            else
-            {
-                resultAngle = angle + attackStartAngle;
-                Debug.Log(resultAngle);
-                if (resultAngle > 0 || resultAngle < -attackSwingAngle) { return; }
-            }
-
-
-            enemy.GetComponent<EnemyController>().TakeDamage(50);
-            //Debug.Log("We hit" + enemy.name);
-    }*/
     }
-
-    void OnDrawGizmosSelected()
-    {
-        if (attackPoint)
-        {
-            Gizmos.DrawWireSphere(attackPoint.position, attackRange);
-        }
-    }
-
+    [SerializeField] private LayerMask enemyLayers;
+    //So far the only trigger is the collider around the sword when swinging
     void OnTriggerEnter2D(Collider2D collider)
     {
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
             collider.gameObject.GetComponent<EnemyController>().TakeDamage(50);
         }
+    }
 
+
+    public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
+    {
+        canMove = false;
+        rb.isKinematic = false;
+        Vector2 direction = (objPos - ((Vector2)transform.position + GetComponent<Collider2D>().offset)).normalized;
+        rb.AddForce(-direction * knockbackPower, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(knockbackDuration);
+        rb.velocity = Vector2.zero;
+        rb.isKinematic = true;
+        canMove = true;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
     }
 }
