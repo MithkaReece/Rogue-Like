@@ -17,8 +17,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        bodyAnimator = GetComponent<Animator>();
-        swordAnimator = transform.Find("Sword").GetComponent<Animator>();
+        bodyAnimator = transform.Find("Body").GetComponent<Animator>();
+        swordAnimator = transform.Find("Body").transform.Find("Sword").GetComponent<Animator>();
         currentHealth = maxHealth;
     }
 
@@ -43,9 +43,14 @@ public class PlayerController : MonoBehaviour
         inputDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         inputDirection = inputDirection.normalized;
 
-        if (Input.GetButton("Jump"))
+        if (Input.GetButton("Attack1"))
         {
-            Attack();
+            Attack1();
+        }
+
+        if (Input.GetButton("Attack2"))
+        {
+            Attack2();
         }
     }
 
@@ -85,11 +90,18 @@ public class PlayerController : MonoBehaviour
     private Animator swordAnimator;
     private float AttackCooldown = 0.3f;
     private float AttackCooldownCounter = 0f;
-    void Attack()
+    void Attack1()
     {
         if (AttackCooldownCounter > 0) { return; }
         swordAnimator.SetTrigger("Attack");
         //Reset cooldown
+        AttackCooldownCounter = AttackCooldown;
+    }
+
+    void Attack2()
+    {
+        if (AttackCooldownCounter > 0) { return; }
+        bodyAnimator.SetTrigger("Attack2");
         AttackCooldownCounter = AttackCooldown;
     }
     [SerializeField] private LayerMask enemyLayers;
