@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1639604976}
   - component: {fileID: 1639604977}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 2698467642931595901}
   - component: {fileID: 2698467642931595889}
   - component: {fileID: 1366380810}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,11 +205,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ae19de5752c74828a4c4e922dfb3f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scale: 2
+  maxHealth: 100
+  moveSpeed: 15
   enemyLayers:
     serializedVersion: 2
     m_Bits: 128
-  speed: 30
-  scale: 2
 --- !u!50 &1366380810
 Rigidbody2D:
   serializedVersion: 4
@@ -218,11 +219,11 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2698467642931595900}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 50
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -242,7 +243,7 @@ GameObject:
   - component: {fileID: 2702760275861254806}
   - component: {fileID: 7273521078827407624}
   - component: {fileID: 6770411101487949740}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float moveSpeed;
 
     [SerializeField] private PlayerController player;
+    public void SetPlayer(PlayerController inPlayer) { player = inPlayer; }
     private bool playerSeen = true;
 
 
@@ -69,7 +70,7 @@ public class EnemyController : MonoBehaviour
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
             player.TakeDamage(40);
-            StartCoroutine(player.Knockback(knockbackDuration, knockbackPower, (Vector2) transform.position + GetComponent<Collider2D>().offset));
+            StartCoroutine(player.Knockback(knockbackDuration, knockbackPower, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
     }
 }
