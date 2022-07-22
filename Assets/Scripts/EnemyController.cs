@@ -7,8 +7,6 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
     private EntityStats entityStats;
 
-    [SerializeField] private float moveSpeed;
-
     [SerializeField] private PlayerController player;
     public void SetPlayer(PlayerController inPlayer) { player = inPlayer; }
     private bool playerSeen = true;
@@ -36,7 +34,7 @@ public class EnemyController : MonoBehaviour
         if (!playerSeen) { return; }
         Vector2 direction = player.transform.position - transform.position;
         direction = direction.normalized;
-        rb.MovePosition(rb.position + direction * moveSpeed * Time.deltaTime);
+        rb.MovePosition(rb.position + direction * entityStats.MoveSpeed * Time.deltaTime);
     }
 
     public void TakeDamage(float damage)

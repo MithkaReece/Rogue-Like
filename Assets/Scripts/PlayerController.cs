@@ -77,10 +77,9 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector2(scale, scale);
         }
     }
-    [SerializeField] private float moveSpeed;
     void Move()
     {
-        rb.MovePosition(rb.position + inputDirection * moveSpeed * Time.deltaTime);
+        rb.MovePosition(rb.position + inputDirection * entityStats.MoveSpeed * Time.deltaTime);
 
         if (inputDirection.magnitude == 0)
         { //Stop walk animation as not moving

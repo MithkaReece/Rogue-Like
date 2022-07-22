@@ -366,17 +366,58 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &1209994117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209994105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7cfdecb442fdcc4daffc3ca09b8bc77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Damage>k__BackingField: 40
+  <MaxHealth>k__BackingField: 100
+  <CurrentHealth>k__BackingField: 0
+  <HealthRegen>k__BackingField: 0
+  <Armour>k__BackingField: 0
+  <MoveSpeed>k__BackingField: 1
 --- !u!114 &1366380805 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2698467642931595889, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
   m_PrefabInstance: {fileID: 963795820}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1652801088}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ae19de5752c74828a4c4e922dfb3f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1652801088 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2698467642931595900, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
+  m_PrefabInstance: {fileID: 963795820}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1652801092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652801088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7cfdecb442fdcc4daffc3ca09b8bc77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Damage>k__BackingField: 50
+  <MaxHealth>k__BackingField: 100
+  <CurrentHealth>k__BackingField: 0
+  <HealthRegen>k__BackingField: 0
+  <Armour>k__BackingField: 0
+  <MoveSpeed>k__BackingField: 1
 --- !u!1 &1900625218 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2167714494123728709, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
