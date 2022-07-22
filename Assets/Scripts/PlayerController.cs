@@ -19,16 +19,24 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float AttackCooldown = 0.5f;
     [SerializeField] private float AttackCooldownCounter = 0f;
 
+    [SerializeField] private float RollCooldown = 0.5f;
+    [SerializeField] private float RollCooldownCounter = 0f;
+
     [SerializeField] private string swordEquiped = "Sword1";
     private float swapCooldown = 2f;
     private float swapCooldownCounter = 0f;
+
+    private State state;
+    private enum State {
+        Normal,
+        DodgeRoll,
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         bodyAnimator = transform.Find("Body").GetComponent<Animator>();
-        //swordAnimator = transform.Find("Body").transform.Find("OldSword").GetComponent<Animator>();
         currentHealth = maxHealth;
 
         sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
@@ -38,68 +46,26 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        TakeInput();
-        LeftRightFlip();
-        if (canMove) { Move(); }
-
-        //sr.sprite = null;
-
-        if (AttackCooldownCounter > 0)
-        {
-            AttackCooldownCounter -= Time.deltaTime;
-        }
-
-        if(Input.GetButton("Jump") && swapCooldownCounter <= 0f){
-            swapCooldownCounter = swapCooldown;
-            if(swordEquiped == "Sword1"){
-                Debug.Log("To sword2");
-                swapSword("Sword2");}
-            else{
-                Debug.Log("To sword1");
-                swapSword("Sword1");}
-        }
-        if(swapCooldownCounter>0){swapCooldownCounter -= Time.deltaTime;} 
-
-    }
-
-
-    void swapSword(string newSword){
-        swordEquiped = newSword;
-        sprites = Resources.LoadAll<Sprite>("Swords/" + newSword);
-    }
-
-    private Vector2 inputDirection;
-    void TakeInput()
-    {
-        inputDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        inputDirection = inputDirection.normalized;
-
-        if (Input.GetButton("Attack1"))
-        {
-            //Attack1();
-        }
-
-        if (Input.GetButton("Attack2"))
-        {
-            Attack2();
-        }
-    }
-
-    void LeftRightFlip()
-    {
-        if (inputDirection.x < 0)
-        {
-            transform.localScale = new Vector2(-scale, scale);
-        }
-        else if (inputDirection.x > 0)
-        {
-            transform.localScale = new Vector2(scale, scale);
+        switch(state){
+            case State.Normal:
+                if(canMove){
+                    HandleWalk();
+                    LeftRightFlip();
+                    HandleSwordSwap();
+                    HandleAttack();
+                    HandleDodgeRoll();
+                }
+                break;
+            case State.DodgeRoll:
+                HandleDodgeRollMotion();
+                break;
         }
     }
 
     [SerializeField] private float moveSpeed;
-    void Move()
-    {
+    private Vector2 inputDirection;
+    void HandleWalk(){
+        inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
         rb.MovePosition(rb.position + inputDirection * moveSpeed * Time.deltaTime);
 
         if (inputDirection.magnitude == 0)
@@ -112,30 +78,74 @@ public class PlayerController : MonoBehaviour
             SetAnimatorMovement(inputDirection);
         }
     }
-
     void SetAnimatorMovement(Vector2 direction)
     {
         bodyAnimator.SetFloat("xDir", direction.x);
         bodyAnimator.SetFloat("yDir", direction.y);
     }
 
-    //Old attack
-    /*private Animator swordAnimator;
-
-    void Attack1()
+    //Allows right animation to be flipped and used as left
+    void LeftRightFlip()
     {
-        if (AttackCooldownCounter > 0) { return; }
-        //swordAnimator.SetTrigger("Attack");
-        //Reset cooldown
-        AttackCooldownCounter = AttackCooldown;
-    }*/
-
-    void Attack2()
-    {
-        if (AttackCooldownCounter > 0) { return; }
-        bodyAnimator.SetTrigger("Attack2");
-        AttackCooldownCounter = AttackCooldown;
+        if (inputDirection.x < 0)
+        {
+            transform.localScale = new Vector2(-scale, scale);
+        }
+        else if (inputDirection.x > 0)
+        {
+            transform.localScale = new Vector2(scale, scale);
+        }
     }
+    private void HandleSwordSwap(){
+        if(swapCooldownCounter>0){swapCooldownCounter -= Time.deltaTime;} 
+        if(Input.GetButton("Attack2") && swapCooldownCounter <= 0f){
+            swapCooldownCounter = swapCooldown;
+            if(swordEquiped == "Sword1"){
+                Debug.Log("To sword2");
+                SwapSword("Sword2");}
+            else{
+                Debug.Log("To sword1");
+                SwapSword("Sword1");}
+        }
+    }
+    void SwapSword(string newSword){
+        swordEquiped = newSword;
+        sprites = Resources.LoadAll<Sprite>("Swords/" + newSword);
+    }
+
+    private void HandleAttack(){
+        if (AttackCooldownCounter > 0){AttackCooldownCounter -= Time.deltaTime;}
+        if(Input.GetButton("Attack1" && AttackCooldownCounter <= 0f)){
+            bodyAnimator.SetTrigger("Attack2");
+            AttackCooldownCounter = AttackCooldown;
+        }
+    }
+
+
+
+    private bool isRolling = false;
+    void HandleDodgeRoll(){
+        if(RollCooldownCounter > 0){RollCooldownCounter -= Time.deltaTime;}
+        if(Input.GetButton("Jump")){
+            if(RollCooldownCounter > 0){ return; }
+            bodyAnimator.SetTrigger("Roll");
+            RollCooldownCounter = RollCooldown;
+            canMove = false;
+            state = State.DodgeRoll;
+        }
+    }
+    [SerializeField] private float rollSpeed = 3f;
+    void HandleDodgeRollMotion(){
+        if(transform.localScale.x<0){rollSpeed *= -1;}
+        transform.position += new Vector3(1, 0) * rollSpeed * Time.deltaTime;
+    }
+    public void EndRoll(int par){
+        canMove = true;
+        state = State.Normal;
+    }
+
+
+
 
     [SerializeField] private LayerMask enemyLayers;
     //So far the only trigger is the collider around the sword when swinging
