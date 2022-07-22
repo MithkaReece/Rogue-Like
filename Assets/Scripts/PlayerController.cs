@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
     private enum State {
         Normal,
         DodgeRoll,
+        Attack,
     }
 
     // Start is called before the first frame update
@@ -58,6 +59,8 @@ public class PlayerController : MonoBehaviour
                 break;
             case State.DodgeRoll:
                 HandleDodgeRollMotion();
+                break;
+            case State.Attack:
                 break;
         }
     }
@@ -181,6 +184,7 @@ public class PlayerController : MonoBehaviour
 
     private Sprite sword1;
     public void DisplaySword1(int par){
+        state = State.Attack;
         sr.sprite = sprites[0];
     }
     private Sprite sword2;
@@ -193,6 +197,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public void DisplayNothing(int par){
+        state = State.Normal;
         sr.sprite = null;
     }
 }
