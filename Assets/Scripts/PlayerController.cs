@@ -115,7 +115,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAttack(){
         if (AttackCooldownCounter > 0){AttackCooldownCounter -= Time.deltaTime;}
-        if(Input.GetButton("Attack1" && AttackCooldownCounter <= 0f)){
+        if(Input.GetButton("Attack1") && AttackCooldownCounter <= 0f){
             bodyAnimator.SetTrigger("Attack2");
             AttackCooldownCounter = AttackCooldown;
         }
@@ -136,8 +136,12 @@ public class PlayerController : MonoBehaviour
     }
     [SerializeField] private float rollSpeed = 3f;
     void HandleDodgeRollMotion(){
-        if(transform.localScale.x<0){rollSpeed *= -1;}
-        transform.position += new Vector3(1, 0) * rollSpeed * Time.deltaTime;
+        if(transform.localScale.x<0){
+            transform.position += new Vector3(-1, 0) * rollSpeed * Time.deltaTime;
+        }else{
+            transform.position += new Vector3(1, 0) * rollSpeed * Time.deltaTime;
+        }
+        
     }
     public void EndRoll(int par){
         canMove = true;
