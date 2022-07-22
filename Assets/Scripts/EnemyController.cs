@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] private int maxHealth = 100;
-    private int currentHealth;
+    private EntityStats entityStats;
 
     [SerializeField] private float moveSpeed;
 
@@ -21,8 +21,8 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
+        entityStats = GetComponent<EntityStats>();
     }
 
     // Update is called once per frame
@@ -39,20 +39,18 @@ public class EnemyController : MonoBehaviour
         rb.MovePosition(rb.position + direction * moveSpeed * Time.deltaTime);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
-        Debug.Log(currentHealth);
+        entityStats.TakeDamage(damage);
+        Debug.Log(entityStats.CurrentHealth);
         //Hurt animation
 
-        if (currentHealth <= 0)
+        if (entityStats.CurrentHealth <= 0)
         {
             Die();
             //Die animation
 
             //Disable enemy
-
-
         }
     }
     private void Die()
@@ -69,7 +67,7 @@ public class EnemyController : MonoBehaviour
     {
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
-            player.TakeDamage(40);
+            player.TakeDamage(entityStats.Damage);
             StartCoroutine(player.Knockback(knockbackDuration, knockbackPower, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
     }

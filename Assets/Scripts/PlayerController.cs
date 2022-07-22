@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float scale = 4f;
     private Rigidbody2D rb;
     private Animator bodyAnimator;
+    private EntityStats entityStats;
 
     private bool canMove = true;
 
@@ -20,12 +21,13 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         bodyAnimator = transform.Find("Body").GetComponent<Animator>();
+        entityStats = GetComponent<EntityStats>();
         //swordAnimator = transform.Find("Body").transform.Find("OldSword").GetComponent<Animator>();
         currentHealth = maxHealth;
 
         sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
         sprites = Resources.LoadAll<Sprite>("Sword1/Sword1");
-        
+
         Debug.Log("Wtf");
         //sword1 = Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
         //sword2= Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
@@ -120,7 +122,7 @@ public class PlayerController : MonoBehaviour
     {
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
-            collider.gameObject.GetComponent<EnemyController>().TakeDamage(50);
+            collider.gameObject.GetComponent<EnemyController>().TakeDamage(entityStats.Damage);
         }
     }
 
@@ -137,28 +139,32 @@ public class PlayerController : MonoBehaviour
         canMove = true;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
+        entityStats.TakeDamage(damage);
     }
 
     private Sprite sword1;
-    public void DisplaySword1(int par){
+    public void DisplaySword1(int par)
+    {
         Debug.Log("1");
         sr.sprite = sprites[0];
     }
     private Sprite sword2;
-    public void DisplaySword2(int par){
+    public void DisplaySword2(int par)
+    {
         Debug.Log("2");
         sr.sprite = sprites[1];
     }
     private Sprite sword3;
-    public void DisplaySword3(int par){
+    public void DisplaySword3(int par)
+    {
         Debug.Log("3");
         sr.sprite = sprites[2];
     }
 
-    public void DisplayNothing(int par){
+    public void DisplayNothing(int par)
+    {
         Debug.Log("4");
         sr.sprite = null;
     }
