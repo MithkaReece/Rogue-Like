@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
 
     private SpriteRenderer sr;
     private Sprite[] sprites;
+
+    [SerializeField] private float AttackCooldown = 0.5f;
+    [SerializeField] private float AttackCooldownCounter = 0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -75,6 +78,7 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector2(scale, scale);
         }
     }
+
     [SerializeField] private float moveSpeed;
     void Move()
     {
@@ -97,16 +101,16 @@ public class PlayerController : MonoBehaviour
         bodyAnimator.SetFloat("yDir", direction.y);
     }
 
-    //private Animator swordAnimator;
-    [SerializeField] private float AttackCooldown = 0.5f;
-    [SerializeField] private float AttackCooldownCounter = 0f;
+    //Old attack
+    /*private Animator swordAnimator;
+
     void Attack1()
     {
         if (AttackCooldownCounter > 0) { return; }
         //swordAnimator.SetTrigger("Attack");
         //Reset cooldown
         AttackCooldownCounter = AttackCooldown;
-    }
+    }*/
 
     void Attack2()
     {
@@ -114,6 +118,7 @@ public class PlayerController : MonoBehaviour
         bodyAnimator.SetTrigger("Attack2");
         AttackCooldownCounter = AttackCooldown;
     }
+
     [SerializeField] private LayerMask enemyLayers;
     //So far the only trigger is the collider around the sword when swinging
     void OnTriggerEnter2D(Collider2D collider)
