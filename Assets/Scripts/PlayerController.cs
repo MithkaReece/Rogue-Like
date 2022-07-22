@@ -18,6 +18,11 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float AttackCooldown = 0.5f;
     [SerializeField] private float AttackCooldownCounter = 0f;
+
+    [SerializeField] private string swordEquiped = "Sword1";
+    private float swapCooldown = 2f;
+    private float swapCooldownCounter = 0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,12 +32,7 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
 
         sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
-        sprites = Resources.LoadAll<Sprite>("Sword1/Sword1");
-        
-        Debug.Log("Wtf");
-        //sword1 = Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
-        //sword2= Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
-        //sword3 = Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
+        sprites = Resources.LoadAll<Sprite>("Swords/" + swordEquiped);
     }
 
     // Update is called once per frame
@@ -49,7 +49,25 @@ public class PlayerController : MonoBehaviour
             AttackCooldownCounter -= Time.deltaTime;
         }
 
+        if(Input.GetButton("Jump") && swapCooldownCounter <= 0f){
+            swapCooldownCounter = swapCooldown;
+            if(swordEquiped == "Sword1"){
+                Debug.Log("To sword2");
+                swapSword("Sword2");}
+            else{
+                Debug.Log("To sword1");
+                swapSword("Sword1");}
+        }
+        if(swapCooldownCounter>0){swapCooldownCounter -= Time.deltaTime;} 
+
     }
+
+
+    void swapSword(string newSword){
+        swordEquiped = newSword;
+        sprites = Resources.LoadAll<Sprite>("Swords/" + newSword);
+    }
+
     private Vector2 inputDirection;
     void TakeInput()
     {
@@ -149,22 +167,18 @@ public class PlayerController : MonoBehaviour
 
     private Sprite sword1;
     public void DisplaySword1(int par){
-        Debug.Log("1");
         sr.sprite = sprites[0];
     }
     private Sprite sword2;
     public void DisplaySword2(int par){
-        Debug.Log("2");
         sr.sprite = sprites[1];
     }
     private Sprite sword3;
     public void DisplaySword3(int par){
-        Debug.Log("3");
         sr.sprite = sprites[2];
     }
 
     public void DisplayNothing(int par){
-        Debug.Log("4");
         sr.sprite = null;
     }
 }
