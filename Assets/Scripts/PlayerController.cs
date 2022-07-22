@@ -13,13 +13,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
     private int currentHealth;
 
+    private SpriteRenderer sr;
+    private Sprite[] sprites;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         bodyAnimator = transform.Find("Body").GetComponent<Animator>();
-        swordAnimator = transform.Find("Body").transform.Find("Sword").GetComponent<Animator>();
+        //swordAnimator = transform.Find("Body").transform.Find("OldSword").GetComponent<Animator>();
         currentHealth = maxHealth;
+
+        sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
+        sprites = Resources.LoadAll<Sprite>("Sword1/Sword1");
+        
+        Debug.Log("Wtf");
+        //sword1 = Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
+        //sword2= Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
+        //sword3 = Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
     }
 
     // Update is called once per frame
@@ -29,7 +39,7 @@ public class PlayerController : MonoBehaviour
         LeftRightFlip();
         if (canMove) { Move(); }
 
-
+        //sr.sprite = null;
 
         if (AttackCooldownCounter > 0)
         {
@@ -45,7 +55,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButton("Attack1"))
         {
-            Attack1();
+            //Attack1();
         }
 
         if (Input.GetButton("Attack2"))
@@ -87,13 +97,13 @@ public class PlayerController : MonoBehaviour
         bodyAnimator.SetFloat("yDir", direction.y);
     }
 
-    private Animator swordAnimator;
-    private float AttackCooldown = 0.3f;
-    private float AttackCooldownCounter = 0f;
+    //private Animator swordAnimator;
+    [SerializeField] private float AttackCooldown = 0.5f;
+    [SerializeField] private float AttackCooldownCounter = 0f;
     void Attack1()
     {
         if (AttackCooldownCounter > 0) { return; }
-        swordAnimator.SetTrigger("Attack");
+        //swordAnimator.SetTrigger("Attack");
         //Reset cooldown
         AttackCooldownCounter = AttackCooldown;
     }
@@ -130,5 +140,26 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+    }
+
+    private Sprite sword1;
+    public void DisplaySword1(int par){
+        Debug.Log("1");
+        sr.sprite = sprites[0];
+    }
+    private Sprite sword2;
+    public void DisplaySword2(int par){
+        Debug.Log("2");
+        sr.sprite = sprites[1];
+    }
+    private Sprite sword3;
+    public void DisplaySword3(int par){
+        Debug.Log("3");
+        sr.sprite = sprites[2];
+    }
+
+    public void DisplayNothing(int par){
+        Debug.Log("4");
+        sr.sprite = null;
     }
 }
