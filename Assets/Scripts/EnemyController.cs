@@ -2,22 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : EntityController
 {
-    [SerializeField] private int maxHealth = 100;
-    private EntityStats entityStats;
+    private EnemyStats enemyStats;
 
     [SerializeField] private PlayerController player;
     public void SetPlayer(PlayerController inPlayer) { player = inPlayer; }
     private bool playerSeen = true;
 
-
-    [SerializeField] private float knockbackDuration;
-    [SerializeField] private float knockbackPower;
-
-    private Rigidbody2D rb;
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         entityStats = GetComponent<EntityStats>();
@@ -34,12 +28,12 @@ public class EnemyController : MonoBehaviour
         if (!playerSeen) { return; }
         Vector2 direction = player.transform.position - transform.position;
         direction = direction.normalized;
-        rb.MovePosition(rb.position + direction * entityStats.MoveSpeed * Time.deltaTime);
+        rb.MovePosition(rb.position + direction * entityStats.MoveSpeed.Value * Time.deltaTime);
     }
 
-    public void TakeDamage(float damage)
+    public override void TakeDamage(float damage)
     {
-        entityStats.TakeDamage(damage);
+        base.TakeDamage(damage);
         Debug.Log(entityStats.CurrentHealth);
         //Hurt animation
 
@@ -65,8 +59,8 @@ public class EnemyController : MonoBehaviour
     {
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
-            player.TakeDamage(entityStats.Damage);
-            StartCoroutine(player.Knockback(knockbackDuration, knockbackPower, (Vector2)transform.position + GetComponent<Collider2D>().offset));
+            player.TakeDamage(entityStats.Combat.Damage.Value);
+            StartCoroutine(player.Knockback(enemyStats.knockbackDuration.Value, enemyStats.knockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
     }
 }

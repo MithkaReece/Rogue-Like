@@ -2,28 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : EntityController
 {
     [SerializeField] private float scale = 4f;
-    private Rigidbody2D rb;
     private Animator bodyAnimator;
-    private EntityStats entityStats;
 
     private bool canMove = true;
-
-    [SerializeField] private int maxHealth = 100;
-    private int currentHealth;
 
     private SpriteRenderer sr;
     private Sprite[] sprites;
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        base.Start();
+
         bodyAnimator = transform.Find("Body").GetComponent<Animator>();
-        entityStats = GetComponent<EntityStats>();
         //swordAnimator = transform.Find("Body").transform.Find("OldSword").GetComponent<Animator>();
-        currentHealth = maxHealth;
 
         sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
         sprites = Resources.LoadAll<Sprite>("Sword1/Sword1");
@@ -79,7 +73,7 @@ public class PlayerController : MonoBehaviour
     }
     void Move()
     {
-        rb.MovePosition(rb.position + inputDirection * entityStats.MoveSpeed * Time.deltaTime);
+        rb.MovePosition(rb.position + inputDirection * entityStats.MoveSpeed.Value * Time.deltaTime);
 
         if (inputDirection.magnitude == 0)
         { //Stop walk animation as not moving
@@ -115,13 +109,14 @@ public class PlayerController : MonoBehaviour
         bodyAnimator.SetTrigger("Attack2");
         AttackCooldownCounter = AttackCooldown;
     }
+
     [SerializeField] private LayerMask enemyLayers;
     //So far the only trigger is the collider around the sword when swinging
     void OnTriggerEnter2D(Collider2D collider)
     {
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
-            collider.gameObject.GetComponent<EnemyController>().TakeDamage(entityStats.Damage);
+            collider.gameObject.GetComponent<EnemyController>().TakeDamage(entityStats.Combat.Damage.Value);
         }
     }
 
@@ -136,11 +131,6 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.isKinematic = true;
         canMove = true;
-    }
-
-    public void TakeDamage(float damage)
-    {
-        entityStats.TakeDamage(damage);
     }
 
     private Sprite sword1;
