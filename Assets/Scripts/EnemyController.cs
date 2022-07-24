@@ -14,7 +14,8 @@ public class EnemyController : EntityController
     protected override void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        entityStats = GetComponent<EntityStats>();
+        enemyStats = GetComponent<EnemyStats>();
+        entityStats = enemyStats;
     }
 
     // Update is called once per frame
@@ -60,7 +61,8 @@ public class EnemyController : EntityController
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
             player.TakeDamage(entityStats.Combat.Damage.Value);
-            StartCoroutine(player.Knockback(enemyStats.knockbackDuration.Value, enemyStats.knockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
+            Debug.Log(enemyStats.KnockbackDuration.Value);
+            StartCoroutine(player.Knockback(enemyStats.KnockbackDuration.Value, enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
     }
 }

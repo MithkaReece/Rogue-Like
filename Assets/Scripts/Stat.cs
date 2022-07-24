@@ -4,20 +4,20 @@ using UnityEngine;
 [System.Serializable]
 public class Stat<T>
 {
-
-    public T BaseValue { get; private set; }
+    [field: SerializeField] public T BaseValue { get; private set; }
     private bool isDirty = true;
-    private T currentValue;
+    [SerializeField] private T currentValue;
 
     public T Value
     {
         get
         {
-            if (!isDirty)
-                return currentValue;
+            if (isDirty)
+            {
+                currentValue = CalculateCurrentValue();
+                isDirty = false;
+            }
 
-            currentValue = CalculateCurrentValue();
-            isDirty = false;
             return currentValue;
         }
     }
@@ -36,8 +36,9 @@ public class Stat<T>
         isDirty = true;
     }
 
+    //TODO: Calculate current value from modifiers
     private T CalculateCurrentValue()
     {
-        throw new System.NotImplementedException();
+        return BaseValue;
     }
 }

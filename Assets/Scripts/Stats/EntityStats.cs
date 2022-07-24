@@ -1,22 +1,21 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class CombatStats
 {
-    public readonly Stat<float> AttackSpeed;
+    [field: SerializeField] public Stat<float> AttackSpeed { get; private set; }
     [field: SerializeField] public float AttackCooldownCounter { get; private set; }
-    public readonly Stat<float> Damage;
+    [field: SerializeField] public Stat<float> Damage { get; private set; }
 }
 
 public class EntityStats : MonoBehaviour
 {
-    public readonly Stat<float> MaxHealth;
+    [field: SerializeField] public Stat<float> MaxHealth { get; private set; }
     [field: SerializeField] public float CurrentHealth { get; private set; }
-    public readonly Stat<float> HealthRegen;
-    public readonly Stat<float> Armour;
-    public readonly Stat<float> MoveSpeed;
+    [field: SerializeField] public Stat<float> HealthRegen { get; private set; }
+    [field: SerializeField] public Stat<float> Armour { get; private set; }
+    [field: SerializeField] public Stat<float> MoveSpeed { get; private set; }
     [field: SerializeField] public CombatStats Combat { get; private set; }
 
     public void Start()
