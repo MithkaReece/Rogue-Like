@@ -26,7 +26,7 @@ public class EnemyController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Move();
     }
@@ -36,7 +36,8 @@ public class EnemyController : MonoBehaviour
         if (!playerSeen) { return; }
         Vector2 direction = player.transform.position - transform.position;
         direction = direction.normalized;
-        rb.MovePosition(rb.position + direction * moveSpeed * Time.deltaTime);
+        //rb.MovePosition(rb.position + direction * moveSpeed * Time.deltaTime);
+        rb.velocity = direction * moveSpeed;
     }
 
     public void TakeDamage(int damage)
@@ -70,7 +71,7 @@ public class EnemyController : MonoBehaviour
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
             player.TakeDamage(40);
-            StartCoroutine(player.Knockback(knockbackDuration, knockbackPower, (Vector2)transform.position + GetComponent<Collider2D>().offset));
+            //StartCoroutine(player.Knockback(knockbackDuration, knockbackPower, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
     }
 }
