@@ -13,6 +13,8 @@ public class EnemyController : EntityController
     // Start is called before the first frame update
     protected override void Start()
     {
+        base.Start();
+
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
         base.Start();
@@ -62,17 +64,7 @@ public class EnemyController : EntityController
     {
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
-            player.TakeDamage(40);
-            //StartCoroutine(player.Knockback(knockbackDuration, knockbackPower, (Vector2)transform.position + GetComponent<Collider2D>().offset));
-        }
-    }*/
-
-    public void KnockbackPlayer(Collision2D collision)
-    {
-        if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
-        {
-            player.TakeDamage(enemyStats.Combat.Damage.Value);
-            Debug.Log(enemyStats.KnockbackDuration.Value);
+            player.TakeDamage(entityStats.Combat.Damage.Value);
             StartCoroutine(player.Knockback(enemyStats.KnockbackDuration.Value, enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
     }
