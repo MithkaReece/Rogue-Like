@@ -194,6 +194,15 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == 8)
+        {
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
+        }
+    }
+
+
     public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
     {
         canMove = false;
