@@ -11,16 +11,33 @@ public class PlayerController : EntityController
 
     private SpriteRenderer sr;
     private Sprite[] sprites;
+
+    [SerializeField] private float AttackCooldown = 0.5f;
+    [SerializeField] private float AttackCooldownCounter = 0f;
+
+    [SerializeField] private float RollCooldown = 0.5f;
+    [SerializeField] private float RollCooldownCounter = 0f;
+
+    [SerializeField] private string swordEquiped = "Sword1";
+    private float swapCooldown = 2f;
+    private float swapCooldownCounter = 0f;
+
+    private State state;
+    private enum State
+    {
+        Normal,
+        DodgeRoll,
+        Attack,
+    }
+
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
 
         bodyAnimator = transform.Find("Body").GetComponent<Animator>();
-        //swordAnimator = transform.Find("Body").transform.Find("OldSword").GetComponent<Animator>();
-
         sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
-        sprites = Resources.LoadAll<Sprite>("Sword1/Sword1");
+        sprites = Resources.LoadAll<Sprite>("Swords/" + swordEquiped);
 
         Debug.Log("Wtf");
         //sword1 = Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
@@ -31,35 +48,50 @@ public class PlayerController : EntityController
     // Update is called once per frame
     void Update()
     {
-        TakeInput();
-        LeftRightFlip();
-        if (canMove) { Move(); }
-
-        //sr.sprite = null;
-
-        if (AttackCooldownCounter > 0)
+        switch (state)
         {
-            AttackCooldownCounter -= Time.deltaTime;
+            case State.Normal:
+                if (canMove)
+                {
+                    HandleWalk();
+                    LeftRightFlip();
+                    HandleSwordSwap();
+                    HandleAttack();
+                    HandleDodgeRoll();
+                }
+                break;
+            case State.DodgeRoll:
+                HandleDodgeRollMotion();
+                break;
+            case State.Attack:
+                break;
         }
-
     }
+
+    [SerializeField] private float moveSpeed;
     private Vector2 inputDirection;
-    void TakeInput()
+    void HandleWalk()
     {
-        inputDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        inputDirection = inputDirection.normalized;
+        inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
+        rb.MovePosition(rb.position + inputDirection * moveSpeed * Time.deltaTime);
 
-        if (Input.GetButton("Attack1"))
-        {
-            //Attack1();
+        if (inputDirection.magnitude == 0)
+        { //Stop walk animation as not moving
+            bodyAnimator.SetLayerWeight(1, 0);
         }
-
-        if (Input.GetButton("Attack2"))
+        else
         {
-            Attack2();
+            bodyAnimator.SetLayerWeight(1, 1);
+            SetAnimatorMovement(inputDirection);
         }
     }
+    void SetAnimatorMovement(Vector2 direction)
+    {
+        bodyAnimator.SetFloat("xDir", direction.x);
+        bodyAnimator.SetFloat("yDir", direction.y);
+    }
 
+    //Allows right animation to be flipped and used as left
     void LeftRightFlip()
     {
         if (inputDirection.x < 0)
@@ -85,29 +117,71 @@ public class PlayerController : EntityController
             SetAnimatorMovement(inputDirection);
         }
     }
-
-    void SetAnimatorMovement(Vector2 direction)
+    private void HandleSwordSwap()
     {
-        bodyAnimator.SetFloat("xDir", direction.x);
-        bodyAnimator.SetFloat("yDir", direction.y);
+        if (swapCooldownCounter > 0) { swapCooldownCounter -= Time.deltaTime; }
+        if (Input.GetButton("Attack2") && swapCooldownCounter <= 0f)
+        {
+            swapCooldownCounter = swapCooldown;
+            if (swordEquiped == "Sword1")
+            {
+                Debug.Log("To sword2");
+                SwapSword("Sword2");
+            }
+            else
+            {
+                Debug.Log("To sword1");
+                SwapSword("Sword1");
+            }
+        }
     }
 
-    //private Animator swordAnimator;
-    [SerializeField] private float AttackCooldown = 0.5f;
-    [SerializeField] private float AttackCooldownCounter = 0f;
-    void Attack1()
+    void SwapSword(string newSword)
     {
-        if (AttackCooldownCounter > 0) { return; }
-        //swordAnimator.SetTrigger("Attack");
-        //Reset cooldown
-        AttackCooldownCounter = AttackCooldown;
+        swordEquiped = newSword;
+        sprites = Resources.LoadAll<Sprite>("Swords/" + newSword);
     }
 
-    void Attack2()
+    private void HandleAttack()
     {
-        if (AttackCooldownCounter > 0) { return; }
-        bodyAnimator.SetTrigger("Attack2");
-        AttackCooldownCounter = AttackCooldown;
+        if (AttackCooldownCounter > 0) { AttackCooldownCounter -= Time.deltaTime; }
+        if (Input.GetButton("Attack1") && AttackCooldownCounter <= 0f)
+        {
+            bodyAnimator.SetTrigger("Attack2");
+            AttackCooldownCounter = AttackCooldown;
+        }
+    }
+
+    private bool isRolling = false;
+    void HandleDodgeRoll()
+    {
+        if (RollCooldownCounter > 0) { RollCooldownCounter -= Time.deltaTime; }
+        if (Input.GetButton("Jump"))
+        {
+            if (RollCooldownCounter > 0) { return; }
+            bodyAnimator.SetTrigger("Roll");
+            RollCooldownCounter = RollCooldown;
+            canMove = false;
+            state = State.DodgeRoll;
+        }
+    }
+    [SerializeField] private float rollSpeed = 3f;
+    void HandleDodgeRollMotion()
+    {
+        if (transform.localScale.x < 0)
+        {
+            transform.position += new Vector3(-1, 0) * rollSpeed * Time.deltaTime;
+        }
+        else
+        {
+            transform.position += new Vector3(1, 0) * rollSpeed * Time.deltaTime;
+        }
+
+    }
+    public void EndRoll(int par)
+    {
+        canMove = true;
+        state = State.Normal;
     }
 
     [SerializeField] private LayerMask enemyLayers;
@@ -136,25 +210,23 @@ public class PlayerController : EntityController
     private Sprite sword1;
     public void DisplaySword1(int par)
     {
-        Debug.Log("1");
+        state = State.Attack;
         sr.sprite = sprites[0];
     }
     private Sprite sword2;
     public void DisplaySword2(int par)
     {
-        Debug.Log("2");
         sr.sprite = sprites[1];
     }
     private Sprite sword3;
     public void DisplaySword3(int par)
     {
-        Debug.Log("3");
         sr.sprite = sprites[2];
     }
 
     public void DisplayNothing(int par)
     {
-        Debug.Log("4");
+        state = State.Normal;
         sr.sprite = null;
     }
 }
