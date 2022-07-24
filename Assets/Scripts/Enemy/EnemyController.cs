@@ -2,27 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : EntityController
 {
-    [SerializeField] private int maxHealth = 100;
-    private int currentHealth;
-
-    [SerializeField] private float moveSpeed;
+    private EnemyStats enemyStats;
 
     [SerializeField] private PlayerController player;
     public void SetPlayer(PlayerController inPlayer) { player = inPlayer; }
     private bool playerSeen = true;
 
-
-    [SerializeField] private float knockbackDuration;
-    [SerializeField] private float knockbackPower;
-
-    private Rigidbody2D rb;
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
-        currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
+        enemyStats = GetComponent<EnemyStats>();
     }
 
     // Update is called once per frame
@@ -40,20 +32,18 @@ public class EnemyController : MonoBehaviour
         rb.velocity = direction * moveSpeed;
     }
 
-    public void TakeDamage(int damage)
+    public override void TakeDamage(float damage)
     {
-        currentHealth -= damage;
-        Debug.Log(currentHealth);
+        base.TakeDamage(damage);
+        Debug.Log(entityStats.CurrentHealth);
         //Hurt animation
 
-        if (currentHealth <= 0)
+        if (entityStats.CurrentHealth <= 0)
         {
             Die();
             //Die animation
 
             //Disable enemy
-
-
         }
     }
     private void Die()
@@ -80,8 +70,9 @@ public class EnemyController : MonoBehaviour
     {
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
-            player.TakeDamage(40);
-            StartCoroutine(player.Knockback(knockbackDuration, knockbackPower, (Vector2)transform.position + GetComponent<Collider2D>().offset));
+            player.TakeDamage(entityStats.Combat.Damage.Value);
+            Debug.Log(enemyStats.KnockbackDuration.Value);
+            StartCoroutine(player.Knockback(enemyStats.KnockbackDuration.Value, enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
     }
 }

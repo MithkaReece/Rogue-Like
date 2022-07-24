@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : EntityController
 {
     [SerializeField] private float scale = 4f;
     private Rigidbody2D rb;
@@ -13,22 +13,13 @@ public class PlayerController : MonoBehaviour
 
     private bool canMove = true;
 
-    [SerializeField] private int maxHealth = 100;
-    private int currentHealth;
-
     private SpriteRenderer sr;
     private Sprite[] sprites;
-
-    [SerializeField] private float AttackCooldown = 0.5f;
-    [SerializeField] private float AttackCooldownCounter = 0f;
-
-    [SerializeField] private float RollCooldown = 0.5f;
-    [SerializeField] private float RollCooldownCounter = 0f;
-
     [SerializeField] private string swordEquiped = "Sword1";
     private float swapCooldown = 2f;
     private float swapCooldownCounter = 0f;
 
+    private PlayerStats playerStats;
     private State state;
     private enum State
     {
@@ -39,7 +30,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
         drb = GetComponent<Rigidbody2D>();
         krb = transform.Find("Blocker").GetComponent<Rigidbody2D>();
@@ -48,9 +39,12 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         bodyAnimator = transform.Find("Body").GetComponent<Animator>();
         currentHealth = maxHealth;
+        base.Start();
 
+        bodyAnimator = transform.Find("Body").GetComponent<Animator>();
         sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
         sprites = Resources.LoadAll<Sprite>("Swords/" + swordEquiped);
+        playerStats = GetComponent<PlayerStats>();
     }
 
     // Update is called once per frame
@@ -138,25 +132,27 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAttack()
     {
-        if (AttackCooldownCounter > 0) { AttackCooldownCounter -= Time.deltaTime; }
-        if (Input.GetButton("Attack1") && AttackCooldownCounter <= 0f)
+        if (!playerStats.Combat.AttackCooldownCounter.Passed)
+            playerStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
+
+        if (Input.GetButton("Attack1") && playerStats.Combat.AttackCooldownCounter.Passed)
         {
             rb.velocity = Vector2.zero;
             bodyAnimator.SetTrigger("Attack2");
-            AttackCooldownCounter = AttackCooldown;
+            playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
         }
     }
 
 
-
     void HandleDodgeRoll()
     {
-        if (RollCooldownCounter > 0) { RollCooldownCounter -= Time.deltaTime; }
-        if (Input.GetButton("Jump"))
+        if (!playerStats.RollCooldownCounter.Passed)
+            playerStats.RollCooldownCounter.PassTime(Time.deltaTime);
+
+        if (Input.GetButton("Jump") && playerStats.RollCooldownCounter.Passed)
         {
-            if (RollCooldownCounter > 0) { return; }
             bodyAnimator.SetTrigger("Roll");
-            RollCooldownCounter = RollCooldown;
+            playerStats.RollCooldownCounter.Reset(playerStats.RollCooldown);
             canMove = false;
             state = State.DodgeRoll;
         }
@@ -181,9 +177,6 @@ public class PlayerController : MonoBehaviour
         state = State.Normal;
     }
 
-
-
-
     [SerializeField] private LayerMask enemyLayers;
     //So far the only trigger is the collider around the sword when swinging
     void OnTriggerEnter2D(Collider2D collider)
@@ -191,7 +184,7 @@ public class PlayerController : MonoBehaviour
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
             Debug.Log("Hit");
-            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(50);
+            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(entityStats.Combat.Damage.Value);
         }
     }
 
@@ -216,11 +209,6 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         canMove = true;
         state = State.Normal;
-    }
-
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
     }
 
     private Sprite sword1;
