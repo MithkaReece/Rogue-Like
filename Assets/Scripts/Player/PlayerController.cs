@@ -207,12 +207,10 @@ public class PlayerController : MonoBehaviour
     public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
     {
         canMove = false;
-        rb.isKinematic = false;
         Vector2 direction = (objPos - ((Vector2)transform.position + GetComponent<Collider2D>().offset)).normalized;
         rb.AddForce(-direction * knockbackPower, ForceMode2D.Impulse);
         yield return new WaitForSeconds(knockbackDuration);
         rb.velocity = Vector2.zero;
-        rb.isKinematic = true;
         canMove = true;
     }
 
