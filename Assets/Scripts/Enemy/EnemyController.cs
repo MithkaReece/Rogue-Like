@@ -15,6 +15,7 @@ public class EnemyController : EntityController
     {
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
+        base.Start();
     }
 
     // Update is called once per frame
@@ -29,16 +30,16 @@ public class EnemyController : EntityController
         Vector2 direction = player.transform.position - transform.position;
         direction = direction.normalized;
         //rb.MovePosition(rb.position + direction * moveSpeed * Time.deltaTime);
-        rb.velocity = direction * moveSpeed;
+        rb.velocity = direction * enemyStats.MoveSpeed.Value;
     }
 
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        Debug.Log(entityStats.CurrentHealth);
+        Debug.Log(enemyStats.CurrentHealth);
         //Hurt animation
 
-        if (entityStats.CurrentHealth <= 0)
+        if (enemyStats.CurrentHealth <= 0)
         {
             Die();
             //Die animation
@@ -70,7 +71,7 @@ public class EnemyController : EntityController
     {
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
-            player.TakeDamage(entityStats.Combat.Damage.Value);
+            player.TakeDamage(enemyStats.Combat.Damage.Value);
             Debug.Log(enemyStats.KnockbackDuration.Value);
             StartCoroutine(player.Knockback(enemyStats.KnockbackDuration.Value, enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }

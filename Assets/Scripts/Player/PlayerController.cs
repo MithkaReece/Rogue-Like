@@ -5,9 +5,6 @@ using UnityEngine;
 public class PlayerController : EntityController
 {
     [SerializeField] private float scale = 4f;
-    private Rigidbody2D rb;
-    private Rigidbody2D drb;
-    private Rigidbody2D krb;
 
     private Animator bodyAnimator;
 
@@ -32,13 +29,6 @@ public class PlayerController : EntityController
     // Start is called before the first frame update
     protected override void Start()
     {
-        drb = GetComponent<Rigidbody2D>();
-        krb = transform.Find("Blocker").GetComponent<Rigidbody2D>();
-
-
-        rb = GetComponent<Rigidbody2D>();
-        bodyAnimator = transform.Find("Body").GetComponent<Animator>();
-        currentHealth = maxHealth;
         base.Start();
 
         bodyAnimator = transform.Find("Body").GetComponent<Animator>();
@@ -76,7 +66,7 @@ public class PlayerController : EntityController
     {
         inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
         //drb.MovePosition(drb.position + inputDirection * moveSpeed * Time.deltaTime);
-        drb.velocity = inputDirection * moveSpeed;
+        rb.velocity = inputDirection * moveSpeed;
 
         if (inputDirection.magnitude == 0)
         { //Stop walk animation as not moving
@@ -184,7 +174,7 @@ public class PlayerController : EntityController
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
             Debug.Log("Hit");
-            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(entityStats.Combat.Damage.Value);
+            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(40);
         }
     }
 
