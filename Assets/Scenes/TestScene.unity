@@ -8794,6 +8794,14 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 7524059704057353728, guid: 89b696893c88a4d0a84b275de9ef4462, type: 3}
+      propertyPath: knockbackPower
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7524059704057353728, guid: 89b696893c88a4d0a84b275de9ef4462, type: 3}
+      propertyPath: knockbackDuration
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -8343258231383611701, guid: 89b696893c88a4d0a84b275de9ef4462, type: 3}
     - {fileID: 5169005994104290719, guid: 89b696893c88a4d0a84b275de9ef4462, type: 3}

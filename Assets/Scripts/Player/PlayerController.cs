@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
         Normal,
         DodgeRoll,
         Attack,
+        Knockback,
     }
 
     // Start is called before the first frame update
@@ -206,12 +207,15 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
     {
+        //bodyAnimator.SetTrigger("Knockback");
+        state = State.Knockback;
         canMove = false;
         Vector2 direction = (objPos - ((Vector2)transform.position + GetComponent<Collider2D>().offset)).normalized;
         rb.AddForce(-direction * knockbackPower, ForceMode2D.Impulse);
         yield return new WaitForSeconds(knockbackDuration);
         rb.velocity = Vector2.zero;
         canMove = true;
+        state = State.Normal;
     }
 
     public void TakeDamage(int damage)
