@@ -162,14 +162,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float rollSpeed = 3f;
     void HandleDodgeRollMotion()
     {
-        if (transform.localScale.x < 0)
+        rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
+        /*if (transform.localScale.x < 0)
         {
             transform.position += new Vector3(-1, 0) * rollSpeed * Time.deltaTime;
         }
         else
         {
             transform.position += new Vector3(1, 0) * rollSpeed * Time.deltaTime;
-        }
+        }*/
 
     }
     public void EndRoll(int par)
