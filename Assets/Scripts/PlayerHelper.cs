@@ -10,4 +10,7 @@ public class PlayerHelper : MonoBehaviour
     public void DisplaySword2(int par){player.DisplaySword2(par);}
     public void DisplaySword3(int par){player.DisplaySword3(par);}
     public void DisplayNothing(int par){player.DisplayNothing(par);}
+
+
+    public void EndRoll(int par){player.EndRoll(par);}
 }

@@ -2,82 +2,67 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : EntityController
 {
     [SerializeField] private float scale = 4f;
-    private Rigidbody2D rb;
     private Animator bodyAnimator;
 
     private bool canMove = true;
 
-    [SerializeField] private int maxHealth = 100;
-    private int currentHealth;
-
     private SpriteRenderer sr;
     private Sprite[] sprites;
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        bodyAnimator = transform.Find("Body").GetComponent<Animator>();
-        //swordAnimator = transform.Find("Body").transform.Find("OldSword").GetComponent<Animator>();
-        currentHealth = maxHealth;
+    [SerializeField] private string swordEquiped = "Sword1";
+    private float swapCooldown = 2f;
+    private float swapCooldownCounter = 0f;
 
+    private PlayerStats playerStats;
+    private State state;
+    private enum State
+    {
+        Normal,
+        DodgeRoll,
+        Attack,
+    }
+
+    // Start is called before the first frame update
+    protected override void Start()
+    {
+        base.Start();
+
+        bodyAnimator = transform.Find("Body").GetComponent<Animator>();
         sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
-        sprites = Resources.LoadAll<Sprite>("Sword1/Sword1");
-        
-        Debug.Log("Wtf");
-        //sword1 = Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
-        //sword2= Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
-        //sword3 = Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
+        sprites = Resources.LoadAll<Sprite>("Swords/" + swordEquiped);
+        playerStats = GetComponent<PlayerStats>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        TakeInput();
-        LeftRightFlip();
-        if (canMove) { Move(); }
-
-        //sr.sprite = null;
-
-        if (AttackCooldownCounter > 0)
+        switch (state)
         {
-            AttackCooldownCounter -= Time.deltaTime;
-        }
-
-    }
-    private Vector2 inputDirection;
-    void TakeInput()
-    {
-        inputDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        inputDirection = inputDirection.normalized;
-
-        if (Input.GetButton("Attack1"))
-        {
-            //Attack1();
-        }
-
-        if (Input.GetButton("Attack2"))
-        {
-            Attack2();
+            case State.Normal:
+                if (canMove)
+                {
+                    HandleWalk();
+                    LeftRightFlip();
+                    HandleSwordSwap();
+                    HandleAttack();
+                    HandleDodgeRoll();
+                }
+                break;
+            case State.DodgeRoll:
+                HandleDodgeRollMotion();
+                break;
+            case State.Attack:
+                break;
         }
     }
 
-    void LeftRightFlip()
-    {
-        if (inputDirection.x < 0)
-        {
-            transform.localScale = new Vector2(-scale, scale);
-        }
-        else if (inputDirection.x > 0)
-        {
-            transform.localScale = new Vector2(scale, scale);
-        }
-    }
     [SerializeField] private float moveSpeed;
-    void Move()
+    private Vector2 inputDirection;
+    void HandleWalk()
     {
+        inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
         rb.MovePosition(rb.position + inputDirection * moveSpeed * Time.deltaTime);
 
         if (inputDirection.magnitude == 0)
@@ -90,37 +75,115 @@ public class PlayerController : MonoBehaviour
             SetAnimatorMovement(inputDirection);
         }
     }
-
     void SetAnimatorMovement(Vector2 direction)
     {
         bodyAnimator.SetFloat("xDir", direction.x);
         bodyAnimator.SetFloat("yDir", direction.y);
     }
 
-    //private Animator swordAnimator;
-    [SerializeField] private float AttackCooldown = 0.5f;
-    [SerializeField] private float AttackCooldownCounter = 0f;
-    void Attack1()
+    //Allows right animation to be flipped and used as left
+    void LeftRightFlip()
     {
-        if (AttackCooldownCounter > 0) { return; }
-        //swordAnimator.SetTrigger("Attack");
-        //Reset cooldown
-        AttackCooldownCounter = AttackCooldown;
+        if (inputDirection.x < 0)
+        {
+            transform.localScale = new Vector2(-scale, scale);
+        }
+        else if (inputDirection.x > 0)
+        {
+            transform.localScale = new Vector2(scale, scale);
+        }
+    }
+    void Move()
+    {
+        rb.MovePosition(rb.position + inputDirection * entityStats.MoveSpeed.Value * Time.deltaTime);
+
+        if (inputDirection.magnitude == 0)
+        { //Stop walk animation as not moving
+            bodyAnimator.SetLayerWeight(1, 0);
+        }
+        else
+        {
+            bodyAnimator.SetLayerWeight(1, 1);
+            SetAnimatorMovement(inputDirection);
+        }
+    }
+    private void HandleSwordSwap()
+    {
+        if (swapCooldownCounter > 0) { swapCooldownCounter -= Time.deltaTime; }
+        if (Input.GetButton("Attack2") && swapCooldownCounter <= 0f)
+        {
+            swapCooldownCounter = swapCooldown;
+            if (swordEquiped == "Sword1")
+            {
+                Debug.Log("To sword2");
+                SwapSword("Sword2");
+            }
+            else
+            {
+                Debug.Log("To sword1");
+                SwapSword("Sword1");
+            }
+        }
     }
 
-    void Attack2()
+    void SwapSword(string newSword)
     {
-        if (AttackCooldownCounter > 0) { return; }
-        bodyAnimator.SetTrigger("Attack2");
-        AttackCooldownCounter = AttackCooldown;
+        swordEquiped = newSword;
+        sprites = Resources.LoadAll<Sprite>("Swords/" + newSword);
     }
+
+    private void HandleAttack()
+    {
+        if (!playerStats.Combat.AttackCooldownCounter.Passed)
+            playerStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
+
+        if (Input.GetButton("Attack1") && playerStats.Combat.AttackCooldownCounter.Passed)
+        {
+            bodyAnimator.SetTrigger("Attack2");
+            playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
+        }
+    }
+
+    private bool isRolling = false;
+    void HandleDodgeRoll()
+    {
+        if (!playerStats.RollCooldownCounter.Passed)
+            playerStats.RollCooldownCounter.PassTime(Time.deltaTime);
+
+        if (Input.GetButton("Jump") && playerStats.RollCooldownCounter.Passed)
+        {
+            bodyAnimator.SetTrigger("Roll");
+            playerStats.RollCooldownCounter.Reset(playerStats.RollCooldown);
+            canMove = false;
+            state = State.DodgeRoll;
+        }
+    }
+    [SerializeField] private float rollSpeed = 3f;
+    void HandleDodgeRollMotion()
+    {
+        if (transform.localScale.x < 0)
+        {
+            transform.position += new Vector3(-1, 0) * rollSpeed * Time.deltaTime;
+        }
+        else
+        {
+            transform.position += new Vector3(1, 0) * rollSpeed * Time.deltaTime;
+        }
+
+    }
+    public void EndRoll(int par)
+    {
+        canMove = true;
+        state = State.Normal;
+    }
+
     [SerializeField] private LayerMask enemyLayers;
     //So far the only trigger is the collider around the sword when swinging
     void OnTriggerEnter2D(Collider2D collider)
     {
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
-            collider.gameObject.GetComponent<EnemyController>().TakeDamage(50);
+            collider.gameObject.GetComponent<EnemyController>().TakeDamage(entityStats.Combat.Damage.Value);
         }
     }
 
@@ -137,29 +200,26 @@ public class PlayerController : MonoBehaviour
         canMove = true;
     }
 
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-    }
-
     private Sprite sword1;
-    public void DisplaySword1(int par){
-        Debug.Log("1");
+    public void DisplaySword1(int par)
+    {
+        state = State.Attack;
         sr.sprite = sprites[0];
     }
     private Sprite sword2;
-    public void DisplaySword2(int par){
-        Debug.Log("2");
+    public void DisplaySword2(int par)
+    {
         sr.sprite = sprites[1];
     }
     private Sprite sword3;
-    public void DisplaySword3(int par){
-        Debug.Log("3");
+    public void DisplaySword3(int par)
+    {
         sr.sprite = sprites[2];
     }
 
-    public void DisplayNothing(int par){
-        Debug.Log("4");
+    public void DisplayNothing(int par)
+    {
+        state = State.Normal;
         sr.sprite = null;
     }
 }
