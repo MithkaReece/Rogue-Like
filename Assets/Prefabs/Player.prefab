@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6383470839026555711}
   - component: {fileID: 1900625220}
   - component: {fileID: 1900625221}
+  - component: {fileID: 1900625222}
   m_Layer: 6
   m_Name: Body
   m_TagString: Untagged
@@ -75,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 4cc25d463c4f341d39018417aeefa6ba, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -107,6 +108,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1900625222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2167714494123728709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4bf388b28fe0495bbf93fee359af541, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 2698467642931595889}
 --- !u!1 &2698467642931595900
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,9 +130,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2698467642931595888}
-  - component: {fileID: 2698467642931595903}
   - component: {fileID: 2698467642931595889}
   - component: {fileID: 1366380810}
+  - component: {fileID: 1366380809}
+  - component: {fileID: 6461850834157789636}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -142,32 +157,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &2698467642931595903
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2698467642931595900}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.0059418157, y: -0.10253685}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.32, y: 0.32}
-    newSize: {x: 0.32, y: 0.32}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.13774087, y: 0.11636303}
-  m_EdgeRadius: 0
 --- !u!114 &2698467642931595889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +171,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 2
   maxHealth: 100
-  moveSpeed: 15
+  AttackCooldown: 0.5
+  AttackCooldownCounter: 0
+  RollCooldown: 0.5
+  RollCooldownCounter: 0
+  swordEquiped: Sword1
+  moveSpeed: 5
+  rollSpeed: 3
   enemyLayers:
     serializedVersion: 2
     m_Bits: 128
@@ -207,6 +202,36 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &1366380809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2698467642931595900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 831cae1d6cbcc47b4a7b2a48394804a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterCollider: {fileID: 6461850834157789636}
+  characterBlockerCollider: {fileID: 0}
+--- !u!70 &6461850834157789636
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2698467642931595900}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0055539906, y: -0.12038121}
+  m_Size: {x: 0.15913685, y: 0.07621559}
+  m_Direction: 1
 --- !u!1001 &2536181625447723592
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -260,7 +285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1075806535528346858, guid: 71a8d6b0434614db5a1dd715230b2b56, type: 3}
       propertyPath: m_Name
-      value: Sword
+      value: OldSword
       objectReference: {fileID: 0}
     - target: {fileID: 9135277819992200676, guid: 71a8d6b0434614db5a1dd715230b2b56, type: 3}
       propertyPath: m_Sprite

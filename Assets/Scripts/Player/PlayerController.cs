@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : EntityController
 {
     [SerializeField] private float scale = 4f;
+
     private Animator bodyAnimator;
 
     private bool canMove = true;
@@ -22,6 +23,7 @@ public class PlayerController : EntityController
         Normal,
         DodgeRoll,
         Attack,
+        Knockback,
     }
 
     // Start is called before the first frame update
@@ -63,7 +65,8 @@ public class PlayerController : EntityController
     void HandleWalk()
     {
         inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
-        rb.MovePosition(rb.position + inputDirection * moveSpeed * Time.deltaTime);
+        //drb.MovePosition(drb.position + inputDirection * moveSpeed * Time.deltaTime);
+        rb.velocity = inputDirection * moveSpeed;
 
         if (inputDirection.magnitude == 0)
         { //Stop walk animation as not moving
@@ -93,20 +96,6 @@ public class PlayerController : EntityController
             transform.localScale = new Vector2(scale, scale);
         }
     }
-    void Move()
-    {
-        rb.MovePosition(rb.position + inputDirection * entityStats.MoveSpeed.Value * Time.deltaTime);
-
-        if (inputDirection.magnitude == 0)
-        { //Stop walk animation as not moving
-            bodyAnimator.SetLayerWeight(1, 0);
-        }
-        else
-        {
-            bodyAnimator.SetLayerWeight(1, 1);
-            SetAnimatorMovement(inputDirection);
-        }
-    }
     private void HandleSwordSwap()
     {
         if (swapCooldownCounter > 0) { swapCooldownCounter -= Time.deltaTime; }
@@ -125,7 +114,6 @@ public class PlayerController : EntityController
             }
         }
     }
-
     void SwapSword(string newSword)
     {
         swordEquiped = newSword;
@@ -139,12 +127,13 @@ public class PlayerController : EntityController
 
         if (Input.GetButton("Attack1") && playerStats.Combat.AttackCooldownCounter.Passed)
         {
+            rb.velocity = Vector2.zero;
             bodyAnimator.SetTrigger("Attack2");
             playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
         }
     }
 
-    private bool isRolling = false;
+
     void HandleDodgeRoll()
     {
         if (!playerStats.RollCooldownCounter.Passed)
@@ -161,14 +150,15 @@ public class PlayerController : EntityController
     [SerializeField] private float rollSpeed = 3f;
     void HandleDodgeRollMotion()
     {
-        if (transform.localScale.x < 0)
+        rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
+        /*if (transform.localScale.x < 0)
         {
             transform.position += new Vector3(-1, 0) * rollSpeed * Time.deltaTime;
         }
         else
         {
             transform.position += new Vector3(1, 0) * rollSpeed * Time.deltaTime;
-        }
+        }*/
 
     }
     public void EndRoll(int par)
@@ -183,21 +173,32 @@ public class PlayerController : EntityController
     {
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
-            collider.gameObject.GetComponent<EnemyController>().TakeDamage(entityStats.Combat.Damage.Value);
+            Debug.Log("Hit");
+            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(40);
+        }
+    }
+
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == 8)
+        {
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
         }
     }
 
 
     public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
     {
+        //bodyAnimator.SetTrigger("Knockback");
+        state = State.Knockback;
         canMove = false;
-        rb.isKinematic = false;
         Vector2 direction = (objPos - ((Vector2)transform.position + GetComponent<Collider2D>().offset)).normalized;
         rb.AddForce(-direction * knockbackPower, ForceMode2D.Impulse);
         yield return new WaitForSeconds(knockbackDuration);
         rb.velocity = Vector2.zero;
-        rb.isKinematic = true;
         canMove = true;
+        state = State.Normal;
     }
 
     private Sprite sword1;

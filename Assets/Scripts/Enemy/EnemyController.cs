@@ -17,10 +17,11 @@ public class EnemyController : EntityController
 
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Move();
     }
@@ -30,16 +31,17 @@ public class EnemyController : EntityController
         if (!playerSeen) { return; }
         Vector2 direction = player.transform.position - transform.position;
         direction = direction.normalized;
-        rb.MovePosition(rb.position + direction * entityStats.MoveSpeed.Value * Time.deltaTime);
+        //rb.MovePosition(rb.position + direction * moveSpeed * Time.deltaTime);
+        rb.velocity = direction * enemyStats.MoveSpeed.Value;
     }
 
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        Debug.Log(entityStats.CurrentHealth);
+        Debug.Log(enemyStats.CurrentHealth);
         //Hurt animation
 
-        if (entityStats.CurrentHealth <= 0)
+        if (enemyStats.CurrentHealth <= 0)
         {
             Die();
             //Die animation
@@ -51,13 +53,14 @@ public class EnemyController : EntityController
     {
         Debug.Log("Enemy died");
         //Die animation
-
-        GetComponent<Collider2D>().enabled = false;
+        rb.velocity = Vector2.zero;
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        transform.Find("Collision Blocker").GetComponent<CapsuleCollider2D>().enabled = false;
         this.enabled = false;
     }
 
     [SerializeField] private LayerMask enemyLayers;
-    void OnCollisionEnter2D(Collision2D collision)
+    /*void OnCollisionEnter2D(Collision2D collision)
     {
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
