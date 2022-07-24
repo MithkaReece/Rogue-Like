@@ -5,7 +5,7 @@ using UnityEngine;
 public class CombatStats
 {
     [field: SerializeField] public Stat<float> AttackSpeed { get; private set; }
-    [field: SerializeField] public float AttackCooldownCounter { get; private set; }
+    [field: SerializeField] public Counter AttackCooldownCounter { get; private set; }
     [field: SerializeField] public Stat<float> Damage { get; private set; }
 }
 

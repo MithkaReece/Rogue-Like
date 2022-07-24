@@ -11,17 +11,11 @@ public class PlayerController : EntityController
 
     private SpriteRenderer sr;
     private Sprite[] sprites;
-
-    [SerializeField] private float AttackCooldown = 0.5f;
-    [SerializeField] private float AttackCooldownCounter = 0f;
-
-    [SerializeField] private float RollCooldown = 0.5f;
-    [SerializeField] private float RollCooldownCounter = 0f;
-
     [SerializeField] private string swordEquiped = "Sword1";
     private float swapCooldown = 2f;
     private float swapCooldownCounter = 0f;
 
+    private PlayerStats playerStats;
     private State state;
     private enum State
     {
@@ -38,11 +32,7 @@ public class PlayerController : EntityController
         bodyAnimator = transform.Find("Body").GetComponent<Animator>();
         sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
         sprites = Resources.LoadAll<Sprite>("Swords/" + swordEquiped);
-
-        Debug.Log("Wtf");
-        //sword1 = Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
-        //sword2= Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
-        //sword3 = Resources.Load<Sprite>("Assets/Art/Sword/Sword1/Sword1");
+        playerStats = GetComponent<PlayerStats>();
     }
 
     // Update is called once per frame
@@ -144,23 +134,26 @@ public class PlayerController : EntityController
 
     private void HandleAttack()
     {
-        if (AttackCooldownCounter > 0) { AttackCooldownCounter -= Time.deltaTime; }
-        if (Input.GetButton("Attack1") && AttackCooldownCounter <= 0f)
+        if (!playerStats.Combat.AttackCooldownCounter.Passed)
+            playerStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
+
+        if (Input.GetButton("Attack1") && playerStats.Combat.AttackCooldownCounter.Passed)
         {
             bodyAnimator.SetTrigger("Attack2");
-            AttackCooldownCounter = AttackCooldown;
+            playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
         }
     }
 
     private bool isRolling = false;
     void HandleDodgeRoll()
     {
-        if (RollCooldownCounter > 0) { RollCooldownCounter -= Time.deltaTime; }
-        if (Input.GetButton("Jump"))
+        if (!playerStats.RollCooldownCounter.Passed)
+            playerStats.RollCooldownCounter.PassTime(Time.deltaTime);
+
+        if (Input.GetButton("Jump") && playerStats.RollCooldownCounter.Passed)
         {
-            if (RollCooldownCounter > 0) { return; }
             bodyAnimator.SetTrigger("Roll");
-            RollCooldownCounter = RollCooldown;
+            playerStats.RollCooldownCounter.Reset(playerStats.RollCooldown);
             canMove = false;
             state = State.DodgeRoll;
         }

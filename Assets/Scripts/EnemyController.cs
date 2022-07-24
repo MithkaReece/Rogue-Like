@@ -15,7 +15,6 @@ public class EnemyController : EntityController
     {
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
-        entityStats = enemyStats;
     }
 
     // Update is called once per frame
