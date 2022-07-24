@@ -60,8 +60,9 @@ public class EnemyController : MonoBehaviour
     {
         Debug.Log("Enemy died");
         //Die animation
-
-        GetComponent<Collider2D>().enabled = false;
+        rb.velocity = Vector2.zero;
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        transform.Find("Collision Blocker").GetComponent<CapsuleCollider2D>().enabled = false;
         this.enabled = false;
     }
 

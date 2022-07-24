@@ -140,6 +140,7 @@ public class PlayerController : MonoBehaviour
         if (AttackCooldownCounter > 0) { AttackCooldownCounter -= Time.deltaTime; }
         if (Input.GetButton("Attack1") && AttackCooldownCounter <= 0f)
         {
+            rb.velocity = Vector2.zero;
             bodyAnimator.SetTrigger("Attack2");
             AttackCooldownCounter = AttackCooldown;
         }
@@ -189,7 +190,7 @@ public class PlayerController : MonoBehaviour
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
             Debug.Log("Hit");
-            //collider.gameObject.GetComponent<EnemyController>().TakeDamage(50);
+            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(50);
         }
     }
 
