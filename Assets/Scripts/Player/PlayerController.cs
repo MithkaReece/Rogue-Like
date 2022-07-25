@@ -56,6 +56,7 @@ public class PlayerController : EntityController
                 HandleDodgeRollMotion();
                 break;
             case State.Attack:
+                HandleSecondAttacK();
                 break;
         }
     }
@@ -128,7 +129,7 @@ public class PlayerController : EntityController
         if (Input.GetButton("Attack1") && playerStats.Combat.AttackCooldownCounter.Passed)
         {
             rb.velocity = Vector2.zero;
-            bodyAnimator.SetTrigger("Attack2");
+            bodyAnimator.SetTrigger("Attack");
             playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
         }
     }
@@ -167,6 +168,27 @@ public class PlayerController : EntityController
         state = State.Normal;
     }
 
+
+    private bool wantSecondAttack = false;
+    void HandleSecondAttacK()
+    {
+        if (Input.GetButton("Attack1") && canSecondAttack)
+        {
+            wantSecondAttack = true;
+        }
+        if (wantSecondAttack && doSecondAttack)
+        {
+            bodyAnimator.SetTrigger("Attack2");
+            doSecondAttack = false;
+            wantSecondAttack = false;
+            canSecondAttack = false;
+        }
+    }
+
+
+
+
+
     [SerializeField] private LayerMask enemyLayers;
     //So far the only trigger is the collider around the sword when swinging
     void OnTriggerEnter2D(Collider2D collider)
@@ -201,26 +223,28 @@ public class PlayerController : EntityController
         state = State.Normal;
     }
 
-    private Sprite sword1;
-    public void DisplaySword1(int par)
+    public void DisplaySword(int par)
     {
         state = State.Attack;
         sr.sprite = sprites[0];
-    }
-    private Sprite sword2;
-    public void DisplaySword2(int par)
-    {
-        sr.sprite = sprites[1];
-    }
-    private Sprite sword3;
-    public void DisplaySword3(int par)
-    {
-        sr.sprite = sprites[2];
     }
 
     public void DisplayNothing(int par)
     {
         state = State.Normal;
+        wantSecondAttack = false;
+        canSecondAttack = false;
         sr.sprite = null;
+    }
+    private bool canSecondAttack = false;
+    public void CanSecondAttack(int par)
+    {
+        canSecondAttack = true;
+    }
+
+    private bool doSecondAttack = false;
+    public void SecondAttack(int par)
+    {
+        doSecondAttack = true;
     }
 }

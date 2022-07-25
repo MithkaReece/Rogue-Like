@@ -5,12 +5,12 @@ using UnityEngine;
 public class PlayerHelper : MonoBehaviour
 {
     [SerializeField] private PlayerController player;
-    
-    public void DisplaySword1(int par){player.DisplaySword1(par);}
-    public void DisplaySword2(int par){player.DisplaySword2(par);}
-    public void DisplaySword3(int par){player.DisplaySword3(par);}
-    public void DisplayNothing(int par){player.DisplayNothing(par);}
+
+    public void DisplaySword(int par) { player.DisplaySword(par); }
+    public void DisplayNothing(int par) { player.DisplayNothing(par); }
+    public void CanSecondAttack(int par) { player.CanSecondAttack(par); }
+    public void SecondAttack(int par) { player.SecondAttack(par); }
 
 
-    public void EndRoll(int par){player.EndRoll(par);}
+    public void EndRoll(int par) { player.EndRoll(par); }
 }
