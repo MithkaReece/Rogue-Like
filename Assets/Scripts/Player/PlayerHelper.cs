@@ -6,10 +6,10 @@ public class PlayerHelper : MonoBehaviour
 {
     [SerializeField] private PlayerController player;
 
-    public void DisplaySword(int par) { player.DisplaySword(par); }
-    public void DisplayNothing(int par) { player.DisplayNothing(par); }
-    public void CanSecondAttack(int par) { player.CanSecondAttack(par); }
-    public void SecondAttack(int par) { player.SecondAttack(par); }
+    public void StartAttack(int par) { player.StartAttack(par); }
+    public void EndAttack(int par) { player.EndAttack(par); }
+    public void ReadyForAttackInput(int par) { player.ReadyForAttackInput(par); }
+    public void ReadyForNextAttack(int par) { player.ReadyForNextAttack(par); }
 
 
     public void EndRoll(int par) { player.EndRoll(par); }

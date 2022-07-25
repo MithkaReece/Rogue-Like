@@ -12,7 +12,7 @@ public class PlayerController : EntityController
 
     private SpriteRenderer sr;
     private Sprite[] sprites;
-    [SerializeField] private string swordEquiped = "Sword1";
+    [SerializeField] private string swordEquiped = "Sword3";
     private float swapCooldown = 2f;
     private float swapCooldownCounter = 0f;
 
@@ -23,13 +23,27 @@ public class PlayerController : EntityController
         Normal,
         DodgeRoll,
         Attack,
+        Attack2,
+        Attack3,
         Knockback,
+    }
+
+    private MultiAttacks attacks;
+
+    private AttackState attackState;
+    private enum AttackState
+    {
+        Idle,
+        CanAttack,
+        DoAttack,
     }
 
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
+
+        attacks = new MultiAttacks(new string[] { "Attack1", "Attack2", "Attack3" });
 
         bodyAnimator = transform.Find("Body").GetComponent<Animator>();
         sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
@@ -56,10 +70,11 @@ public class PlayerController : EntityController
                 HandleDodgeRollMotion();
                 break;
             case State.Attack:
-                HandleSecondAttacK();
+                HandleNextAttack();
                 break;
         }
     }
+
 
     [SerializeField] private float moveSpeed;
     private Vector2 inputDirection;
@@ -85,6 +100,7 @@ public class PlayerController : EntityController
         bodyAnimator.SetFloat("yDir", direction.y);
     }
 
+
     //Allows right animation to be flipped and used as left
     void LeftRightFlip()
     {
@@ -103,15 +119,15 @@ public class PlayerController : EntityController
         if (Input.GetButton("Attack2") && swapCooldownCounter <= 0f)
         {
             swapCooldownCounter = swapCooldown;
-            if (swordEquiped == "Sword1")
+            if (swordEquiped == "Sword3")
             {
                 Debug.Log("To sword2");
                 SwapSword("Sword2");
             }
             else
             {
-                Debug.Log("To sword1");
-                SwapSword("Sword1");
+                Debug.Log("To sword3");
+                SwapSword("Sword3");
             }
         }
     }
@@ -129,8 +145,19 @@ public class PlayerController : EntityController
         if (Input.GetButton("Attack1") && playerStats.Combat.AttackCooldownCounter.Passed)
         {
             rb.velocity = Vector2.zero;
-            bodyAnimator.SetTrigger("Attack");
+            state = State.Attack;
+            bodyAnimator.SetTrigger(attacks.GetNextAttack());
             playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
+        }
+    }
+
+    void HandleNextAttack()
+    {
+        if (Input.GetButton("Attack1")) { attacks.ReceiveInput(); }
+        if (attacks.CanDoNextAttack())
+        {
+            Debug.Log(attacks.GetNextAttack());
+            bodyAnimator.SetTrigger(attacks.GetNextAttack());
         }
     }
 
@@ -152,39 +179,12 @@ public class PlayerController : EntityController
     void HandleDodgeRollMotion()
     {
         rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
-        /*if (transform.localScale.x < 0)
-        {
-            transform.position += new Vector3(-1, 0) * rollSpeed * Time.deltaTime;
-        }
-        else
-        {
-            transform.position += new Vector3(1, 0) * rollSpeed * Time.deltaTime;
-        }*/
-
     }
     public void EndRoll(int par)
     {
         canMove = true;
         state = State.Normal;
     }
-
-
-    private bool wantSecondAttack = false;
-    void HandleSecondAttacK()
-    {
-        if (Input.GetButton("Attack1") && canSecondAttack)
-        {
-            wantSecondAttack = true;
-        }
-        if (wantSecondAttack && doSecondAttack)
-        {
-            bodyAnimator.SetTrigger("Attack2");
-            doSecondAttack = false;
-            wantSecondAttack = false;
-            canSecondAttack = false;
-        }
-    }
-
 
 
 
@@ -223,28 +223,82 @@ public class PlayerController : EntityController
         state = State.Normal;
     }
 
-    public void DisplaySword(int par)
-    {
-        state = State.Attack;
+    public void StartAttack(int par)
+    {  
+        //Set sword sprite
         sr.sprite = sprites[0];
     }
 
-    public void DisplayNothing(int par)
+    public void EndAttack(int par)
     {
         state = State.Normal;
-        wantSecondAttack = false;
-        canSecondAttack = false;
+        attacks.HardReset();
         sr.sprite = null;
     }
-    private bool canSecondAttack = false;
-    public void CanSecondAttack(int par)
+
+    public void ReadyForAttackInput(int par)
     {
-        canSecondAttack = true;
+        attacks.ReadyNextInput();
     }
 
-    private bool doSecondAttack = false;
-    public void SecondAttack(int par)
+    public void ReadyForNextAttack(int par)
     {
-        doSecondAttack = true;
+        attacks.DoNextAttack();
     }
+}
+
+
+
+
+
+public class MultiAttacks
+{
+    private bool nextInputReady;
+    private bool inputReceived;
+    private bool canDoNextAttack;
+
+    private int nextAttackIndex = 0;
+    private string[] attacks;
+
+    public MultiAttacks(string[] attacks)
+    {
+        this.attacks = attacks;
+    }
+
+    //Ready to receive input for next attack
+    public void ReadyNextInput()
+    {
+        nextInputReady = true;
+        nextAttackIndex = Mathf.Min(attacks.Length - 1, nextAttackIndex + 1);
+    }
+
+    //Next attack input is received when it is ready to be received
+    public void ReceiveInput() { inputReceived = nextInputReady; }
+
+    public void DoNextAttack() { canDoNextAttack = true; }
+
+    public bool CanDoNextAttack() { return inputReceived && canDoNextAttack; }
+    public string GetNextAttack()
+    {
+        Reset();
+        if (nextAttackIndex < attacks.Length)
+        {
+            return attacks[nextAttackIndex];
+        }
+        return null;
+    }
+    //Reset for next attack
+    private void Reset()
+    {
+        nextInputReady = false;
+        inputReceived = false;
+        canDoNextAttack = false;
+    }
+    //Reset back to first attack
+    public void HardReset()
+    {
+        Reset();
+        nextAttackIndex = 0;
+    }
+
 }

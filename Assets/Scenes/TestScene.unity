@@ -498,14 +498,14 @@ PrefabInstance:
     - target: {fileID: 1182178097, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -1068262116, guid: 7d21b405fd1b04b7485a15c11dfcf004, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 1182178097, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
       propertyPath: m_SortingOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1182178097, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
       propertyPath: m_WasSpriteAssigned
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1366380809, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
       propertyPath: characterBlockerCollider
