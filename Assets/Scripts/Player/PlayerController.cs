@@ -12,7 +12,7 @@ public class PlayerController : EntityController
 
     private SpriteRenderer sr;
     private Sprite[] sprites;
-    [SerializeField] private string swordEquiped = "Sword3";
+    [SerializeField] private string swordEquiped;
     private float swapCooldown = 2f;
     private float swapCooldownCounter = 0f;
 
@@ -38,6 +38,8 @@ public class PlayerController : EntityController
         DoAttack,
     }
 
+    [SerializeField] private GameObject body;
+    [SerializeField] private GameObject sword;
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -45,8 +47,10 @@ public class PlayerController : EntityController
 
         attacks = new MultiAttacks(new string[] { "Attack1", "Attack2", "Attack3" });
 
-        bodyAnimator = transform.Find("Body").GetComponent<Animator>();
-        sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
+
+        bodyAnimator = body.GetComponent<Animator>();
+        sr = sword.GetComponent<SpriteRenderer>();
+
         sprites = Resources.LoadAll<Sprite>("Swords/" + swordEquiped);
         playerStats = GetComponent<PlayerStats>();
     }
@@ -224,7 +228,7 @@ public class PlayerController : EntityController
     }
 
     public void StartAttack(int par)
-    {  
+    {
         //Set sword sprite
         sr.sprite = sprites[0];
     }
