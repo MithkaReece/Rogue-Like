@@ -8,6 +8,8 @@ using Microsoft.CSharp;
 /// <typeparam name="T">Any type parameter, which implents the `*` operator</typeparam>
 public class MultiplicativeModifier<T> : Modifier<T>
 {
+    public override int Order { get; } = 1000;
+
     public MultiplicativeModifier(T value) : base(value) { }
 
     public override T Calculate(T value)

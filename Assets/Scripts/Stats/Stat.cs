@@ -35,9 +35,17 @@ public class Stat<T>
         isDirty = true;
     }
 
-    //TODO: Calculate current value from modifiers
     private T CalculateCurrentValue()
     {
-        return BaseValue;
+        modifiers.Sort((a, b) => a.Order.CompareTo(b.Order));
+
+        T currentValue = BaseValue;
+
+        foreach (var mod in modifiers)
+        {
+            currentValue = mod.Calculate(currentValue);
+        }
+
+        return currentValue;
     }
 }

@@ -4,6 +4,9 @@ public abstract class Modifier<T> : IModifier
     public StatType StatType { get; }
     public Stat<T> Stat { get; }
 
+    // Determines the Order in which the types of modifiers are applied.
+    public virtual int Order { get; } = 0;
+
     public Modifier(T value)
     {
         this.value = value;
