@@ -2,7 +2,7 @@ public abstract class Modifier<T> : IModifier
 {
     protected T value;
     public StatType StatType { get; }
-    public Stat<T> Stat { get; }
+    public Stat<T> Stat { get; private set; }
 
     // Determines the Order in which the types of modifiers are applied.
     public virtual int Order { get; } = 0;
@@ -20,6 +20,17 @@ public abstract class Modifier<T> : IModifier
     public void Remove()
     {
         Stat.RemoveModifier(this);
+    }
+
+    public void PickedUp(PlayerStats playerStats)
+    {
+        Stat = StatTranslator.GetStat(playerStats, this);
+        Apply();
+    }
+
+    public void Dropped()
+    {
+        Stat = null;
     }
 
     /// <summary>

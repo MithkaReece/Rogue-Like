@@ -8,4 +8,6 @@ public enum StatType
     MoveSpeed,
     AttackSpeed,
     Damage,
+    RollSpeed,
+    RollCooldown,
 }
