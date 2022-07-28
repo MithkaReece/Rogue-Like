@@ -7,6 +7,7 @@ public class Stat<T>
     [field: SerializeField] public T BaseValue { get; private set; }
     private bool isDirty = true;
     [SerializeField] private T currentValue;
+    List<Modifier<T>> modifiers;
 
     public T Value
     {
@@ -22,15 +23,13 @@ public class Stat<T>
         }
     }
 
-    List<IModifier<T>> modifiers;
-
-    public void AddModifier(IModifier<T> modifier)
+    public void AddModifier(Modifier<T> modifier)
     {
         modifiers.Add(modifier);
         isDirty = true;
     }
 
-    public void removeModifier(IModifier<T> modifier)
+    public void RemoveModifier(Modifier<T> modifier)
     {
         modifiers.Remove(modifier);
         isDirty = true;
