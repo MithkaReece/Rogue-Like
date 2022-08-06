@@ -14,11 +14,10 @@ class Range : NumberGenerator
         this.max = max;
     }
 
-    public override T Generate<T>()
+    public override decimal Generate()
     {
         Random rand = new Random();
 
-        IConvertible value = (rand.NextDouble() * (max - min) + min);
-        return (T)value.ToType(typeof(T), null);
+        return (decimal)(rand.NextDouble() * (max - min) + min);
     }
 }

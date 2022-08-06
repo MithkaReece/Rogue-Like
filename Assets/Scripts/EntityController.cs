@@ -14,7 +14,7 @@ public class EntityController : MonoBehaviour
         entityStats = GetComponent<EntityStats>();
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(decimal damage)
     {
         entityStats.TakeDamage(damage);
     }

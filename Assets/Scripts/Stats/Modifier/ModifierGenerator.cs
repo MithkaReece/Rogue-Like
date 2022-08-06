@@ -14,19 +14,19 @@ class ModifierGenerator
 
     public NumberGenerator numberGenerator;
 
-    public IModifier GenerateModifier<T>(Stat<T> stat) where T : IConvertible
+    public IModifier GenerateModifier(Stat stat)
     {
-        return InstantiateModifier<T>(this.numberGenerator.Generate<T>());
+        return InstantiateModifier(this.numberGenerator.Generate());
     }
 
-    private IModifier InstantiateModifier<T>(T value)
+    private IModifier InstantiateModifier(decimal value)
     {
         switch (modifierType)
         {
             case ModifierType.Additive:
-                return new AdditiveModifier<T>(value, statType);
+                return new AdditiveModifier(value, statType);
             case ModifierType.Multiplier:
-                return new MultiplicativeModifier<T>(value, statType);
+                return new MultiplicativeModifier(value, statType);
             default:
                 throw new System.SystemException("Invalid modifier type");
         }

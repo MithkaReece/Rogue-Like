@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Stat<T>
+public class Stat
 {
-    [field: SerializeField] public T BaseValue { get; private set; }
+    [field: SerializeField] public decimal BaseValue { get; private set; }
     private bool isDirty = true;
-    [SerializeField] private T currentValue;
-    List<Modifier<T>> modifiers;
+    [SerializeField] private decimal currentValue;
+    List<Modifier> modifiers;
 
-    public T Value
+    public decimal Value
     {
         get
         {
@@ -23,23 +23,23 @@ public class Stat<T>
         }
     }
 
-    public void AddModifier(Modifier<T> modifier)
+    public void AddModifier(Modifier modifier)
     {
         modifiers.Add(modifier);
         isDirty = true;
     }
 
-    public void RemoveModifier(Modifier<T> modifier)
+    public void RemoveModifier(Modifier modifier)
     {
         modifiers.Remove(modifier);
         isDirty = true;
     }
 
-    private T CalculateCurrentValue()
+    private decimal CalculateCurrentValue()
     {
         modifiers.Sort((a, b) => a.Order.CompareTo(b.Order));
 
-        T currentValue = BaseValue;
+        decimal currentValue = BaseValue;
 
         foreach (var mod in modifiers)
         {

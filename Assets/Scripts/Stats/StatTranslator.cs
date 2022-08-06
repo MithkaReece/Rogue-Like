@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class StatTranslator
 {
-    public static Stat<float> GetStat(EntityStats entityStats, Modifier<float> modifier) => modifier.StatType switch
+    public static Stat GetStat(EntityStats entityStats, Modifier modifier) => modifier.StatType switch
     {
         StatType.MaxHealth => entityStats.MaxHealth,
         StatType.HealthRegen => entityStats.HealthRegen,
@@ -15,17 +15,12 @@ public static class StatTranslator
         _ => throw new System.Exception($"StatType {modifier.StatType} is not supported by EntityStats.")
     };
 
-    public static Stat<float> GetStat(PlayerStats playerStats, Modifier<float> modifier) => modifier.StatType switch
+    public static Stat GetStat(PlayerStats playerStats, Modifier modifier) => modifier.StatType switch
     {
         StatType.RollSpeed => playerStats.RollSpeed,
         StatType.RollCooldown => playerStats.RollCooldown,
         _ => GetStat((EntityStats)playerStats, modifier)
     };
-
-    public static Stat<T> GetStat<T>(EntityStats _entityStats, Modifier<T> modifier)
-    {
-        throw new System.NotSupportedException("Type not supported");
-    }
 
     public static Type GetDefaultStat(StatType statType)
     {

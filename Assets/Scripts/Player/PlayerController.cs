@@ -129,7 +129,7 @@ public class PlayerController : EntityController
         {
             rb.velocity = Vector2.zero;
             bodyAnimator.SetTrigger("Attack2");
-            playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
+            playerStats.Combat.AttackCooldownCounter.Reset(1 / playerStats.Combat.AttackSpeed.Value);
         }
     }
 
