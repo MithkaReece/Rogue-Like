@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,5 +25,10 @@ public static class StatTranslator
     public static Stat<T> GetStat<T>(EntityStats _entityStats, Modifier<T> modifier)
     {
         throw new System.NotSupportedException("Type not supported");
+    }
+
+    public static Type GetDefaultStat(StatType statType)
+    {
+        return typeof(float);
     }
 }

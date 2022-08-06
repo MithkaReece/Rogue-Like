@@ -8,13 +8,23 @@ public abstract class Item : IItem
     public int itemID;
     public List<IModifier> modifiers;
 
-    public void onEquip()
+    public void OnEquip()
     {
         modifiers.ForEach(mod => mod.Apply());
     }
 
-    public void onUnEquip()
+    public void OnUnEquip()
     {
         modifiers.ForEach(mod => mod.Remove());
+    }
+
+    public void OnPickUp(PlayerStats playerStats)
+    {
+        modifiers.ForEach(mod => mod.PickedUp(playerStats));
+    }
+
+    public void OnDrop()
+    {
+        modifiers.ForEach(mod => mod.Dropped());
     }
 }

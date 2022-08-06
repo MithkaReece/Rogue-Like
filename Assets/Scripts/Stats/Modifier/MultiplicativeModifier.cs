@@ -11,6 +11,7 @@ public class MultiplicativeModifier<T> : Modifier<T>
     public override int Order { get; } = 1000;
 
     public MultiplicativeModifier(T value) : base(value) { }
+    public MultiplicativeModifier(T value, StatType statType) : base(value, statType) { }
 
     public override T Calculate(T value)
     {

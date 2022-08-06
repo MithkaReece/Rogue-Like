@@ -12,6 +12,12 @@ public abstract class Modifier<T> : IModifier
         this.value = value;
     }
 
+    public Modifier(T value, StatType statType)
+    {
+        this.value = value;
+        this.StatType = statType;
+    }
+
     public void Apply()
     {
         Stat.AddModifier(this);
@@ -30,6 +36,7 @@ public abstract class Modifier<T> : IModifier
 
     public void Dropped()
     {
+        Remove();
         Stat = null;
     }
 

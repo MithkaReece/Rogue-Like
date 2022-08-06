@@ -17,4 +17,8 @@ public interface IModifier
     /// Remove the modifier from the stat. Targeted stat defined in `Modifier` class.
     /// </summary>
     public void Remove();
+
+    public void PickedUp(PlayerStats playerStats);
+
+    public void Dropped();
 }
