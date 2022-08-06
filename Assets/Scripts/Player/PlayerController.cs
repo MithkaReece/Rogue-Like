@@ -23,8 +23,6 @@ public class PlayerController : EntityController
         Normal,
         DodgeRoll,
         Attack,
-        Attack2,
-        Attack3,
         Knockback,
     }
 
@@ -75,6 +73,7 @@ public class PlayerController : EntityController
                 break;
             case State.Attack:
                 HandleNextAttack();
+                HandleAttackLunge();
                 break;
         }
     }
@@ -85,7 +84,6 @@ public class PlayerController : EntityController
     void HandleWalk()
     {
         inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
-        //drb.MovePosition(drb.position + inputDirection * moveSpeed * Time.deltaTime);
         rb.velocity = inputDirection * moveSpeed;
 
         if (inputDirection.magnitude == 0)
@@ -138,9 +136,11 @@ public class PlayerController : EntityController
     void SwapSword(string newSword)
     {
         swordEquiped = newSword;
+        //TODO: Need to validate if sword exists, and also preload weapons
         sprites = Resources.LoadAll<Sprite>("Swords/" + newSword);
     }
 
+    //First attack
     private void HandleAttack()
     {
         if (!playerStats.Combat.AttackCooldownCounter.Passed)
@@ -154,14 +154,29 @@ public class PlayerController : EntityController
             playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
         }
     }
-
+    //Consecutive attacks
     void HandleNextAttack()
     {
         if (Input.GetButton("Attack1")) { attacks.ReceiveInput(); }
         if (attacks.CanDoNextAttack())
         {
-            Debug.Log(attacks.GetNextAttack());
+            //Debug.Log(attacks.GetNextAttack());
             bodyAnimator.SetTrigger(attacks.GetNextAttack());
+        }
+    }
+
+    private bool attackLunging = false;
+    //The forward motion of the attack
+    void HandleAttackLunge()
+    {
+        if (attackLunging)
+        {
+            float attackLungeSpeed = 1f;
+            rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * attackLungeSpeed, 0);
+        }
+        else
+        {
+            rb.velocity = Vector2.zero;
         }
     }
 
@@ -182,6 +197,7 @@ public class PlayerController : EntityController
     [SerializeField] private float rollSpeed = 3f;
     void HandleDodgeRollMotion()
     {
+        //TODO: Allow dodge roll in direction of motion
         rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
     }
     public void EndRoll(int par)
@@ -200,6 +216,7 @@ public class PlayerController : EntityController
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
             Debug.Log("Hit");
+            //TODO: Need to prevent one attack triggering multiple collisions
             collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(40);
         }
     }
@@ -207,8 +224,8 @@ public class PlayerController : EntityController
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 8)
-        {
+        if (collision.gameObject.layer == 8) //Ignore player's second collider
+        { //2D colliders used to prevent entities pushing each other
             Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
         }
     }
@@ -231,6 +248,16 @@ public class PlayerController : EntityController
     {
         //Set sword sprite
         sr.sprite = sprites[0];
+    }
+
+    public void StartAttackLunge(int par)
+    {
+        attackLunging = true;
+    }
+
+    public void EndAttackLunge(int par)
+    {
+        attackLunging = false;
     }
 
     public void EndAttack(int par)
