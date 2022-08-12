@@ -1,4 +1,5 @@
-using System;
+using UnityEngine;
+
 public enum ModifierType
 {
     Additive,
@@ -6,11 +7,13 @@ public enum ModifierType
 }
 
 [System.Serializable]
-class ModifierGenerator
+public class ModifierGenerator
 {
-    public StatType statType;
+    [SerializeField]
+    public StatType statType = StatType.MaxHealth;
 
-    public ModifierType modifierType;
+    [SerializeField]
+    public ModifierType modifierType = ModifierType.Additive;
 
     public NumberGenerator numberGenerator;
 

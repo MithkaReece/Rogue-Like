@@ -6,6 +6,7 @@ public class EntityController : MonoBehaviour
 {
     protected Rigidbody2D rb;
     protected EntityStats entityStats;
+    public EntityObserver entityObserver;
 
     // Start is called before the first frame update
     protected virtual void Start()
@@ -14,8 +15,12 @@ public class EntityController : MonoBehaviour
         entityStats = GetComponent<EntityStats>();
     }
 
-    public virtual void TakeDamage(decimal damage)
+    public virtual void TakeDamage(DamageReport dr)
     {
-        entityStats.TakeDamage(damage);
+        entityStats.TakeDamage(dr);
+
+        //Invoke delegates for observers
+        this.entityObserver.OnDamageTaken(dr);
+        dr.causedBy.entityObserver.OnDamageDealt(dr);
     }
 }

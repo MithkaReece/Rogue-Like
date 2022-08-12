@@ -32,12 +32,12 @@ public class EnemyController : EntityController
         Vector2 direction = player.transform.position - transform.position;
         direction = direction.normalized;
         //rb.MovePosition(rb.position + direction * moveSpeed * Time.deltaTime);
-        rb.velocity = direction * enemyStats.MoveSpeed.Value;
+        rb.velocity = direction * (float)enemyStats.MoveSpeed.Value;
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(DamageReport dr)
     {
-        base.TakeDamage(damage);
+        base.TakeDamage(dr);
         Debug.Log(enemyStats.CurrentHealth);
         //Hurt animation
 
@@ -69,11 +69,12 @@ public class EnemyController : EntityController
         }
     }*/
 
-    public void KnockbackPlayer(Collision2D collision){
+    public void KnockbackPlayer(Collision2D collision)
+    {
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
-            player.TakeDamage(entityStats.Combat.Damage.Value);
-            StartCoroutine(player.Knockback(enemyStats.KnockbackDuration.Value, enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
+            player.TakeDamage(new DamageReport { causedBy = this, target = player, damage = entityStats.Combat.Damage.Value });
+            StartCoroutine(player.Knockback((float)enemyStats.KnockbackDuration.Value, (float)enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
     }
 }
