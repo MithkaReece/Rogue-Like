@@ -4,10 +4,10 @@
 public class AdditiveModifier : Modifier
 {
     public override int Order { get; } = 10000;
-    public AdditiveModifier(decimal value) : base(value) { }
-    public AdditiveModifier(decimal value, StatType statType) : base(value, statType) { }
+    public AdditiveModifier(double value) : base(value) { }
+    public AdditiveModifier(double value, StatType statType) : base(value, statType) { }
 
-    public override decimal Calculate(decimal value)
+    public override double Calculate(double value)
     {
         return value * (this.value as dynamic);
     }

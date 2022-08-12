@@ -14,10 +14,10 @@ class Range : NumberGenerator
         this.max = max;
     }
 
-    public override decimal Generate()
+    public override double Generate()
     {
         Random rand = new Random();
 
-        return (decimal)(rand.NextDouble() * (max - min) + min);
+        return (rand.NextDouble() * (max - min) + min);
     }
 }

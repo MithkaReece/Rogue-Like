@@ -1,18 +1,18 @@
 public abstract class Modifier : IModifier
 {
-    protected decimal value;
+    protected double value;
     public StatType StatType { get; }
     public Stat Stat { get; private set; }
 
     // Determines the Order in which the types of modifiers are applied.
     public virtual int Order { get; } = 0;
 
-    public Modifier(decimal value)
+    public Modifier(double value)
     {
         this.value = value;
     }
 
-    public Modifier(decimal value, StatType statType)
+    public Modifier(double value, StatType statType)
     {
         this.value = value;
         this.StatType = statType;
@@ -45,5 +45,5 @@ public abstract class Modifier : IModifier
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public virtual decimal Calculate(decimal value) => value;
+    public virtual double Calculate(double value) => value;
 }

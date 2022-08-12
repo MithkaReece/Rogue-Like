@@ -9,6 +9,6 @@ public class EntityObserver
     public OnDamageDelegate OnDamageDealt;
 
     public delegate void OnDeath();
-    public delegate void OnHeal(decimal health);
+    public delegate void OnHeal(double health);
     public delegate void OnAttack();
 }

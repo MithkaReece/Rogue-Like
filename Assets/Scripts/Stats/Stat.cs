@@ -4,12 +4,12 @@ using UnityEngine;
 [System.Serializable]
 public class Stat
 {
-    [field: SerializeField] public decimal BaseValue { get; private set; }
+    [field: SerializeField] public double BaseValue { get; private set; }
     private bool isDirty = true;
-    [SerializeField] private decimal currentValue;
+    [SerializeField] private double currentValue;
     List<Modifier> modifiers;
 
-    public decimal Value
+    public double Value
     {
         get
         {
@@ -35,11 +35,11 @@ public class Stat
         isDirty = true;
     }
 
-    private decimal CalculateCurrentValue()
+    private double CalculateCurrentValue()
     {
         modifiers.Sort((a, b) => a.Order.CompareTo(b.Order));
 
-        decimal currentValue = BaseValue;
+        double currentValue = BaseValue;
 
         foreach (var mod in modifiers)
         {
