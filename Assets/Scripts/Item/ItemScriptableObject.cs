@@ -11,4 +11,6 @@ public class ItemScriptableObject : ScriptableObject
 
     [SerializeField]
     public List<ModifierGenerator> modifiers;
+
+    public Item itemScript;
 }

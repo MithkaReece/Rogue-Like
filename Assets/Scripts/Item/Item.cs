@@ -7,24 +7,27 @@ public abstract class Item : IItem
     public Sprite icon;
     public int itemID;
     public List<IModifier> modifiers;
+    private PlayerStats heldBy;
 
-    public void OnEquip()
+    public virtual void OnEquip()
     {
         modifiers.ForEach(mod => mod.Apply());
     }
 
-    public void OnUnEquip()
+    public virtual void OnUnEquip()
     {
         modifiers.ForEach(mod => mod.Remove());
     }
 
-    public void OnPickUp(PlayerStats playerStats)
+    public virtual void OnPickUp(PlayerStats playerStats)
     {
         modifiers.ForEach(mod => mod.PickedUp(playerStats));
+        heldBy = playerStats;
     }
 
-    public void OnDrop()
+    public virtual void OnDrop()
     {
         modifiers.ForEach(mod => mod.Dropped());
+        heldBy = null;
     }
 }
