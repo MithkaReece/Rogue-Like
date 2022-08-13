@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EntityObserver
 {
-    public delegate DamageReport OnDamageDelegate(DamageReport dr);
-    public OnDamageDelegate OnDamageTaken;
-    public OnDamageDelegate OnDamageDealt;
+    public delegate void OnDamageDelegate(DamageReport dr);
+    public OnDamageDelegate OnDamageTaken = delegate { };
+    public OnDamageDelegate OnDamageDealt = delegate { };
 
     public delegate void OnDeath();
     public delegate void OnHeal(double health);

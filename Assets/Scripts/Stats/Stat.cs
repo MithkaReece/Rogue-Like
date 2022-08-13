@@ -7,7 +7,7 @@ public class Stat
     [field: SerializeField] public double BaseValue { get; private set; }
     private bool isDirty = true;
     [SerializeField] private double currentValue;
-    List<Modifier> modifiers;
+    List<Modifier> modifiers = new List<Modifier>();
 
     public double Value
     {
@@ -37,6 +37,7 @@ public class Stat
 
     private double CalculateCurrentValue()
     {
+        Debug.Log(modifiers);
         modifiers.Sort((a, b) => a.Order.CompareTo(b.Order));
 
         double currentValue = BaseValue;
