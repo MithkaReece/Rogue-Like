@@ -6,5 +6,5 @@ public class EnemyHitBoxController : MonoBehaviour
 {
     [SerializeField] private EnemyController enemy;
 
-    public void TakeDamage(int damage) { enemy.TakeDamage(damage); }
+    public void TakeDamage(DamageReport dr) { enemy.TakeDamage(dr); }
 }

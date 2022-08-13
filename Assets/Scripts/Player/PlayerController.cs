@@ -129,7 +129,7 @@ public class PlayerController : EntityController
         {
             rb.velocity = Vector2.zero;
             bodyAnimator.SetTrigger("Attack2");
-            playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
+            playerStats.Combat.AttackCooldownCounter.Reset(1 / playerStats.Combat.AttackSpeed.Value);
         }
     }
 
@@ -171,10 +171,12 @@ public class PlayerController : EntityController
     //So far the only trigger is the collider around the sword when swinging
     void OnTriggerEnter2D(Collider2D collider)
     {
+        EntityController opponent = collider.GetComponent<EntityController>();
+
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
             Debug.Log("Hit");
-            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(40);
+            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value });
         }
     }
 

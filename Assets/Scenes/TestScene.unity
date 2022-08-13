@@ -664,9 +664,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <MaxHealth>k__BackingField:
-    <BaseValue>k__BackingField: 100
-    currentValue: 100
-  <CurrentHealth>k__BackingField: 100
+    <BaseValue>k__BackingField: 0
+    currentValue: 0
+  <CurrentHealth>k__BackingField: 0
   <HealthRegen>k__BackingField:
     <BaseValue>k__BackingField: 0
     currentValue: 0
@@ -674,8 +674,8 @@ MonoBehaviour:
     <BaseValue>k__BackingField: 0
     currentValue: 0
   <MoveSpeed>k__BackingField:
-    <BaseValue>k__BackingField: 1
-    currentValue: 1
+    <BaseValue>k__BackingField: 0
+    currentValue: 0
   <Combat>k__BackingField:
     <AttackSpeed>k__BackingField:
       <BaseValue>k__BackingField: 0
@@ -683,14 +683,14 @@ MonoBehaviour:
     <AttackCooldownCounter>k__BackingField:
       defaultValue: 0
     <Damage>k__BackingField:
-      <BaseValue>k__BackingField: 20
-      currentValue: 20
+      <BaseValue>k__BackingField: 0
+      currentValue: 0
   <KnockbackDuration>k__BackingField:
-    <BaseValue>k__BackingField: 0.4
-    currentValue: 0.4
+    <BaseValue>k__BackingField: 0
+    currentValue: 0
   <KnockbackPower>k__BackingField:
-    <BaseValue>k__BackingField: 200
-    currentValue: 200
+    <BaseValue>k__BackingField: 0
+    currentValue: 0
 --- !u!1 &1295545754
 GameObject:
   m_ObjectHideFlags: 0
@@ -874,7 +874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <MaxHealth>k__BackingField:
-    <BaseValue>k__BackingField: 100
+    <BaseValue>k__BackingField: 0
     currentValue: 0
   <CurrentHealth>k__BackingField: 0
   <HealthRegen>k__BackingField:
@@ -884,19 +884,19 @@ MonoBehaviour:
     <BaseValue>k__BackingField: 0
     currentValue: 0
   <MoveSpeed>k__BackingField:
-    <BaseValue>k__BackingField: 15
+    <BaseValue>k__BackingField: 0
     currentValue: 0
   <Combat>k__BackingField:
     <AttackSpeed>k__BackingField:
-      <BaseValue>k__BackingField: 2
+      <BaseValue>k__BackingField: 0
       currentValue: 0
     <AttackCooldownCounter>k__BackingField:
       defaultValue: 0
     <Damage>k__BackingField:
-      <BaseValue>k__BackingField: 50
+      <BaseValue>k__BackingField: 0
       currentValue: 0
   <RollSpeed>k__BackingField:
-    <BaseValue>k__BackingField: 3
+    <BaseValue>k__BackingField: 0
     currentValue: 0
   <RollCooldown>k__BackingField:
     <BaseValue>k__BackingField: 0
@@ -908,6 +908,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2698467642931595888, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
   m_PrefabInstance: {fileID: 963795820}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1652801094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652801088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c96c6ac14917c64b8b0752fd370171b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hello: 0
 --- !u!1 &2070508171
 GameObject:
   m_ObjectHideFlags: 0
