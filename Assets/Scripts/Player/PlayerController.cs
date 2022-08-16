@@ -73,7 +73,7 @@ public class PlayerController : EntityController
                 break;
             case State.Attack:
                 HandleNextAttack();
-                HandleAttackLunge();
+                //HandleAttackLunge();
                 break;
         }
     }
@@ -85,15 +85,17 @@ public class PlayerController : EntityController
     {
         inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
         rb.velocity = inputDirection * moveSpeed;
+        bodyAnimator.SetFloat("Speed", inputDirection.magnitude);
 
         if (inputDirection.magnitude == 0)
         { //Stop walk animation as not moving
-            bodyAnimator.SetLayerWeight(1, 0);
+            //bodyAnimator.SetLayerWeight(1, 0);
         }
         else
         {
-            bodyAnimator.SetLayerWeight(1, 1);
+            //bodyAnimator.SetLayerWeight(1, 1);
             SetAnimatorMovement(inputDirection);
+
         }
     }
     void SetAnimatorMovement(Vector2 direction)
