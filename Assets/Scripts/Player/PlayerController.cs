@@ -65,6 +65,7 @@ public class PlayerController : EntityController
                     LeftRightFlip();
                     HandleSwordSwap();
                     HandleNextAttack();
+                    HandleParry();
                     HandleDodgeRoll();
                 }
                 break;
@@ -100,7 +101,7 @@ public class PlayerController : EntityController
     }
     void SetAnimatorMovement(Vector2 direction)
     {
-        bodyAnimator.SetFloat("xDir", direction.x);
+        //bodyAnimator.SetFloat("xDir", direction.x);
         bodyAnimator.SetFloat("yDir", direction.y);
     }
 
@@ -120,7 +121,7 @@ public class PlayerController : EntityController
     private void HandleSwordSwap()
     {
         if (swapCooldownCounter > 0) { swapCooldownCounter -= Time.deltaTime; }
-        if (Input.GetButton("Attack2") && swapCooldownCounter <= 0f)
+        if (Input.GetButton("Swap") && swapCooldownCounter <= 0f)
         {
             swapCooldownCounter = swapCooldown;
             if (swordEquiped == "Sword3")
@@ -158,6 +159,14 @@ public class PlayerController : EntityController
         //If attack ready then trigger next attack
         if (attacks.ReadyForNextAttack())
             bodyAnimator.SetTrigger(attacks.GetNextAttack());
+    }
+
+    void HandleParry()
+    {
+        if (Input.GetButton("Attack2"))
+        {
+            bodyAnimator.SetTrigger("Parry");
+        }
     }
 
     private bool attackLunging = false;
