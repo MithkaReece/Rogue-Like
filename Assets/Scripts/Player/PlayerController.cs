@@ -64,7 +64,7 @@ public class PlayerController : EntityController
                     HandleWalk();
                     LeftRightFlip();
                     HandleSwordSwap();
-                    HandleAttack();
+                    HandleNextAttack();
                     HandleDodgeRoll();
                 }
                 break;
@@ -73,7 +73,7 @@ public class PlayerController : EntityController
                 break;
             case State.Attack:
                 HandleNextAttack();
-                //HandleAttackLunge();
+                HandleAttackLunge();
                 break;
         }
     }
@@ -142,29 +142,22 @@ public class PlayerController : EntityController
         sprites = Resources.LoadAll<Sprite>("Swords/" + newSword);
     }
 
-    //First attack
-    private void HandleAttack()
-    {
-        if (!playerStats.Combat.AttackCooldownCounter.Passed)
-            playerStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
-
-        if (Input.GetButton("Attack1") && playerStats.Combat.AttackCooldownCounter.Passed)
-        {
-            rb.velocity = Vector2.zero;
-            state = State.Attack;
-            bodyAnimator.SetTrigger(attacks.GetNextAttack());
-            playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
-        }
-    }
     //Consecutive attacks
     void HandleNextAttack()
     {
-        if (Input.GetButton("Attack1")) { attacks.ReceiveInput(); }
-        if (attacks.CanDoNextAttack())
-        {
-            //Debug.Log(attacks.GetNextAttack());
-            bodyAnimator.SetTrigger(attacks.GetNextAttack());
+        //Count down cooldown
+        if (!playerStats.Combat.AttackCooldownCounter.Passed)
+            playerStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
+        //If no cooldown and attack pressed
+        if (Input.GetButton("Attack1") && playerStats.Combat.AttackCooldownCounter.Passed)
+        {//Ready up next attack
+            rb.velocity = Vector2.zero;
+            state = State.Attack;
+            attacks.ReceiveInput();
         }
+        //If attack ready then trigger next attack
+        if (attacks.ReadyForNextAttack())
+            bodyAnimator.SetTrigger(attacks.GetNextAttack());
     }
 
     private bool attackLunging = false;
@@ -246,38 +239,27 @@ public class PlayerController : EntityController
         state = State.Normal;
     }
 
-    public void StartAttack(int par)
-    {
-        //Set sword sprite
-        sr.sprite = sprites[0];
-    }
-
-    public void StartAttackLunge(int par)
-    {
-        attackLunging = true;
-    }
-
-    public void EndAttackLunge(int par)
-    {
-        attackLunging = false;
-    }
-
+    //Called: Stage of attack starting
+    //Sets sword image
+    public void StartAttack(int par) { sr.sprite = sprites[0]; }
+    //Called: Stage when attack starts lunging (moving)
+    public void StartAttackLunge(int par) { attackLunging = true; }
+    //Called: Stage when attack lunge ends (stops moving)
+    public void EndAttackLunge(int par) { attackLunging = false; }
+    //Called: End of attack animation, without transition to another attack
+    //Sets attacks back to the first attack and makes the sword invisible
     public void EndAttack(int par)
     {
         state = State.Normal;
         attacks.HardReset();
         sr.sprite = null;
+        playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
     }
-
-    public void ReadyForAttackInput(int par)
-    {
-        attacks.ReadyNextInput();
-    }
-
-    public void ReadyForNextAttack(int par)
-    {
-        attacks.DoNextAttack();
-    }
+    //Called: Stage of the attack animation which you can input to trigger another attack
+    public void ReadyForAttackInput(int par) { attacks.ReadyNextInput(); }
+    //Called: Stage of the attack animation which can transition to another attack
+    //Sets boolean true for transition stage
+    public void ReadyForNextAttack(int par) { attacks.CanDoNextAttack(); }
 }
 
 
@@ -296,6 +278,7 @@ public class MultiAttacks
     public MultiAttacks(string[] attacks)
     {
         this.attacks = attacks;
+        HardReset();
     }
 
     //Ready to receive input for next attack
@@ -308,9 +291,9 @@ public class MultiAttacks
     //Next attack input is received when it is ready to be received
     public void ReceiveInput() { inputReceived = nextInputReady; }
 
-    public void DoNextAttack() { canDoNextAttack = true; }
-
-    public bool CanDoNextAttack() { return inputReceived && canDoNextAttack; }
+    public void CanDoNextAttack() { canDoNextAttack = true; }
+    //When input for next attack is received and at the transition stage of the animation
+    public bool ReadyForNextAttack() { return inputReceived && canDoNextAttack; }
     public string GetNextAttack()
     {
         Reset();
@@ -320,6 +303,7 @@ public class MultiAttacks
         }
         return null;
     }
+
     //Reset for next attack
     private void Reset()
     {
@@ -330,8 +314,14 @@ public class MultiAttacks
     //Reset back to first attack
     public void HardReset()
     {
-        Reset();
+        Setup();
         nextAttackIndex = 0;
+    }
+    private void Setup()
+    {
+        nextInputReady = true;
+        canDoNextAttack = true;
+        inputReceived = false;
     }
 
 }
