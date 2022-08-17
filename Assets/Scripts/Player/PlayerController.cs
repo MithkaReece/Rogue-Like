@@ -11,7 +11,7 @@ public class PlayerController : EntityController
     private bool canMove = true;
 
     private SpriteRenderer sr;
-    private Sprite[] sprites;
+
     [SerializeField] private string swordEquiped;
     private float swapCooldown = 2f;
     private float swapCooldownCounter = 0f;
@@ -24,6 +24,7 @@ public class PlayerController : EntityController
         DodgeRoll,
         Attack,
         Knockback,
+        Parry,
     }
 
     private MultiAttacks attacks;
@@ -48,8 +49,7 @@ public class PlayerController : EntityController
 
         bodyAnimator = body.GetComponent<Animator>();
         sr = sword.GetComponent<SpriteRenderer>();
-
-        sprites = Resources.LoadAll<Sprite>("Swords/" + swordEquiped);
+        SwapSword(swordEquiped);
         playerStats = GetComponent<PlayerStats>();
     }
 
@@ -59,6 +59,7 @@ public class PlayerController : EntityController
         switch (state)
         {
             case State.Normal:
+                sr.sprite = null;
                 if (canMove)
                 {
                     HandleWalk();
@@ -75,6 +76,9 @@ public class PlayerController : EntityController
             case State.Attack:
                 HandleNextAttack();
                 HandleAttackLunge();
+                break;
+            case State.Parry:
+                HandleParrying();
                 break;
         }
     }
@@ -136,11 +140,14 @@ public class PlayerController : EntityController
             }
         }
     }
+    private Sprite SwordDefault;
+    private Sprite SwordParry;
     void SwapSword(string newSword)
     {
         swordEquiped = newSword;
         //TODO: Need to validate if sword exists, and also preload weapons
-        sprites = Resources.LoadAll<Sprite>("Swords/" + newSword);
+        SwordDefault = Resources.Load<Sprite>("Swords/" + newSword + "/Default");
+        SwordParry = Resources.Load<Sprite>("Swords/" + newSword + "/Parry");
     }
 
     //Consecutive attacks
@@ -161,11 +168,38 @@ public class PlayerController : EntityController
             bodyAnimator.SetTrigger(attacks.GetNextAttack());
     }
 
+
+    float ParryWindowCooldown = 10f;
+    float ParryWindowCooldownCounter = 0f;
     void HandleParry()
     {
         if (Input.GetButton("Attack2"))
         {
-            bodyAnimator.SetTrigger("Parry");
+            state = State.Parry;
+            rb.velocity = Vector2.zero;
+        }
+    }
+    void HandleParrying()
+    {
+
+
+        if (Input.GetButton("Attack2"))
+        {
+            sr.sprite = SwordParry;
+            bodyAnimator.SetBool("Block", true);
+            ParryWindowCooldownCounter = ParryWindowCooldown;
+        }
+        if (ParryWindowCooldownCounter <= 0)
+            ParryWindowCooldownCounter -= Time.deltaTime;
+
+        if (Input.GetButtonUp("Attack2"))
+        {
+            bodyAnimator.SetBool("Block", false);
+            if (ParryWindowCooldownCounter > 0)
+            {
+                bodyAnimator.SetTrigger("Parry");
+                sr.sprite = SwordDefault;
+            }
         }
     }
 
@@ -250,7 +284,7 @@ public class PlayerController : EntityController
 
     //Called: Stage of attack starting
     //Sets sword image
-    public void StartAttack(int par) { sr.sprite = sprites[0]; }
+    public void StartAttack(int par) { sr.sprite = SwordDefault; }
     //Called: Stage when attack starts lunging (moving)
     public void StartAttackLunge(int par) { attackLunging = true; }
     //Called: Stage when attack lunge ends (stops moving)
@@ -261,7 +295,6 @@ public class PlayerController : EntityController
     {
         state = State.Normal;
         attacks.HardReset();
-        sr.sprite = null;
         playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
     }
     //Called: Stage of the attack animation which you can input to trigger another attack
@@ -269,6 +302,13 @@ public class PlayerController : EntityController
     //Called: Stage of the attack animation which can transition to another attack
     //Sets boolean true for transition stage
     public void ReadyForNextAttack(int par) { attacks.CanDoNextAttack(); }
+
+
+    public void EndParry(int par)
+    {
+        state = State.Normal;
+    }
+
 }
 
 

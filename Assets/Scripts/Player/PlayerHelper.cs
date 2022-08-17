@@ -15,4 +15,7 @@ public class PlayerHelper : MonoBehaviour
 
 
     public void EndRoll(int par) { player.EndRoll(par); }
+
+    public void EndParry(int par) { player.EndParry(par); }
+
 }
