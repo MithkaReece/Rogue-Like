@@ -10,7 +10,7 @@ public class PlayerController : EntityController
 
     private bool canMove = true;
 
-    private SpriteRenderer sr;
+    private SpriteRenderer swordSR;
 
     [SerializeField] private string swordEquiped;
     private float swapCooldown = 2f;
@@ -24,7 +24,7 @@ public class PlayerController : EntityController
         DodgeRoll,
         Attack,
         Knockback,
-        Parry,
+        Block,
     }
 
     private MultiAttacks attacks;
@@ -43,14 +43,14 @@ public class PlayerController : EntityController
     protected override void Start()
     {
         base.Start();
-
+        //Setup consecutive attack system
         attacks = new MultiAttacks(new string[] { "Attack1", "Attack2", "Attack3" });
 
-
         bodyAnimator = body.GetComponent<Animator>();
-        sr = sword.GetComponent<SpriteRenderer>();
-        SwapSword(swordEquiped);
+        swordSR = sword.GetComponent<SpriteRenderer>();
         playerStats = GetComponent<PlayerStats>();
+        //Equip first weapon
+        SwapSword(swordEquiped);
     }
 
     // Update is called once per frame
@@ -59,14 +59,15 @@ public class PlayerController : EntityController
         switch (state)
         {
             case State.Normal:
-                sr.sprite = null;
+                //Hides sword when not using it
+                swordSR.sprite = null;
                 if (canMove)
                 {
                     HandleWalk();
                     LeftRightFlip();
                     HandleSwordSwap();
                     HandleNextAttack();
-                    HandleParry();
+                    HandleParryBlock();
                     HandleDodgeRoll();
                 }
                 break;
@@ -77,51 +78,33 @@ public class PlayerController : EntityController
                 HandleNextAttack();
                 HandleAttackLunge();
                 break;
-            case State.Parry:
-                HandleParrying();
+            case State.Block:
+                HandleParryBlocking();
                 break;
         }
     }
 
 
-    [SerializeField] private float moveSpeed;
+    [SerializeField] private float moveSpeed; //TODO: Should be moved into player stats
     private Vector2 inputDirection;
     void HandleWalk()
     {
         inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
         rb.velocity = inputDirection * moveSpeed;
         bodyAnimator.SetFloat("Speed", inputDirection.magnitude);
-
-        if (inputDirection.magnitude == 0)
-        { //Stop walk animation as not moving
-            //bodyAnimator.SetLayerWeight(1, 0);
-        }
-        else
-        {
-            //bodyAnimator.SetLayerWeight(1, 1);
-            SetAnimatorMovement(inputDirection);
-
-        }
+        bodyAnimator.SetFloat("yDir", inputDirection.y);
     }
-    void SetAnimatorMovement(Vector2 direction)
-    {
-        //bodyAnimator.SetFloat("xDir", direction.x);
-        bodyAnimator.SetFloat("yDir", direction.y);
-    }
-
 
     //Allows right animation to be flipped and used as left
+    //TODO: May be a better way than just changing the sign of the x scale
     void LeftRightFlip()
     {
         if (inputDirection.x < 0)
-        {
             transform.localScale = new Vector2(-scale, scale);
-        }
         else if (inputDirection.x > 0)
-        {
             transform.localScale = new Vector2(scale, scale);
-        }
     }
+    //TODO: Temporary function to test out swapping weapons, later it will be done by equipping weapons using UI
     private void HandleSwordSwap()
     {
         if (swapCooldownCounter > 0) { swapCooldownCounter -= Time.deltaTime; }
@@ -140,20 +123,23 @@ public class PlayerController : EntityController
             }
         }
     }
+    //TODO: Some sword animations will require different perspectives of weapons, therefore we need all variations of images
+    //TODO: A useful system would be to preload these images so they can easily be used within animations
     private Sprite SwordDefault;
-    private Sprite SwordParry;
+    private Sprite SwordBlock;
+    //Swaps sword sprites to one with the given name
     void SwapSword(string newSword)
     {
         swordEquiped = newSword;
         //TODO: Need to validate if sword exists, and also preload weapons
         SwordDefault = Resources.Load<Sprite>("Swords/" + newSword + "/Default");
-        SwordParry = Resources.Load<Sprite>("Swords/" + newSword + "/Parry");
+        SwordBlock = Resources.Load<Sprite>("Swords/" + newSword + "/Block");
     }
 
     //Consecutive attacks
     void HandleNextAttack()
     {
-        //Count down cooldown
+        //Count down attack cooldown
         if (!playerStats.Combat.AttackCooldownCounter.Passed)
             playerStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
         //If no cooldown and attack pressed
@@ -171,59 +157,55 @@ public class PlayerController : EntityController
 
     float ParryWindowCooldown = 10f;
     float ParryWindowCooldownCounter = 0f;
-    void HandleParry()
-    {
+    void HandleParryBlock()
+    {//Go into block state on input
         if (Input.GetButton("Attack2"))
         {
-            state = State.Parry;
+            state = State.Block;
             rb.velocity = Vector2.zero;
         }
     }
-    void HandleParrying()
+    void HandleParryBlocking()
     {
-
-
         if (Input.GetButton("Attack2"))
-        {
-            sr.sprite = SwordParry;
+        {//Start blocking in input
+            swordSR.sprite = SwordBlock;
             bodyAnimator.SetBool("Block", true);
             ParryWindowCooldownCounter = ParryWindowCooldown;
         }
+        //Count down parry window cooldown
         if (ParryWindowCooldownCounter <= 0)
             ParryWindowCooldownCounter -= Time.deltaTime;
 
         if (Input.GetButtonUp("Attack2"))
-        {
+        {//Stop blocking when input up
             bodyAnimator.SetBool("Block", false);
             if (ParryWindowCooldownCounter > 0)
-            {
+            {//If let go within parry window -> trigger parry
                 bodyAnimator.SetTrigger("Parry");
-                sr.sprite = SwordDefault;
+                swordSR.sprite = SwordDefault;
             }
         }
     }
 
-    private bool attackLunging = false;
-    //The forward motion of the attack
+    private bool attackLunging = false; //Controlled by animation triggers
+    private float attackLungeSpeed = 1f; //TODO: Put into stats object
+    //Moves forward in a certain portion of attack animation
     void HandleAttackLunge()
     {
         if (attackLunging)
-        {
-            float attackLungeSpeed = 1f;
             rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * attackLungeSpeed, 0);
-        }
         else
-        {
             rb.velocity = Vector2.zero;
-        }
     }
 
 
     void HandleDodgeRoll()
     {
+        //Count down roll cooldown
         if (!playerStats.RollCooldownCounter.Passed)
             playerStats.RollCooldownCounter.PassTime(Time.deltaTime);
-
+        //On input start rolling
         if (Input.GetButton("Jump") && playerStats.RollCooldownCounter.Passed)
         {
             bodyAnimator.SetTrigger("Roll");
@@ -232,12 +214,13 @@ public class PlayerController : EntityController
             state = State.DodgeRoll;
         }
     }
-    [SerializeField] private float rollSpeed = 3f;
+    [SerializeField] private float rollSpeed = 3f; //TODO: Put into stats object
     void HandleDodgeRollMotion()
     {
         //TODO: Allow dodge roll in direction of motion
         rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
     }
+    //Ends roll: called by animation trigger
     public void EndRoll(int par)
     {
         canMove = true;
@@ -255,6 +238,7 @@ public class PlayerController : EntityController
 
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
+            //Player hitting enemy
             Debug.Log("Hit");
             collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value });
         }
@@ -269,7 +253,7 @@ public class PlayerController : EntityController
         }
     }
 
-
+    //TODO: Play a knockback animation
     public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
     {
         //bodyAnimator.SetTrigger("Knockback");
@@ -278,6 +262,7 @@ public class PlayerController : EntityController
         Vector2 direction = (objPos - ((Vector2)transform.position + GetComponent<Collider2D>().offset)).normalized;
         rb.AddForce(-direction * knockbackPower, ForceMode2D.Impulse);
         yield return new WaitForSeconds(knockbackDuration);
+        //Resets after knockback
         rb.velocity = Vector2.zero;
         canMove = true;
         state = State.Normal;
@@ -285,7 +270,7 @@ public class PlayerController : EntityController
 
     //Called: Stage of attack starting
     //Sets sword image
-    public void StartAttack(int par) { sr.sprite = SwordDefault; }
+    public void StartAttack(int par) { swordSR.sprite = SwordDefault; }
     //Called: Stage when attack starts lunging (moving)
     public void StartAttackLunge(int par) { attackLunging = true; }
     //Called: Stage when attack lunge ends (stops moving)
@@ -304,7 +289,7 @@ public class PlayerController : EntityController
     //Sets boolean true for transition stage
     public void ReadyForNextAttack(int par) { attacks.CanDoNextAttack(); }
 
-
+    //Called: End of parry animation
     public void EndParry(int par)
     {
         state = State.Normal;
@@ -315,7 +300,7 @@ public class PlayerController : EntityController
 
 
 
-
+//Used to handle consecutive attacks
 public class MultiAttacks
 {
     private bool nextInputReady;
@@ -340,17 +325,16 @@ public class MultiAttacks
 
     //Next attack input is received when it is ready to be received
     public void ReceiveInput() { inputReceived = nextInputReady; }
-
+    //Triggered for when next attack can happen in the animation
     public void CanDoNextAttack() { canDoNextAttack = true; }
     //When input for next attack is received and at the transition stage of the animation
     public bool ReadyForNextAttack() { return inputReceived && canDoNextAttack; }
+    //Gives string of the next attack and setsup for next attack
     public string GetNextAttack()
     {
         Reset();
         if (nextAttackIndex < attacks.Length)
-        {
             return attacks[nextAttackIndex];
-        }
         return null;
     }
 
@@ -361,17 +345,13 @@ public class MultiAttacks
         inputReceived = false;
         canDoNextAttack = false;
     }
-    //Reset back to first attack
+    //Reset back ready for first attack
     public void HardReset()
-    {
-        Setup();
-        nextAttackIndex = 0;
-    }
-    private void Setup()
     {
         nextInputReady = true;
         canDoNextAttack = true;
         inputReceived = false;
+        nextAttackIndex = 0;
     }
 
 }
