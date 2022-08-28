@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EnemyController : EntityController
 {
-    private EnemyStats enemyStats;
+    protected EnemyStats enemyStats;
 
-    [SerializeField] private PlayerController player;
+    [SerializeField] protected PlayerController player;
     public void SetPlayer(PlayerController inPlayer) { player = inPlayer; }
     private bool playerSeen = true;
 
