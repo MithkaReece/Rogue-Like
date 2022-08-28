@@ -13,8 +13,6 @@ public class EnemyController : EntityController
     // Start is called before the first frame update
     protected override void Start()
     {
-        base.Start();
-
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
         base.Start();
@@ -23,7 +21,7 @@ public class EnemyController : EntityController
     // Update is called once per frame
     void FixedUpdate()
     {
-        Move();
+        //Move();
     }
 
     void Move()
@@ -78,3 +76,4 @@ public class EnemyController : EntityController
         }
     }
 }
+
