@@ -10,6 +10,16 @@ public class EnemyController : EntityController
     public void SetPlayer(PlayerController inPlayer) { player = inPlayer; }
     private bool playerSeen = true;
 
+    protected State state;
+    protected enum State
+    {
+        Default,
+        Attack,
+
+    }
+
+    protected AnimationEventSystem AES = new AnimationEventSystem();
+
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -75,5 +85,23 @@ public class EnemyController : EntityController
             StartCoroutine(player.Knockback((float)enemyStats.KnockbackDuration.Value, (float)enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
     }
+
+    public void EndAttack() { AES.EndAttack = true; }
+    public void StartLunge() { AES.StartLunge = true; }
+    public void EndLunge() { AES.EndLunge = true; }
+}
+
+public class AnimationEventSystem
+{
+    public bool EndAttack;
+    public bool StartLunge;
+    public bool EndLunge;
+    public void ResetAttack()
+    {
+        EndAttack = false;
+        StartLunge = false;
+        EndLunge = false;
+    }
+
 }
 

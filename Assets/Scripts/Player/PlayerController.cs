@@ -20,7 +20,7 @@ public class PlayerController : EntityController
     private State state;
     private enum State
     {
-        Normal,
+        Default,
         DodgeRoll,
         Attack,
         Knockback,
@@ -58,7 +58,7 @@ public class PlayerController : EntityController
     {
         switch (state)
         {
-            case State.Normal:
+            case State.Default:
                 //Hides sword when not using it
                 swordSR.sprite = null;
                 if (canMove)
@@ -224,7 +224,7 @@ public class PlayerController : EntityController
     public void EndRoll(int par)
     {
         canMove = true;
-        state = State.Normal;
+        state = State.Default;
     }
 
 
@@ -265,7 +265,7 @@ public class PlayerController : EntityController
         //Resets after knockback
         rb.velocity = Vector2.zero;
         canMove = true;
-        state = State.Normal;
+        state = State.Default;
     }
 
     //Called: Stage of attack starting
@@ -279,7 +279,7 @@ public class PlayerController : EntityController
     //Sets attacks back to the first attack and makes the sword invisible
     public void EndAttack(int par)
     {
-        state = State.Normal;
+        state = State.Default;
         attacks.HardReset();
         playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
     }
@@ -292,7 +292,7 @@ public class PlayerController : EntityController
     //Called: End of parry animation
     public void EndParry(int par)
     {
-        state = State.Normal;
+        state = State.Default;
     }
 
 }
