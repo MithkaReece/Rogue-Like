@@ -9,4 +9,7 @@ public class EnemyHelper : MonoBehaviour
     public void StartLunge(int par) { enemy.StartLunge(); }
     public void EndLunge(int par) { enemy.EndLunge(); }
 
+    public void EndHit(int par) { enemy.EndHit(); }
+    public void EndDie(int par) { enemy.EndDie(); }
+
 }

@@ -8526,6 +8526,18 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 5839b6da5d6a04a6da01e6510c716909, type: 2}
+    - target: {fileID: 7818806211197280958, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7818806211197280958, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7818806211197280958, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7818806211370284717, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
       propertyPath: m_Name
       value: Base-Enemy
@@ -8589,6 +8601,14 @@ PrefabInstance:
     - target: {fileID: 7818806211370284719, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
       propertyPath: m_Offset.y
       value: -0.14173196
+      objectReference: {fileID: 0}
+    - target: {fileID: 7818806211370284723, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
+      propertyPath: <MaxHealth>k__BackingField.currentValue
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7818806211370284723, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
+      propertyPath: <MaxHealth>k__BackingField.<BaseValue>k__BackingField
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7818806211370284723, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
       propertyPath: <Combat>k__BackingField.<AttackSpeed>k__BackingField.currentValue

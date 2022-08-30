@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class EnemyController : EntityController
 {
+    [SerializeField] protected GameObject body;
     protected EnemyStats enemyStats;
+    protected Animator bodyAnimator;
 
     [SerializeField] protected PlayerController player;
     public void SetPlayer(PlayerController inPlayer) { player = inPlayer; }
@@ -15,7 +17,8 @@ public class EnemyController : EntityController
     {
         Default,
         Attack,
-
+        Hit,
+        Die,
     }
 
     protected AnimationEventSystem AES = new AnimationEventSystem();
@@ -25,15 +28,21 @@ public class EnemyController : EntityController
     {
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
+        bodyAnimator = body.GetComponent<Animator>();
         base.Start();
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
+        switch (state)
+        {
+            case State.Hit:
+                break;
+        }
         //Move();
     }
-
+    //OLD
     void Move()
     {
         if (!playerSeen) { return; }
@@ -46,15 +55,20 @@ public class EnemyController : EntityController
     public override void TakeDamage(DamageReport dr)
     {
         base.TakeDamage(dr);
+        rb.velocity = Vector2.zero;
+
         Debug.Log(enemyStats.CurrentHealth);
         //Hurt animation
 
         if (enemyStats.CurrentHealth <= 0)
         {
-            Die();
-            //Die animation
-
-            //Disable enemy
+            state = State.Die;
+            bodyAnimator.SetTrigger("Die");
+        }
+        else
+        {
+            state = State.Hit;
+            bodyAnimator.SetTrigger("Hit");
         }
     }
     private void Die()
@@ -89,6 +103,14 @@ public class EnemyController : EntityController
     public void EndAttack() { AES.EndAttack = true; }
     public void StartLunge() { AES.StartLunge = true; }
     public void EndLunge() { AES.EndLunge = true; }
+
+    public void EndHit() { state = State.Default; }
+    public void EndDie()
+    {
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        transform.Find("Collision Blocker").GetComponent<CapsuleCollider2D>().enabled = false;
+        this.enabled = false;
+    }
 }
 
 public class AnimationEventSystem
@@ -102,6 +124,7 @@ public class AnimationEventSystem
         StartLunge = false;
         EndLunge = false;
     }
+    //When you are hit
 
 }
 

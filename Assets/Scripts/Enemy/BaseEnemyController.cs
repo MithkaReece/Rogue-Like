@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class BaseEnemyController : EnemyController
 {
-    [SerializeField] private GameObject body;
-    private Animator bodyAnimator;
     private Attack intendedAttack;
     public Attack[] AvailableAttacks = new Attack[]{
         new Attack("Attack1",0.8f, 1f, 1f, 1f)
@@ -17,9 +15,9 @@ public class BaseEnemyController : EnemyController
         intendedAttack = AvailableAttacks[0];
     }
 
-    void FixedUpdate()
+    protected override void FixedUpdate()
     {
-
+        base.FixedUpdate();
         switch (state)
         {
             case State.Default:
@@ -97,7 +95,6 @@ public class BaseEnemyController : EnemyController
 
     protected override void Start()
     {
-        bodyAnimator = body.GetComponent<Animator>();
         base.Start();
     }
 
