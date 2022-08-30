@@ -81,7 +81,7 @@ public class EnemyController : EntityController
         this.enabled = false;
     }
 
-    [SerializeField] private LayerMask enemyLayers;
+    //[SerializeField] private LayerMask enemyLayers;
     /*void OnCollisionEnter2D(Collision2D collision)
     {
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
@@ -111,6 +111,21 @@ public class EnemyController : EntityController
         transform.Find("Collision Blocker").GetComponent<CapsuleCollider2D>().enabled = false;
         transform.Find("HitBox").GetComponent<CapsuleCollider2D>().enabled = false;
         this.enabled = false;
+    }
+
+    [SerializeField] private LayerMask enemyLayers;
+    //So far the only trigger is the collider around the sword when swinging
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        EntityController opponent = collider.GetComponent<EntityController>();
+
+        if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
+        {
+            Debug.Log(collider.gameObject.name);
+            //Player hitting enemy
+            Debug.Log("Hit player");
+            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = enemyStats.Combat.Damage.Value });
+        }
     }
 }
 

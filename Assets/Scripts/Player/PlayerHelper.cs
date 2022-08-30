@@ -18,4 +18,6 @@ public class PlayerHelper : MonoBehaviour
 
     public void EndParry(int par) { player.EndParry(); }
 
+    public void EndHit(int par) { player.EndHit(); }
+
 }

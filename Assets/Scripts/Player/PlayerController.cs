@@ -25,6 +25,8 @@ public class PlayerController : EntityController
         Attack,
         Knockback,
         Block,
+        Hit,
+        Die,
     }
 
     private MultiAttacks attacks;
@@ -34,7 +36,7 @@ public class PlayerController : EntityController
     {
         Idle,
         CanAttack,
-        DoAttack,
+        DoAttack
     }
 
     [SerializeField] private GameObject body;
@@ -313,7 +315,7 @@ public class PlayerController : EntityController
         {
             //Player hitting enemy
             Debug.Log("Hit");
-            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value });
+            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value });
         }
     }
 
@@ -322,7 +324,7 @@ public class PlayerController : EntityController
     //================================================================================
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 8) //Ignore player's second collider
+        if (collision.gameObject.layer == 9) //Ignore player's second collider
         { //2D colliders used to prevent entities pushing each other
             Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
         }
@@ -344,7 +346,32 @@ public class PlayerController : EntityController
     }
 
 
+    //================================================================================
+    //Player damage
+    //================================================================================
 
+    public override void TakeDamage(DamageReport dr)
+    {
+        base.TakeDamage(dr);
+        rb.velocity = Vector2.zero;
+
+        Debug.Log("p: " + playerStats.CurrentHealth);
+
+        if (playerStats.CurrentHealth <= 0)
+        {
+            state = State.Die;
+        }
+        else
+        {
+            state = State.Hit;
+            bodyAnimator.SetTrigger("Hit");
+        }
+    }
+
+    public void EndHit()
+    {
+        state = State.Default;
+    }
 
 }
 
