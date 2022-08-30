@@ -109,6 +109,7 @@ public class EnemyController : EntityController
     {
         GetComponent<CapsuleCollider2D>().enabled = false;
         transform.Find("Collision Blocker").GetComponent<CapsuleCollider2D>().enabled = false;
+        transform.Find("HitBox").GetComponent<CapsuleCollider2D>().enabled = false;
         this.enabled = false;
     }
 }

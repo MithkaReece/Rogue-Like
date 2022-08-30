@@ -77,10 +77,23 @@ public class PlayerController : EntityController
             case State.Attack:
                 HandleNextAttack();
                 HandleAttackLunge();
+                HandleQuickMove();
                 break;
             case State.Block:
                 HandleParryBlocking();
                 break;
+        }
+    }
+
+    void HandleQuickMove()
+    {
+        if (!canMove || attacks.ReadyForNextAttack()) { return; }
+        Debug.Log(canMove);
+        inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
+        if (inputDirection.magnitude > 0.01)
+        {
+            bodyAnimator.SetTrigger("Default");
+            EndAttack();
         }
     }
 
@@ -147,6 +160,7 @@ public class PlayerController : EntityController
         {//Ready up next attack
             rb.velocity = Vector2.zero;
             state = State.Attack;
+            canMove = false;
             attacks.ReceiveInput();
         }
         //If attack ready then trigger next attack
@@ -221,7 +235,7 @@ public class PlayerController : EntityController
         rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
     }
     //Ends roll: called by animation trigger
-    public void EndRoll(int par)
+    public void EndRoll()
     {
         canMove = true;
         state = State.Default;
@@ -270,27 +284,35 @@ public class PlayerController : EntityController
 
     //Called: Stage of attack starting
     //Sets sword image
-    public void StartAttack(int par) { swordSR.sprite = SwordDefault; }
+    public void StartAttack() { swordSR.sprite = SwordDefault; }
     //Called: Stage when attack starts lunging (moving)
-    public void StartAttackLunge(int par) { attackLunging = true; }
+    public void StartAttackLunge() { attackLunging = true; }
     //Called: Stage when attack lunge ends (stops moving)
-    public void EndAttackLunge(int par) { attackLunging = false; }
+    public void EndAttackLunge() { attackLunging = false; }
     //Called: End of attack animation, without transition to another attack
     //Sets attacks back to the first attack and makes the sword invisible
-    public void EndAttack(int par)
+    public void EndAttack()
     {
+        canMove = true;
         state = State.Default;
         attacks.HardReset();
         playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
     }
     //Called: Stage of the attack animation which you can input to trigger another attack
-    public void ReadyForAttackInput(int par) { attacks.ReadyNextInput(); }
+    public void ReadyForAttackInput()
+    {
+        attacks.ReadyNextInput();
+    }
     //Called: Stage of the attack animation which can transition to another attack
     //Sets boolean true for transition stage
-    public void ReadyForNextAttack(int par) { attacks.CanDoNextAttack(); }
+    public void ReadyForNextAttack()
+    {
+        canMove = true;
+        attacks.CanDoNextAttack();
+    }
 
     //Called: End of parry animation
-    public void EndParry(int par)
+    public void EndParry()
     {
         state = State.Default;
     }

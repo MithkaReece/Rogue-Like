@@ -6,16 +6,16 @@ public class PlayerHelper : MonoBehaviour
 {
     [SerializeField] private PlayerController player;
 
-    public void StartAttack(int par) { player.StartAttack(par); }
-    public void StartAttackLunge(int par) { player.StartAttackLunge(par); }
-    public void EndAttackLunge(int par) { player.EndAttackLunge(par); }
-    public void EndAttack(int par) { player.EndAttack(par); }
-    public void ReadyForAttackInput(int par) { player.ReadyForAttackInput(par); }
-    public void ReadyForNextAttack(int par) { player.ReadyForNextAttack(par); }
+    public void StartAttack(int par) { player.StartAttack(); }
+    public void StartAttackLunge(int par) { player.StartAttackLunge(); }
+    public void EndAttackLunge(int par) { player.EndAttackLunge(); }
+    public void EndAttack(int par) { player.EndAttack(); }
+    public void ReadyForAttackInput(int par) { player.ReadyForAttackInput(); }
+    public void ReadyForNextAttack(int par) { player.ReadyForNextAttack(); }
 
 
-    public void EndRoll(int par) { player.EndRoll(par); }
+    public void EndRoll(int par) { player.EndRoll(); }
 
-    public void EndParry(int par) { player.EndParry(par); }
+    public void EndParry(int par) { player.EndParry(); }
 
 }
