@@ -7,7 +7,7 @@ public class PlayerController : EntityController
     [SerializeField] private float scale = 4f;
 
     private Animator bodyAnimator;
-
+    //True when movement causes transition back to default
     private bool canMove = true;
 
     private SpriteRenderer swordSR;
@@ -61,23 +61,20 @@ public class PlayerController : EntityController
             case State.Default:
                 //Hides sword when not using it
                 swordSR.sprite = null;
-                if (canMove)
-                {
-                    HandleWalk();
-                    LeftRightFlip();
-                    HandleSwordSwap();
-                    HandleNextAttack();
-                    HandleParryBlock();
-                    HandleDodgeRoll();
-                }
-                break;
-            case State.DodgeRoll:
-                HandleDodgeRollMotion();
+                HandleWalk();
+                LeftRightFlip();
+                HandleSwordSwap();
+                HandleNextAttack();
+                HandleParryBlock();
+                HandleDodgeRoll();
                 break;
             case State.Attack:
                 HandleNextAttack();
                 HandleAttackLunge();
                 HandleQuickMove();
+                break;
+            case State.DodgeRoll:
+                HandleDodgeRollMotion();
                 break;
             case State.Block:
                 HandleParryBlocking();
@@ -85,17 +82,10 @@ public class PlayerController : EntityController
         }
     }
 
-    void HandleQuickMove()
-    {
-        if (!canMove || attacks.ReadyForNextAttack()) { return; }
-        Debug.Log(canMove);
-        inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
-        if (inputDirection.magnitude > 0.01)
-        {
-            bodyAnimator.SetTrigger("Default");
-            EndAttack();
-        }
-    }
+    //================================================================================
+    //State: Default Functions
+    //================================================================================
+
 
 
     [SerializeField] private float moveSpeed; //TODO: Should be moved into player stats
@@ -149,6 +139,37 @@ public class PlayerController : EntityController
         SwordBlock = Resources.Load<Sprite>("Swords/" + newSword + "/Block");
     }
 
+    float ParryWindowCooldown = 10f;
+    float ParryWindowCooldownCounter = 0f;
+    void HandleParryBlock()
+    {//Go into block state on input
+        if (Input.GetButton("Attack2"))
+        {
+            state = State.Block;
+            rb.velocity = Vector2.zero;
+        }
+    }
+
+    void HandleDodgeRoll()
+    {
+        //Count down roll cooldown
+        if (!playerStats.RollCooldownCounter.Passed)
+            playerStats.RollCooldownCounter.PassTime(Time.deltaTime);
+        //On input start rolling
+        if (Input.GetButton("Jump") && playerStats.RollCooldownCounter.Passed)
+        {
+            bodyAnimator.SetTrigger("Roll");
+            playerStats.RollCooldownCounter.Reset(playerStats.RollCooldown);
+            canMove = false;
+            state = State.DodgeRoll;
+        }
+    }
+
+    //================================================================================
+    //State Attack Functions
+    //================================================================================
+
+
     //Consecutive attacks
     void HandleNextAttack()
     {
@@ -169,38 +190,6 @@ public class PlayerController : EntityController
     }
 
 
-    float ParryWindowCooldown = 10f;
-    float ParryWindowCooldownCounter = 0f;
-    void HandleParryBlock()
-    {//Go into block state on input
-        if (Input.GetButton("Attack2"))
-        {
-            state = State.Block;
-            rb.velocity = Vector2.zero;
-        }
-    }
-    void HandleParryBlocking()
-    {
-        if (Input.GetButton("Attack2"))
-        {//Start blocking in input
-            swordSR.sprite = SwordBlock;
-            bodyAnimator.SetBool("Block", true);
-            ParryWindowCooldownCounter = ParryWindowCooldown;
-        }
-        //Count down parry window cooldown
-        if (ParryWindowCooldownCounter <= 0)
-            ParryWindowCooldownCounter -= Time.deltaTime;
-
-        if (Input.GetButtonUp("Attack2"))
-        {//Stop blocking when input up
-            bodyAnimator.SetBool("Block", false);
-            if (ParryWindowCooldownCounter > 0)
-            {//If let go within parry window -> trigger parry
-                bodyAnimator.SetTrigger("Parry");
-                swordSR.sprite = SwordDefault;
-            }
-        }
-    }
 
     private bool attackLunging = false; //Controlled by animation triggers
     private float attackLungeSpeed = 1f; //TODO: Put into stats object
@@ -212,75 +201,21 @@ public class PlayerController : EntityController
         else
             rb.velocity = Vector2.zero;
     }
-
-
-    void HandleDodgeRoll()
+    //Allows player to move after attack swing but still in attack state
+    void HandleQuickMove()
     {
-        //Count down roll cooldown
-        if (!playerStats.RollCooldownCounter.Passed)
-            playerStats.RollCooldownCounter.PassTime(Time.deltaTime);
-        //On input start rolling
-        if (Input.GetButton("Jump") && playerStats.RollCooldownCounter.Passed)
+        if (!canMove || attacks.ReadyForNextAttack()) { return; }
+        inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
+        if (inputDirection.magnitude > 0.01)
         {
-            bodyAnimator.SetTrigger("Roll");
-            playerStats.RollCooldownCounter.Reset(playerStats.RollCooldown);
-            canMove = false;
-            state = State.DodgeRoll;
-        }
-    }
-    [SerializeField] private float rollSpeed = 3f; //TODO: Put into stats object
-    void HandleDodgeRollMotion()
-    {
-        //TODO: Allow dodge roll in direction of motion
-        rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
-    }
-    //Ends roll: called by animation trigger
-    public void EndRoll()
-    {
-        canMove = true;
-        state = State.Default;
-    }
-
-
-
-
-    [SerializeField] private LayerMask enemyLayers;
-    //So far the only trigger is the collider around the sword when swinging
-    void OnTriggerEnter2D(Collider2D collider)
-    {
-        EntityController opponent = collider.GetComponent<EntityController>();
-
-        if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
-        {
-            //Player hitting enemy
-            Debug.Log("Hit");
-            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value });
+            bodyAnimator.SetTrigger("Default");
+            EndAttack();
         }
     }
 
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == 8) //Ignore player's second collider
-        { //2D colliders used to prevent entities pushing each other
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
-        }
-    }
-
-    //TODO: Play a knockback animation
-    public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
-    {
-        //bodyAnimator.SetTrigger("Knockback");
-        state = State.Knockback;
-        canMove = false;
-        Vector2 direction = (objPos - ((Vector2)transform.position + GetComponent<Collider2D>().offset)).normalized;
-        rb.AddForce(-direction * knockbackPower, ForceMode2D.Impulse);
-        yield return new WaitForSeconds(knockbackDuration);
-        //Resets after knockback
-        rb.velocity = Vector2.zero;
-        canMove = true;
-        state = State.Default;
-    }
+    //--------------------------------------------------------------------------------
+    //Animation Events
+    //--------------------------------------------------------------------------------
 
     //Called: Stage of attack starting
     //Sets sword image
@@ -311,11 +246,105 @@ public class PlayerController : EntityController
         attacks.CanDoNextAttack();
     }
 
+    //================================================================================
+    //State: DodgeRoll Functions
+    //================================================================================
+
+
+    [SerializeField] private float rollSpeed = 3f; //TODO: Put into stats object
+    void HandleDodgeRollMotion()
+    {
+        //TODO: Allow dodge roll in direction of motion
+        rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
+    }
+    //Ends roll: called by animation trigger
+    public void EndRoll()
+    {
+        canMove = true;
+        state = State.Default;
+    }
+
+    //================================================================================
+    //State Block-Parry Functions
+    //================================================================================
+    void HandleParryBlocking()
+    {
+        if (Input.GetButton("Attack2"))
+        {//Start blocking in input
+            swordSR.sprite = SwordBlock;
+            bodyAnimator.SetBool("Block", true);
+            ParryWindowCooldownCounter = ParryWindowCooldown;
+        }
+        //Count down parry window cooldown
+        if (ParryWindowCooldownCounter <= 0)
+            ParryWindowCooldownCounter -= Time.deltaTime;
+
+        if (Input.GetButtonUp("Attack2"))
+        {//Stop blocking when input up
+            bodyAnimator.SetBool("Block", false);
+            if (ParryWindowCooldownCounter > 0)
+            {//If let go within parry window -> trigger parry
+                bodyAnimator.SetTrigger("Parry");
+                swordSR.sprite = SwordDefault;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------
+    //Animation Events
+    //--------------------------------------------------------------------------------
     //Called: End of parry animation
     public void EndParry()
     {
         state = State.Default;
     }
+
+
+    //================================================================================
+    //Player hitting enemy
+    //================================================================================
+    [SerializeField] private LayerMask enemyLayers;
+    //So far the only trigger is the collider around the sword when swinging
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        EntityController opponent = collider.GetComponent<EntityController>();
+
+        if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
+        {
+            //Player hitting enemy
+            Debug.Log("Hit");
+            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value });
+        }
+    }
+
+    //================================================================================
+    //Player collisions
+    //================================================================================
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == 8) //Ignore player's second collider
+        { //2D colliders used to prevent entities pushing each other
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
+        }
+    }
+
+    //TODO: Play a knockback animation
+    public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
+    {
+        //bodyAnimator.SetTrigger("Knockback");
+        state = State.Knockback;
+        canMove = false;
+        Vector2 direction = (objPos - ((Vector2)transform.position + GetComponent<Collider2D>().offset)).normalized;
+        rb.AddForce(-direction * knockbackPower, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(knockbackDuration);
+        //Resets after knockback
+        rb.velocity = Vector2.zero;
+        canMove = true;
+        state = State.Default;
+    }
+
+
+
 
 }
 
