@@ -6,5 +6,5 @@ public class HitBoxController : MonoBehaviour
 {
     [SerializeField] private EntityController entity;
 
-    public void TakeDamage(DamageReport dr) { entity.TakeDamage(dr); }
+    public void TakeDamage(DamageReport dr, EntityController dealer) { entity.TakeDamage(dr, dealer); }
 }

@@ -25,7 +25,7 @@ public class EntityStats : MonoBehaviour
         CurrentHealth = MaxHealth.Value;
     }
 
-    public void TakeDamage(DamageReport dr)
+    public void TakeDamage(DamageReport dr, EntityController dealer)
     {
         CurrentHealth -= dr.damage * armourDamageReduction(this.Armour.Value);
     }

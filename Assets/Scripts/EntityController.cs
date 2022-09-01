@@ -15,12 +15,17 @@ public class EntityController : MonoBehaviour
         entityStats = GetComponent<EntityStats>();
     }
 
-    public virtual void TakeDamage(DamageReport dr)
+    public virtual void TakeDamage(DamageReport dr, EntityController dealer)
     {
-        entityStats.TakeDamage(dr);
+        entityStats.TakeDamage(dr, dealer);
 
         //Invoke delegates for observers
         this.EntityObserver.OnDamageTaken(dr);
         dr.causedBy.EntityObserver.OnDamageDealt(dr);
+    }
+
+    public virtual void Block()
+    {
+
     }
 }

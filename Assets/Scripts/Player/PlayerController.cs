@@ -25,6 +25,7 @@ public class PlayerController : EntityController
         Attack,
         Knockback,
         Block,
+        Parry,
         Hit,
         Die,
     }
@@ -141,12 +142,15 @@ public class PlayerController : EntityController
         SwordBlock = Resources.Load<Sprite>("Swords/" + newSword + "/Block");
     }
 
-    float ParryWindowCooldown = 10f;
-    float ParryWindowCooldownCounter = 0f;
+    float BlockCooldown = 2f;
+    float BlockCooldownCounter = 0f;
     void HandleParryBlock()
     {//Go into block state on input
-        if (Input.GetButton("Attack2"))
+        Debug.Log(BlockCooldownCounter);
+        if (BlockCooldownCounter > 0) { BlockCooldownCounter -= Time.deltaTime; }
+        if (Input.GetButton("Attack2") && BlockCooldownCounter <= 0)
         {
+
             state = State.Block;
             rb.velocity = Vector2.zero;
         }
@@ -269,6 +273,8 @@ public class PlayerController : EntityController
     //================================================================================
     //State Block-Parry Functions
     //================================================================================
+    float ParryWindowCooldown = 1f;
+    float ParryWindowCooldownCounter = 0f;
     void HandleParryBlocking()
     {
         if (Input.GetButton("Attack2"))
@@ -288,8 +294,16 @@ public class PlayerController : EntityController
             {//If let go within parry window -> trigger parry
                 bodyAnimator.SetTrigger("Parry");
                 swordSR.sprite = SwordDefault;
+                state = State.Parry;
             }
         }
+    }
+
+    void StopBlocking()
+    {
+        bodyAnimator.SetBool("Block", false);
+        BlockCooldownCounter = BlockCooldown;
+        state = State.Default;
     }
 
     //--------------------------------------------------------------------------------
@@ -315,7 +329,7 @@ public class PlayerController : EntityController
         {
             //Player hitting enemy
             Debug.Log("Hit");
-            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value });
+            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value }, this);
         }
     }
 
@@ -350,12 +364,23 @@ public class PlayerController : EntityController
     //Player damage
     //================================================================================
 
-    public override void TakeDamage(DamageReport dr)
+    public override void TakeDamage(DamageReport dr, EntityController dealer)
     {
-        base.TakeDamage(dr);
+        if (state == State.Block)
+        {
+            StopBlocking();
+            dealer.Block();
+            return;
+        }
+        if (state == State.Parry)
+        {
+
+        }
+
+        base.TakeDamage(dr, dealer);
         rb.velocity = Vector2.zero;
 
-        Debug.Log("p: " + playerStats.CurrentHealth);
+        //Debug.Log("p: " + playerStats.CurrentHealth);
 
         if (playerStats.CurrentHealth <= 0)
         {
@@ -371,6 +396,7 @@ public class PlayerController : EntityController
     public void EndHit()
     {
         state = State.Default;
+        attacks.HardReset();
     }
 
 }

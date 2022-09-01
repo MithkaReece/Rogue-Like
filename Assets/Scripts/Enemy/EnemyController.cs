@@ -52,9 +52,9 @@ public class EnemyController : EntityController
         rb.velocity = direction * (float)enemyStats.MoveSpeed.Value;
     }
 
-    public override void TakeDamage(DamageReport dr)
+    public override void TakeDamage(DamageReport dr, EntityController dealer)
     {
-        base.TakeDamage(dr);
+        base.TakeDamage(dr, dealer);
         rb.velocity = Vector2.zero;
 
         Debug.Log(enemyStats.CurrentHealth);
@@ -80,22 +80,21 @@ public class EnemyController : EntityController
         transform.Find("Collision Blocker").GetComponent<CapsuleCollider2D>().enabled = false;
         this.enabled = false;
     }
-
-    //[SerializeField] private LayerMask enemyLayers;
-    /*void OnCollisionEnter2D(Collision2D collision)
+    //Player blocks your attack
+    public override void Block()
     {
-        if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
-        {
-            player.TakeDamage(entityStats.Combat.Damage.Value);
-            StartCoroutine(player.Knockback(enemyStats.KnockbackDuration.Value, enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
-        }
-    }*/
+        base.Block();
+
+        bodyAnimator.ResetTrigger("Attack1");
+        bodyAnimator.SetTrigger("Default");
+        state = State.Default;
+    }
 
     public void KnockbackPlayer(Collision2D collision)
     {
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
         {
-            player.TakeDamage(new DamageReport { causedBy = this, target = player, damage = entityStats.Combat.Damage.Value });
+            player.TakeDamage(new DamageReport { causedBy = this, target = player, damage = entityStats.Combat.Damage.Value }, this);
             StartCoroutine(player.Knockback((float)enemyStats.KnockbackDuration.Value, (float)enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
     }
@@ -121,10 +120,7 @@ public class EnemyController : EntityController
 
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
-            Debug.Log(collider.gameObject.name);
-            //Player hitting enemy
-            Debug.Log("Hit player");
-            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = enemyStats.Combat.Damage.Value });
+            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = enemyStats.Combat.Damage.Value }, this);
         }
     }
 }
