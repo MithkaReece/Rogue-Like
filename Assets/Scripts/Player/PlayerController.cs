@@ -422,7 +422,7 @@ public class PlayerController : EntityController
     //================================================================================
     //Player damage
     //================================================================================
-
+    private bool invulnerable;
     public override void TakeDamage(DamageReport dr, EntityController dealer)
     {
         if (state == State.Block)
@@ -435,7 +435,7 @@ public class PlayerController : EntityController
         {
 
         }
-
+        if (invulnerable) { return; }
         base.TakeDamage(dr, dealer);
         rb.velocity = Vector2.zero;
 
@@ -456,6 +456,15 @@ public class PlayerController : EntityController
     {
         state = State.Default;
         attacks.HardReset();
+    }
+
+    public void StartInv()
+    {
+        invulnerable = true;
+    }
+    public void EndInv()
+    {
+        invulnerable = false;
     }
 
 }

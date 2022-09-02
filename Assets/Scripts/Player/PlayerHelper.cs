@@ -14,6 +14,8 @@ public class PlayerHelper : MonoBehaviour
     public void ReadyForNextAttack(int par) { player.ReadyForNextAttack(); }
 
 
+    public void StartInv(int par) { player.StartInv(); }
+    public void EndInv(int par) { player.EndInv(); }
     public void EndRoll(int par) { player.EndRoll(); }
 
     public void EndParry(int par) { player.EndParry(); }
