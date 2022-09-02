@@ -41,8 +41,6 @@ public class PlayerController : EntityController
 
     [SerializeField] private GameObject sword;
 
-    private Sprite[] HealthRings;
-    private SpriteRenderer HealthRingSR;
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -53,12 +51,9 @@ public class PlayerController : EntityController
         bodyAnimator = body.GetComponent<Animator>();
         swordSR = sword.GetComponent<SpriteRenderer>();
         playerStats = GetComponent<PlayerStats>();
+        entityStats = GetComponent<PlayerStats>();
         //Equip first weapon
         SwapSword(swordEquiped);
-
-        HealthRingSR = healthRing.GetComponent<SpriteRenderer>();
-        HealthRings = Resources.LoadAll<Sprite>("Health Ring");
-
     }
 
     // Update is called once per frame
@@ -90,52 +85,9 @@ public class PlayerController : EntityController
         }
     }
 
-    void FixedUpdate()
+    protected override void FixedUpdate()
     {
-        UpdateHealthRing();
-    }
-
-    void UpdateHealthRing()
-    {
-        double Percent = 100 * playerStats.CurrentHealth / playerStats.MaxHealth.Value;
-        int index = 0;
-        if (Percent < 90)
-        {
-            index++;
-        }
-        if (Percent < 75)
-        {
-            index++;
-        }
-        if (Percent < 55)
-        {
-            index++;
-        }
-        if (Percent < 45)
-        {
-            index++;
-        }
-        if (Percent < 30)
-        {
-            index++;
-        }
-        if (Percent < 20)
-        {
-            index++;
-        }
-        if (Percent < 10)
-        {
-            index++;
-        }
-        if (Percent < 5)
-        {
-            index++;
-        }
-        if (Percent <= 0)
-        {
-            index++;
-        }
-        HealthRingSR.sprite = HealthRings[index];
+        base.FixedUpdate();
     }
 
     //================================================================================
@@ -466,7 +418,6 @@ public class PlayerController : EntityController
     {
         invulnerable = false;
     }
-
 }
 
 

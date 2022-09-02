@@ -27,72 +27,23 @@ public class EnemyController : EntityController
         base.Start();
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
+        entityStats = GetComponent<EnemyStats>();
         bodyAnimator = body.GetComponent<Animator>();
-        GetHealthRings();
-    }
-
-    private Sprite[] HealthRings;
-    private SpriteRenderer HealthRingSR;
-    void GetHealthRings()
-    {
-        HealthRingSR = healthRing.GetComponent<SpriteRenderer>();
-        HealthRings = Resources.LoadAll<Sprite>("Health Ring");
     }
 
     // Update is called once per frame
-    protected virtual void FixedUpdate()
+    protected override void FixedUpdate()
     {
+        base.FixedUpdate();
         switch (state)
         {
             case State.Hit:
                 break;
         }
-        UpdateHealthRing();
         //Move();
     }
 
-    void UpdateHealthRing()
-    {
-        double Percent = 100 * enemyStats.CurrentHealth / enemyStats.MaxHealth.Value;
-        int index = 0;
-        if (Percent < 90)
-        {
-            index++;
-        }
-        if (Percent < 75)
-        {
-            index++;
-        }
-        if (Percent < 55)
-        {
-            index++;
-        }
-        if (Percent < 45)
-        {
-            index++;
-        }
-        if (Percent < 30)
-        {
-            index++;
-        }
-        if (Percent < 20)
-        {
-            index++;
-        }
-        if (Percent < 10)
-        {
-            index++;
-        }
-        if (Percent < 5)
-        {
-            index++;
-        }
-        if (Percent <= 0)
-        {
-            index++;
-        }
-        HealthRingSR.sprite = HealthRings[index];
-    }
+
     //OLD
     void Move()
     {
