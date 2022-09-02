@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class EnemyController : EntityController
 {
-    [SerializeField] protected GameObject body;
     protected EnemyStats enemyStats;
-    protected Animator bodyAnimator;
 
     [SerializeField] protected PlayerController player;
     public void SetPlayer(PlayerController inPlayer) { player = inPlayer; }
@@ -30,6 +28,15 @@ public class EnemyController : EntityController
         enemyStats = GetComponent<EnemyStats>();
         bodyAnimator = body.GetComponent<Animator>();
         base.Start();
+        GetHealthRings();
+    }
+
+    private Sprite[] HealthRings;
+    private SpriteRenderer HealthRingSR;
+    void GetHealthRings()
+    {
+        HealthRingSR = healthRing.GetComponent<SpriteRenderer>();
+        HealthRings = Resources.LoadAll<Sprite>("Health Ring");
     }
 
     // Update is called once per frame
@@ -40,7 +47,51 @@ public class EnemyController : EntityController
             case State.Hit:
                 break;
         }
+        UpdateHealthRing();
         //Move();
+    }
+
+    void UpdateHealthRing()
+    {
+        double Percent = 100 * enemyStats.CurrentHealth / enemyStats.MaxHealth.Value;
+        int index = 0;
+        if (Percent < 90)
+        {
+            index++;
+        }
+        if (Percent < 75)
+        {
+            index++;
+        }
+        if (Percent < 55)
+        {
+            index++;
+        }
+        if (Percent < 45)
+        {
+            index++;
+        }
+        if (Percent < 30)
+        {
+            index++;
+        }
+        if (Percent < 20)
+        {
+            index++;
+        }
+        if (Percent < 10)
+        {
+            index++;
+        }
+        if (Percent < 5)
+        {
+            index++;
+        }
+        if (Percent <= 0)
+        {
+            index++;
+        }
+        HealthRingSR.sprite = HealthRings[index];
     }
     //OLD
     void Move()

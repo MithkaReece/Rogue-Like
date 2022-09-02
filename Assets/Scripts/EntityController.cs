@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class EntityController : MonoBehaviour
 {
+    [SerializeField] protected GameObject body;
+    [SerializeField] protected GameObject healthRing;
+
     protected Rigidbody2D rb;
+    protected Animator bodyAnimator;
     protected EntityStats entityStats;
     public EntityObserver EntityObserver { get; } = new EntityObserver();
 

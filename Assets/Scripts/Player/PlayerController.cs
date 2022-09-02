@@ -6,7 +6,6 @@ public class PlayerController : EntityController
 {
     [SerializeField] private float scale = 1f;
 
-    private Animator bodyAnimator;
     //True when movement causes transition back to default
     private bool canMove = true;
 
@@ -40,9 +39,7 @@ public class PlayerController : EntityController
         DoAttack
     }
 
-    [SerializeField] private GameObject body;
     [SerializeField] private GameObject sword;
-    [SerializeField] private GameObject healthRing;
 
     private Sprite[] HealthRings;
     private SpriteRenderer HealthRingSR;
