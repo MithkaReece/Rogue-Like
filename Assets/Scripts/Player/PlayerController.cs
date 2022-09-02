@@ -205,7 +205,7 @@ public class PlayerController : EntityController
     float BlockCooldownCounter = 0f;
     void HandleParryBlock()
     {//Go into block state on input
-        Debug.Log(BlockCooldownCounter);
+        //Debug.Log(BlockCooldownCounter);
         if (BlockCooldownCounter > 0) { BlockCooldownCounter -= Time.deltaTime; }
         if (Input.GetButton("Attack2") && BlockCooldownCounter <= 0)
         {
@@ -440,7 +440,7 @@ public class PlayerController : EntityController
         rb.velocity = Vector2.zero;
 
         //Debug.Log("p: " + playerStats.CurrentHealth);
-
+        swordSR.sprite = null;
         if (playerStats.CurrentHealth <= 0)
         {
             state = State.Die;

@@ -5,12 +5,16 @@ using UnityEditor;
 
 public class SpawnerScript : MonoBehaviour
 {
+    [SerializeField] private PlayerController player;
     [SerializeField] private GameObject slimePrefab;
+    [SerializeField] private GameObject basePrefab;
 
     // Start is called before the first frame update
     void Start()
     {
-        SpawnSlime(transform.position);
+        //SpawnSlime(transform.position);
+        SpawnBase(transform.position);
+        SpawnBase(transform.position);
     }
 
     // Update is called once per frame
@@ -25,5 +29,12 @@ public class SpawnerScript : MonoBehaviour
         GameObject slime = Instantiate(slimePrefab, spawnPosition, Quaternion.identity);
         EnemyController controller = slime.GetComponent<EnemyController>();
         controller.SetPlayer((GameObject.Find("Player").GetComponent<PlayerController>()));
+    }
+
+    void SpawnBase(Vector2 spawnPosition)
+    {
+        GameObject baseEnemy = Instantiate(basePrefab, spawnPosition, Quaternion.identity);
+        EnemyController controller = baseEnemy.GetComponent<EnemyController>();
+        controller.SetPlayer(player);
     }
 }

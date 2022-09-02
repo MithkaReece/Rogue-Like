@@ -24,10 +24,10 @@ public class EnemyController : EntityController
     // Start is called before the first frame update
     protected override void Start()
     {
+        base.Start();
         rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
         bodyAnimator = body.GetComponent<Animator>();
-        base.Start();
         GetHealthRings();
     }
 

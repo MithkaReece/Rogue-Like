@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class EntityController : MonoBehaviour
 {
-    [SerializeField] protected GameObject body;
-    [SerializeField] protected GameObject healthRing;
+    protected GameObject body;
+    protected GameObject healthRing;
 
     protected Rigidbody2D rb;
     protected Animator bodyAnimator;
@@ -17,6 +17,8 @@ public class EntityController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         entityStats = GetComponent<EntityStats>();
+        body = transform.Find("Body").gameObject;
+        healthRing = transform.Find("HealthRing").gameObject;
     }
 
     public virtual void TakeDamage(DamageReport dr, EntityController dealer)
