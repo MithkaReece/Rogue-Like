@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerController : EntityController
 {
-    [SerializeField] private float scale = 4f;
+    [SerializeField] private float scale = 1f;
 
     private Animator bodyAnimator;
     //True when movement causes transition back to default
@@ -42,6 +42,10 @@ public class PlayerController : EntityController
 
     [SerializeField] private GameObject body;
     [SerializeField] private GameObject sword;
+    [SerializeField] private GameObject healthRing;
+
+    private Sprite[] HealthRings;
+    private SpriteRenderer HealthRingSR;
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -54,6 +58,10 @@ public class PlayerController : EntityController
         playerStats = GetComponent<PlayerStats>();
         //Equip first weapon
         SwapSword(swordEquiped);
+
+        HealthRingSR = healthRing.GetComponent<SpriteRenderer>();
+        HealthRings = Resources.LoadAll<Sprite>("Health Ring");
+
     }
 
     // Update is called once per frame
@@ -85,6 +93,54 @@ public class PlayerController : EntityController
         }
     }
 
+    void FixedUpdate()
+    {
+        UpdateHealthRing();
+    }
+
+    void UpdateHealthRing()
+    {
+        double Percent = 100 * playerStats.CurrentHealth / playerStats.MaxHealth.Value;
+        int index = 0;
+        if (Percent < 90)
+        {
+            index++;
+        }
+        if (Percent < 75)
+        {
+            index++;
+        }
+        if (Percent < 55)
+        {
+            index++;
+        }
+        if (Percent < 45)
+        {
+            index++;
+        }
+        if (Percent < 30)
+        {
+            index++;
+        }
+        if (Percent < 20)
+        {
+            index++;
+        }
+        if (Percent < 10)
+        {
+            index++;
+        }
+        if (Percent < 5)
+        {
+            index++;
+        }
+        if (Percent <= 0)
+        {
+            index++;
+        }
+        HealthRingSR.sprite = HealthRings[index];
+    }
+
     //================================================================================
     //State: Default Functions
     //================================================================================
@@ -106,9 +162,15 @@ public class PlayerController : EntityController
     void LeftRightFlip()
     {
         if (inputDirection.x < 0)
+        {
             transform.localScale = new Vector2(-scale, scale);
+            healthRing.transform.localScale = new Vector2(-(scale / Mathf.Abs(scale)) * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
+        }
         else if (inputDirection.x > 0)
+        {
             transform.localScale = new Vector2(scale, scale);
+            healthRing.transform.localScale = new Vector2((scale / Mathf.Abs(scale)) * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
+        }
     }
     //TODO: Temporary function to test out swapping weapons, later it will be done by equipping weapons using UI
     private void HandleSwordSwap()
