@@ -50,13 +50,58 @@ public class EntityController : MonoBehaviour
 
     public virtual void Block()
     {
-
+        state = State.Block;
+        bodyAnimator.SetTrigger("Block");
     }
 
+    public void StopBlocking()
+    {
+        state = State.Default;
+    }
+
+    public virtual void Parried()
+    {
+        state = State.Stun;
+        bodyAnimator.SetTrigger("Parried");
+        bodyAnimator.SetBool("Stun", true);
+    }
+
+    protected State state;
+    protected enum State
+    {
+        Default,
+        DodgeRoll,
+        Attack,
+        Block,
+        Blocking,
+        Parry,
+        Hit,
+        Stun,
+        Die,
+    }
     protected virtual void FixedUpdate()
     {
+        switch (state)
+        {
+            case State.Stun:
+                HandleStun();
+                break;
+        }
         UpdateHealthRing();
         HandleReposDecay();
+    }
+
+    void HandleStun()
+    {
+        float stunSpeed = 1f;
+        if (StunMovement)
+        {
+            rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * -stunSpeed, 0);
+        }
+        else
+        {
+            rb.velocity = Vector2.zero;
+        }
     }
 
     void UpdateHealthRing()
@@ -131,8 +176,25 @@ public class EntityController : MonoBehaviour
 
     void UpdateReposRing()
     {
-        Debug.Log(ReposRings.Length);
         int index = (int)Mathf.Floor(10f * repos / poise);
         ReposRingSR.sprite = ReposRings[index];
+    }
+
+
+
+    protected bool StunMovement;
+    public void StartStun()
+    {
+        StunMovement = true;
+    }
+
+    public void EndStunMovement()
+    {
+        StunMovement = false;
+    }
+    public void EndStun()
+    {
+        state = State.Default;
+        bodyAnimator.SetBool("Stun", false);
     }
 }

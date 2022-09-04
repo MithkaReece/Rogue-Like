@@ -16,19 +16,6 @@ public class PlayerController : EntityController
     private float swapCooldownCounter = 0f;
 
     private PlayerStats playerStats;
-    private State state;
-    private enum State
-    {
-        Default,
-        DodgeRoll,
-        Attack,
-        Knockback,
-        Block,
-        Parry,
-        Hit,
-        Die,
-    }
-
     private MultiAttacks attacks;
 
     private AttackState attackState;
@@ -79,7 +66,7 @@ public class PlayerController : EntityController
             case State.DodgeRoll:
                 HandleDodgeRollMotion();
                 break;
-            case State.Block:
+            case State.Blocking:
                 HandleParryBlocking();
                 break;
         }
@@ -153,7 +140,7 @@ public class PlayerController : EntityController
         SwordBlock = Resources.Load<Sprite>("Swords/" + newSword + "/Block");
     }
 
-    float BlockCooldown = 2f;
+    float BlockCooldown = 0f;
     float BlockCooldownCounter = 0f;
     void HandleParryBlock()
     {//Go into block state on input
@@ -162,7 +149,7 @@ public class PlayerController : EntityController
         if (Input.GetButton("Attack2") && BlockCooldownCounter <= 0)
         {
 
-            state = State.Block;
+            state = State.Blocking;
             rb.velocity = Vector2.zero;
         }
     }
@@ -291,7 +278,7 @@ public class PlayerController : EntityController
         if (Input.GetButton("Attack2"))
         {//Start blocking in input
             swordSR.sprite = SwordBlock;
-            bodyAnimator.SetBool("Block", true);
+            bodyAnimator.SetBool("Blocking", true);
             ParryWindowCooldownCounter = ParryWindowCooldown;
         }
         //Count down parry window cooldown
@@ -300,7 +287,7 @@ public class PlayerController : EntityController
 
         if (Input.GetButtonUp("Attack2"))
         {//Stop blocking when input up
-            bodyAnimator.SetBool("Block", false);
+            bodyAnimator.SetBool("Blocking", false);
             if (ParryWindowCooldownCounter > 0)
             {//If let go within parry window -> trigger parry
                 bodyAnimator.SetTrigger("Parry");
@@ -312,8 +299,9 @@ public class PlayerController : EntityController
 
     void StopBlocking()
     {
-        bodyAnimator.SetBool("Block", false);
+        bodyAnimator.SetBool("Blocking", false);
         BlockCooldownCounter = BlockCooldown;
+        bodyAnimator.SetTrigger("Block");
         state = State.Default;
     }
 
@@ -356,6 +344,7 @@ public class PlayerController : EntityController
     }
 
     //TODO: Play a knockback animation
+    /*
     public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
     {
         //bodyAnimator.SetTrigger("Knockback");
@@ -368,7 +357,7 @@ public class PlayerController : EntityController
         rb.velocity = Vector2.zero;
         canMove = true;
         state = State.Default;
-    }
+    }*/
 
 
     //================================================================================
@@ -377,15 +366,18 @@ public class PlayerController : EntityController
     private bool invulnerable;
     public override void TakeDamage(DamageReport dr, EntityController dealer)
     {
-        if (state == State.Block)
+        if (state == State.Blocking)
         {
-            StopBlocking();
+            bodyAnimator.SetBool("Blocking", false);
+            BlockCooldownCounter = BlockCooldown;
+            Block();
             dealer.Block();
             return;
         }
         if (state == State.Parry)
         {
-
+            dealer.Parried();
+            return;
         }
         if (invulnerable) { return; }
         base.TakeDamage(dr, dealer);

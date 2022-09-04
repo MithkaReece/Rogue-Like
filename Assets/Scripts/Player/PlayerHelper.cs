@@ -22,4 +22,6 @@ public class PlayerHelper : MonoBehaviour
 
     public void EndHit(int par) { player.EndHit(); }
 
+    public void StopBlocking(int par) { player.StopBlocking(); }
+
 }

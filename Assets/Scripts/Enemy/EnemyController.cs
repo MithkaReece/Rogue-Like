@@ -10,14 +10,6 @@ public class EnemyController : EntityController
     public void SetPlayer(PlayerController inPlayer) { player = inPlayer; }
     private bool playerSeen = true;
 
-    protected State state;
-    protected enum State
-    {
-        Default,
-        Attack,
-        Hit,
-        Die,
-    }
 
     protected AnimationEventSystem AES = new AnimationEventSystem();
 
@@ -59,7 +51,6 @@ public class EnemyController : EntityController
         base.TakeDamage(dr, dealer);
         rb.velocity = Vector2.zero;
 
-        Debug.Log(enemyStats.CurrentHealth);
         //Hurt animation
 
         if (enemyStats.CurrentHealth <= 0)
@@ -85,13 +76,18 @@ public class EnemyController : EntityController
     //Player blocks your attack
     public override void Block()
     {
+        bodyAnimator.ResetTrigger("Attack1");
         base.Block();
 
-        bodyAnimator.ResetTrigger("Attack1");
-        bodyAnimator.SetTrigger("Default");
-        state = State.Default;
+
     }
 
+    public override void Parried()
+    {
+        bodyAnimator.ResetTrigger("Attack1");
+        base.Parried();
+    }
+    /*
     public void KnockbackPlayer(Collision2D collision)
     {
         if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
@@ -99,7 +95,7 @@ public class EnemyController : EntityController
             player.TakeDamage(new DamageReport { causedBy = this, target = player, damage = entityStats.Combat.Damage.Value }, this);
             StartCoroutine(player.Knockback((float)enemyStats.KnockbackDuration.Value, (float)enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
         }
-    }
+    }*/
 
     public void EndAttack() { AES.EndAttack = true; }
     public void StartLunge() { AES.StartLunge = true; }

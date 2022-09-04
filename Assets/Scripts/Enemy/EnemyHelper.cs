@@ -12,4 +12,16 @@ public class EnemyHelper : MonoBehaviour
     public void EndHit(int par) { enemy.EndHit(); }
     public void EndDie(int par) { enemy.EndDie(); }
 
+    public void StartStun(int par)
+    {
+        enemy.StartStun();
+    }
+    public void EndStunMovement(int par) { enemy.EndStunMovement(); }
+    public void EndStun(int par)
+    {
+        enemy.EndStun();
+    }
+
+    public void StopBlocking(int par) { enemy.StopBlocking(); }
+
 }

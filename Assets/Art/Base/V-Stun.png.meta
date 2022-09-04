@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2a16611887ce54c76b5cf6280e8c61b0
+guid: 1ba4cbead82b248188a8336bccec78c5
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -116,7 +116,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: V-Parry_0
+      name: V-Stun_0
       rect:
         serializedVersion: 2
         x: 0
@@ -130,14 +130,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7ee8b6c765aea48758b2ddd95f525fe7
-      internalID: 1923404009
+      spriteID: 6d9041552a05a40809107c00854ab181
+      internalID: 1534891636
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: V-Parry_1
+      name: V-Stun_1
       rect:
         serializedVersion: 2
         x: 128
@@ -151,14 +151,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dd54b2f8001bf4fad81d683d05c16ad4
-      internalID: -709458408
+      spriteID: 46e5875eef30844df93e141eaaa119ab
+      internalID: -596834701
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: V-Parry_2
+      name: V-Stun_2
       rect:
         serializedVersion: 2
         x: 256
@@ -172,14 +172,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 60dd23dd0e3144777b19e46abe99070e
-      internalID: -1543697274
+      spriteID: d4381ab1831b247b1b6b8aeab366ddea
+      internalID: 94258183
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: V-Parry_3
+      name: V-Stun_3
       rect:
         serializedVersion: 2
         x: 384
@@ -193,14 +193,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6595ccf1b63b2453ebb8590c66addd1e
-      internalID: 1763652517
+      spriteID: 52ebb0273452b40edbe25a61c61580fc
+      internalID: 1243243447
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: V-Parry_4
+      name: V-Stun_4
       rect:
         serializedVersion: 2
         x: 512
@@ -214,14 +214,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 966754a96376c4aa1b64506e2d2ca695
-      internalID: 1786311148
+      spriteID: 8d5609b550034451dbe66fd138a5ae20
+      internalID: -1110718441
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: V-Parry_5
+      name: V-Stun_5
       rect:
         serializedVersion: 2
         x: 640
@@ -235,29 +235,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d8d9cc947ddf5429fae4afc82c5dc71c
-      internalID: 127104887
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: V-Parry_6
-      rect:
-        serializedVersion: 2
-        x: 768
-        y: 0
-        width: 128
-        height: 128
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e1d2e4b57f67a44bfb0b55f77a359537
-      internalID: 8009277
+      spriteID: ec3779f5e77604012bce5191a704a526
+      internalID: 2055926632
       vertices: []
       indices: 
       edges: []
@@ -273,13 +252,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      V-Parry_2: -1543697274
-      V-Parry_4: 1786311148
-      V-Parry_5: 127104887
-      V-Parry_0: 1923404009
-      V-Parry_6: 8009277
-      V-Parry_1: -709458408
-      V-Parry_3: 1763652517
+      V-Stun_0: 1534891636
+      V-Stun_1: -596834701
+      V-Stun_5: 2055926632
+      V-Stun_3: 1243243447
+      V-Stun_4: -1110718441
+      V-Stun_2: 94258183
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

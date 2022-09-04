@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2a16611887ce54c76b5cf6280e8c61b0
+guid: f5724ed5e149d4901994c6e81edd0ba9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -130,8 +130,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7ee8b6c765aea48758b2ddd95f525fe7
-      internalID: 1923404009
+      spriteID: cb236220abdaa4c5fbefb815ce87c098
+      internalID: -512675231
       vertices: []
       indices: 
       edges: []
@@ -151,8 +151,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dd54b2f8001bf4fad81d683d05c16ad4
-      internalID: -709458408
+      spriteID: b62a0478713fd454a8994b43b2b62096
+      internalID: -783935551
       vertices: []
       indices: 
       edges: []
@@ -172,8 +172,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 60dd23dd0e3144777b19e46abe99070e
-      internalID: -1543697274
+      spriteID: 6a853737f6b0a445581bdd5c611d304f
+      internalID: 1719922558
       vertices: []
       indices: 
       edges: []
@@ -193,71 +193,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6595ccf1b63b2453ebb8590c66addd1e
-      internalID: 1763652517
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: V-Parry_4
-      rect:
-        serializedVersion: 2
-        x: 512
-        y: 0
-        width: 128
-        height: 128
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 966754a96376c4aa1b64506e2d2ca695
-      internalID: 1786311148
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: V-Parry_5
-      rect:
-        serializedVersion: 2
-        x: 640
-        y: 0
-        width: 128
-        height: 128
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d8d9cc947ddf5429fae4afc82c5dc71c
-      internalID: 127104887
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: V-Parry_6
-      rect:
-        serializedVersion: 2
-        x: 768
-        y: 0
-        width: 128
-        height: 128
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e1d2e4b57f67a44bfb0b55f77a359537
-      internalID: 8009277
+      spriteID: ce7f46dfe2f5c48839d483222bb36ca7
+      internalID: -306038057
       vertices: []
       indices: 
       edges: []
@@ -273,13 +210,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      V-Parry_2: -1543697274
-      V-Parry_4: 1786311148
-      V-Parry_5: 127104887
-      V-Parry_0: 1923404009
-      V-Parry_6: 8009277
-      V-Parry_1: -709458408
-      V-Parry_3: 1763652517
+      V-Parry_2: 1719922558
+      V-Parry_0: -512675231
+      V-Parry_1: -783935551
+      V-Parry_3: -306038057
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
