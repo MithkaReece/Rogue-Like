@@ -17,52 +17,22 @@ public class EnemyController : EntityController
     protected override void Start()
     {
         base.Start();
-        rb = GetComponent<Rigidbody2D>();
         enemyStats = GetComponent<EnemyStats>();
         entityStats = GetComponent<EnemyStats>();
-        bodyAnimator = body.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        switch (state)
-        {
-            case State.Hit:
-                break;
-        }
-        //Move();
     }
 
 
-    //OLD
-    void Move()
-    {
-        if (!playerSeen) { return; }
-        Vector2 direction = player.transform.position - transform.position;
-        direction = direction.normalized;
-        //rb.MovePosition(rb.position + direction * moveSpeed * Time.deltaTime);
-        rb.velocity = direction * (float)enemyStats.MoveSpeed.Value;
-    }
 
     public override void TakeDamage(DamageReport dr, EntityController dealer)
     {
         base.TakeDamage(dr, dealer);
         rb.velocity = Vector2.zero;
-
-        //Hurt animation
-
-        if (enemyStats.CurrentHealth <= 0)
-        {
-            state = State.Die;
-            bodyAnimator.SetTrigger("Die");
-        }
-        else
-        {
-            state = State.Hit;
-            bodyAnimator.SetTrigger("Hit");
-        }
     }
     private void Die()
     {
@@ -78,8 +48,6 @@ public class EnemyController : EntityController
     {
         bodyAnimator.ResetTrigger("Attack1");
         base.Block();
-
-
     }
 
     public override void Parried()
@@ -87,15 +55,6 @@ public class EnemyController : EntityController
         bodyAnimator.ResetTrigger("Attack1");
         base.Parried();
     }
-    /*
-    public void KnockbackPlayer(Collision2D collision)
-    {
-        if (enemyLayers == (enemyLayers | (1 << collision.collider.gameObject.layer)))
-        {
-            player.TakeDamage(new DamageReport { causedBy = this, target = player, damage = entityStats.Combat.Damage.Value }, this);
-            StartCoroutine(player.Knockback((float)enemyStats.KnockbackDuration.Value, (float)enemyStats.KnockbackPower.Value, (Vector2)transform.position + GetComponent<Collider2D>().offset));
-        }
-    }*/
 
     public void EndAttack() { AES.EndAttack = true; }
     public void StartLunge() { AES.StartLunge = true; }

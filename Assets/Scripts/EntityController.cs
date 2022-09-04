@@ -18,6 +18,7 @@ public class EntityController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         entityStats = GetComponent<EntityStats>();
         body = transform.Find("Body").gameObject;
+        bodyAnimator = body.GetComponent<Animator>();
         healthRing = transform.Find("HealthRing").gameObject;
         GetHealthRings();
         GetReposRings();
@@ -42,6 +43,23 @@ public class EntityController : MonoBehaviour
     public virtual void TakeDamage(DamageReport dr, EntityController dealer)
     {
         entityStats.TakeDamage(dr, dealer);
+
+        if (repos == poise)
+        {
+            state = State.Stun;
+            bodyAnimator.SetTrigger("Stun");
+        }
+        else if (entityStats.CurrentHealth <= 0)
+        {
+            state = State.Die;
+            bodyAnimator.SetTrigger("Die");
+        }
+        else
+        {
+            state = State.Hit;
+            bodyAnimator.SetTrigger("Hit");
+        }
+
         AddRepos(dr.damage);
         //Invoke delegates for observers
         this.EntityObserver.OnDamageTaken(dr);
@@ -62,8 +80,7 @@ public class EntityController : MonoBehaviour
     public virtual void Parried()
     {
         state = State.Stun;
-        bodyAnimator.SetTrigger("Parried");
-        bodyAnimator.SetBool("Stun", true);
+        bodyAnimator.SetTrigger("Stun");
     }
 
     protected State state;

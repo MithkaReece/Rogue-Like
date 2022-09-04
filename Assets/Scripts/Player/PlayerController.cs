@@ -35,7 +35,6 @@ public class PlayerController : EntityController
         //Setup consecutive attack system
         attacks = new MultiAttacks(new string[] { "Attack1", "Attack2", "Attack3" });
 
-        bodyAnimator = body.GetComponent<Animator>();
         swordSR = sword.GetComponent<SpriteRenderer>();
         playerStats = GetComponent<PlayerStats>();
         entityStats = GetComponent<PlayerStats>();
