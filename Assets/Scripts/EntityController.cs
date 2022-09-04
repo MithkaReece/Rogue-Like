@@ -43,6 +43,11 @@ public class EntityController : MonoBehaviour
 
     public virtual void TakeDamage(DamageReport dr, EntityController dealer)
     {
+        if (repos == poise)
+        {
+            dr.damage *= 4;
+            resetRepos = true;
+        }
         rb.velocity = Vector2.zero;
         entityStats.TakeDamage(dr, dealer);
 
@@ -173,8 +178,14 @@ public class EntityController : MonoBehaviour
     [SerializeField] protected float reposCountdown = 2f;
     private float reposCountdownCounter = 0f;
     [SerializeField] protected float reposRegenSpeed = 20f;
+    private bool resetRepos;
     void HandleReposDecay()
     {
+        if (resetRepos)
+        {
+            resetRepos = false;
+            repos = 0f;
+        }
 
         if (reposCountdownCounter <= 0f)
         {

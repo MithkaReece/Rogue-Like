@@ -300,8 +300,10 @@ public class PlayerController : EntityController
 
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
+            float swordDamage = 50f;
             //Player hitting enemy
-            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value }, this);
+            //collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value }, this);
+            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = swordDamage }, this);
         }
     }
 
@@ -315,23 +317,6 @@ public class PlayerController : EntityController
             Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
         }
     }
-
-    //TODO: Play a knockback animation
-    /*
-    public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
-    {
-        //bodyAnimator.SetTrigger("Knockback");
-        state = State.Knockback;
-        canMove = false;
-        Vector2 direction = (objPos - ((Vector2)transform.position + GetComponent<Collider2D>().offset)).normalized;
-        rb.AddForce(-direction * knockbackPower, ForceMode2D.Impulse);
-        yield return new WaitForSeconds(knockbackDuration);
-        //Resets after knockback
-        rb.velocity = Vector2.zero;
-        canMove = true;
-        state = State.Default;
-    }*/
-
 
     //================================================================================
     //Player damage
