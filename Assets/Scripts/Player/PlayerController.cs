@@ -4,37 +4,41 @@ using UnityEngine;
 
 public class PlayerController : EntityController
 {
-    [SerializeField] private float scale = 4f;
+    [SerializeField] private float scale = 1f;
 
-    private Animator bodyAnimator;
-
+    //True when movement causes transition back to default
     private bool canMove = true;
 
-    private SpriteRenderer sr;
-    private Sprite[] sprites;
-    [SerializeField] private string swordEquiped = "Sword1";
+    private SpriteRenderer swordSR;
+
+    [SerializeField] private string swordEquiped;
     private float swapCooldown = 2f;
     private float swapCooldownCounter = 0f;
 
     private PlayerStats playerStats;
-    private State state;
-    private enum State
+    private MultiAttacks attacks;
+
+    private AttackState attackState;
+    private enum AttackState
     {
-        Normal,
-        DodgeRoll,
-        Attack,
-        Knockback,
+        Idle,
+        CanAttack,
+        DoAttack
     }
+
+    [SerializeField] private GameObject sword;
 
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
+        //Setup consecutive attack system
+        attacks = new MultiAttacks(new string[] { "Attack1", "Attack2", "Attack3" });
 
-        bodyAnimator = transform.Find("Body").GetComponent<Animator>();
-        sr = transform.Find("Body").transform.Find("Sword2").GetComponent<SpriteRenderer>();
-        sprites = Resources.LoadAll<Sprite>("Swords/" + swordEquiped);
+        swordSR = sword.GetComponent<SpriteRenderer>();
         playerStats = GetComponent<PlayerStats>();
+        //Equip first weapon
+        SwapSword(swordEquiped);
     }
 
     // Update is called once per frame
@@ -42,103 +46,117 @@ public class PlayerController : EntityController
     {
         switch (state)
         {
-            case State.Normal:
-                if (canMove)
-                {
-                    HandleWalk();
-                    LeftRightFlip();
-                    HandleSwordSwap();
-                    HandleAttack();
-                    HandleDodgeRoll();
-                }
+            case State.Default:
+                //Hides sword when not using it
+                swordSR.sprite = null;
+                HandleWalk();
+                LeftRightFlip();
+                HandleSwordSwap();
+                HandleNextAttack();
+                HandleParryBlock();
+                HandleDodgeRoll();
+                break;
+            case State.Attack:
+                HandleNextAttack();
+                HandleAttackLunge();
+                HandleQuickMove();
                 break;
             case State.DodgeRoll:
                 HandleDodgeRollMotion();
                 break;
-            case State.Attack:
+            case State.Blocking:
+                HandleParryBlocking();
                 break;
         }
     }
 
-    [SerializeField] private float moveSpeed;
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+    }
+
+    //================================================================================
+    //State: Default Functions
+    //================================================================================
+
+
+
+    [SerializeField] private float moveSpeed; //TODO: Should be moved into player stats
     private Vector2 inputDirection;
     void HandleWalk()
     {
         inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
-        //drb.MovePosition(drb.position + inputDirection * moveSpeed * Time.deltaTime);
         rb.velocity = inputDirection * moveSpeed;
-
-        if (inputDirection.magnitude == 0)
-        { //Stop walk animation as not moving
-            bodyAnimator.SetLayerWeight(1, 0);
-        }
-        else
-        {
-            bodyAnimator.SetLayerWeight(1, 1);
-            SetAnimatorMovement(inputDirection);
-        }
-    }
-    void SetAnimatorMovement(Vector2 direction)
-    {
-        bodyAnimator.SetFloat("xDir", direction.x);
-        bodyAnimator.SetFloat("yDir", direction.y);
+        bodyAnimator.SetFloat("Speed", inputDirection.magnitude);
+        bodyAnimator.SetFloat("yDir", inputDirection.y);
     }
 
     //Allows right animation to be flipped and used as left
+    //TODO: May be a better way than just changing the sign of the x scale
     void LeftRightFlip()
     {
         if (inputDirection.x < 0)
         {
             transform.localScale = new Vector2(-scale, scale);
+            healthRing.transform.localScale = new Vector2(-(scale / Mathf.Abs(scale)) * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
         }
         else if (inputDirection.x > 0)
         {
             transform.localScale = new Vector2(scale, scale);
+            healthRing.transform.localScale = new Vector2((scale / Mathf.Abs(scale)) * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
         }
     }
+    //TODO: Temporary function to test out swapping weapons, later it will be done by equipping weapons using UI
     private void HandleSwordSwap()
     {
         if (swapCooldownCounter > 0) { swapCooldownCounter -= Time.deltaTime; }
-        if (Input.GetButton("Attack2") && swapCooldownCounter <= 0f)
+        if (Input.GetButton("Swap") && swapCooldownCounter <= 0f)
         {
             swapCooldownCounter = swapCooldown;
-            if (swordEquiped == "Sword1")
+            if (swordEquiped == "Sword3")
             {
                 Debug.Log("To sword2");
                 SwapSword("Sword2");
             }
             else
             {
-                Debug.Log("To sword1");
-                SwapSword("Sword1");
+                Debug.Log("To sword3");
+                SwapSword("Sword3");
             }
         }
     }
+    //TODO: Some sword animations will require different perspectives of weapons, therefore we need all variations of images
+    //TODO: A useful system would be to preload these images so they can easily be used within animations
+    private Sprite SwordDefault;
+    private Sprite SwordBlock;
+    //Swaps sword sprites to one with the given name
     void SwapSword(string newSword)
     {
         swordEquiped = newSword;
-        sprites = Resources.LoadAll<Sprite>("Swords/" + newSword);
+        //TODO: Need to validate if sword exists, and also preload weapons
+        SwordDefault = Resources.Load<Sprite>("Swords/" + newSword + "/Default");
+        SwordBlock = Resources.Load<Sprite>("Swords/" + newSword + "/Block");
     }
 
-    private void HandleAttack()
-    {
-        if (!playerStats.Combat.AttackCooldownCounter.Passed)
-            playerStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
-
-        if (Input.GetButton("Attack1") && playerStats.Combat.AttackCooldownCounter.Passed)
+    float BlockCooldown = 0f;
+    float BlockCooldownCounter = 0f;
+    void HandleParryBlock()
+    {//Go into block state on input
+        if (BlockCooldownCounter > 0) { BlockCooldownCounter -= Time.deltaTime; }
+        if (Input.GetButton("Attack2") && BlockCooldownCounter <= 0)
         {
+
+            state = State.Blocking;
             rb.velocity = Vector2.zero;
-            bodyAnimator.SetTrigger("Attack2");
-            playerStats.Combat.AttackCooldownCounter.Reset(1 / playerStats.Combat.AttackSpeed.Value);
         }
     }
 
-
     void HandleDodgeRoll()
     {
+        //Count down roll cooldown
         if (!playerStats.RollCooldownCounter.Passed)
             playerStats.RollCooldownCounter.PassTime(Time.deltaTime);
-
+        //On input start rolling
         if (Input.GetButton("Jump") && playerStats.RollCooldownCounter.Passed)
         {
             bodyAnimator.SetTrigger("Roll");
@@ -147,26 +165,133 @@ public class PlayerController : EntityController
             state = State.DodgeRoll;
         }
     }
-    [SerializeField] private float rollSpeed = 3f;
-    void HandleDodgeRollMotion()
-    {
-        rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
-        /*if (transform.localScale.x < 0)
-        {
-            transform.position += new Vector3(-1, 0) * rollSpeed * Time.deltaTime;
-        }
-        else
-        {
-            transform.position += new Vector3(1, 0) * rollSpeed * Time.deltaTime;
-        }*/
 
+    //================================================================================
+    //State Attack Functions
+    //================================================================================
+
+
+    //Consecutive attacks
+    void HandleNextAttack()
+    {
+        //Count down attack cooldown
+        if (!playerStats.Combat.AttackCooldownCounter.Passed)
+            playerStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
+        //If no cooldown and attack pressed
+        if (Input.GetButton("Attack1") && playerStats.Combat.AttackCooldownCounter.Passed)
+        {//Ready up next attack
+            rb.velocity = Vector2.zero;
+            state = State.Attack;
+            canMove = false;
+            attacks.ReceiveInput();
+        }
+        //If attack ready then trigger next attack
+        if (attacks.ReadyForNextAttack())
+            bodyAnimator.SetTrigger(attacks.GetNextAttack());
     }
-    public void EndRoll(int par)
+
+
+
+    //Moves forward in a certain portion of attack animation
+    void HandleAttackLunge()
+    {
+        float attackLungeSpeed = 1f;
+        if (base.attackLunging)
+            rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * attackLungeSpeed, 0);
+        else
+            rb.velocity = Vector2.zero;
+    }
+    //Allows player to move after attack swing but still in attack state
+    void HandleQuickMove()
+    {
+        if (!canMove || attacks.ReadyForNextAttack()) { return; }
+        inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
+        if (inputDirection.magnitude > 0.01)
+        {
+            bodyAnimator.SetTrigger("Default");
+            EndAttack();
+        }
+    }
+
+    //--------------------------------------------------------------------------------
+    //Animation Events
+    //--------------------------------------------------------------------------------
+
+    //Called: Stage of attack starting
+    //Sets sword image
+    public void StartAttack() { swordSR.sprite = SwordDefault; }
+    //Called: End of attack animation, without transition to another attack
+    //Sets attacks back to the first attack and makes the sword invisible
+    public override void EndAttack()
     {
         canMove = true;
-        state = State.Normal;
+        state = State.Default;
+        attacks.HardReset();
+        playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
+    }
+    //Called: Stage of the attack animation which you can input to trigger another attack
+    public void ReadyForAttackInput()
+    {
+        attacks.ReadyNextInput();
+    }
+    //Called: Stage of the attack animation which can transition to another attack
+    //Sets boolean true for transition stage
+    public void ReadyForNextAttack()
+    {
+        canMove = true;
+        attacks.CanDoNextAttack();
     }
 
+    //================================================================================
+    //State: DodgeRoll Functions
+    //================================================================================
+
+
+    [SerializeField] private float rollSpeed = 3f; //TODO: Put into stats object
+    void HandleDodgeRollMotion()
+    {
+        //TODO: Allow dodge roll in direction of motion
+        rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
+    }
+    //Ends roll: called by animation trigger
+    public override void EndRoll()
+    {
+        canMove = true;
+        state = State.Default;
+    }
+
+    //================================================================================
+    //State Block-Parry Functions
+    //================================================================================
+    float ParryWindowCooldown = 1f;
+    float ParryWindowCooldownCounter = 0f;
+    void HandleParryBlocking()
+    {
+        if (Input.GetButton("Attack2"))
+        {//Start blocking in input
+            swordSR.sprite = SwordBlock;
+            bodyAnimator.SetBool("Blocking", true);
+            ParryWindowCooldownCounter = ParryWindowCooldown;
+        }
+        //Count down parry window cooldown
+        if (ParryWindowCooldownCounter <= 0)
+            ParryWindowCooldownCounter -= Time.deltaTime;
+
+        if (Input.GetButtonUp("Attack2"))
+        {//Stop blocking when input up
+            bodyAnimator.SetBool("Blocking", false);
+            if (ParryWindowCooldownCounter > 0)
+            {//If let go within parry window -> trigger parry
+                bodyAnimator.SetTrigger("Parry");
+                swordSR.sprite = SwordDefault;
+                state = State.Parry;
+            }
+        }
+    }
+
+    //================================================================================
+    //Player hitting enemy
+    //================================================================================
     [SerializeField] private LayerMask enemyLayers;
     //So far the only trigger is the collider around the sword when swinging
     void OnTriggerEnter2D(Collider2D collider)
@@ -175,54 +300,114 @@ public class PlayerController : EntityController
 
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
-            Debug.Log("Hit");
-            collider.gameObject.GetComponent<EnemyHitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value });
+            float swordDamage = 50f;
+            //Player hitting enemy
+            //collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value }, this);
+            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = swordDamage }, this);
         }
     }
 
-
+    //================================================================================
+    //Player collisions
+    //================================================================================
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 8)
-        {
+        if (collision.gameObject.layer == 9) //Ignore player's second collider
+        { //2D colliders used to prevent entities pushing each other
             Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
         }
     }
 
-
-    public IEnumerator Knockback(float knockbackDuration, float knockbackPower, Vector2 objPos)
+    //================================================================================
+    //Player damage
+    //================================================================================
+    public override void TakeDamage(DamageReport dr, EntityController dealer)
     {
-        //bodyAnimator.SetTrigger("Knockback");
-        state = State.Knockback;
-        canMove = false;
-        Vector2 direction = (objPos - ((Vector2)transform.position + GetComponent<Collider2D>().offset)).normalized;
-        rb.AddForce(-direction * knockbackPower, ForceMode2D.Impulse);
-        yield return new WaitForSeconds(knockbackDuration);
-        rb.velocity = Vector2.zero;
-        canMove = true;
-        state = State.Normal;
+        if (state == State.Blocking)
+        {
+            bodyAnimator.SetBool("Blocking", false);
+            BlockCooldownCounter = BlockCooldown;
+            Block();
+            dealer.Block();
+            return;
+        }
+        if (state == State.Parry)
+        {
+            dealer.Parried();
+            return;
+        }
+        if (invulnerable) { return; }
+        swordSR.sprite = null;
+        base.TakeDamage(dr, dealer);
     }
 
-    private Sprite sword1;
-    public void DisplaySword1(int par)
+    public override void EndHit()
     {
-        state = State.Attack;
-        sr.sprite = sprites[0];
+        base.EndHit();
+        attacks.HardReset();
     }
-    private Sprite sword2;
-    public void DisplaySword2(int par)
+    public override void EndDie()
     {
-        sr.sprite = sprites[1];
-    }
-    private Sprite sword3;
-    public void DisplaySword3(int par)
-    {
-        sr.sprite = sprites[2];
+        //TODO: Player dies
     }
 
-    public void DisplayNothing(int par)
+}
+
+
+
+
+//Used to handle consecutive attacks
+public class MultiAttacks
+{
+    private bool nextInputReady;
+    private bool inputReceived;
+    private bool canDoNextAttack;
+
+    private int nextAttackIndex = 0;
+    private string[] attacks;
+
+    public MultiAttacks(string[] attacks)
     {
-        state = State.Normal;
-        sr.sprite = null;
+        this.attacks = attacks;
+        HardReset();
     }
+
+    //Ready to receive input for next attack
+    public void ReadyNextInput()
+    {
+        nextInputReady = true;
+        nextAttackIndex = Mathf.Min(attacks.Length - 1, nextAttackIndex + 1);
+    }
+
+    //Next attack input is received when it is ready to be received
+    public void ReceiveInput() { inputReceived = nextInputReady; }
+    //Triggered for when next attack can happen in the animation
+    public void CanDoNextAttack() { canDoNextAttack = true; }
+    //When input for next attack is received and at the transition stage of the animation
+    public bool ReadyForNextAttack() { return inputReceived && canDoNextAttack; }
+    //Gives string of the next attack and setsup for next attack
+    public string GetNextAttack()
+    {
+        Reset();
+        if (nextAttackIndex < attacks.Length)
+            return attacks[nextAttackIndex];
+        return null;
+    }
+
+    //Reset for next attack
+    private void Reset()
+    {
+        nextInputReady = false;
+        inputReceived = false;
+        canDoNextAttack = false;
+    }
+    //Reset back ready for first attack
+    public void HardReset()
+    {
+        nextInputReady = true;
+        canDoNextAttack = true;
+        inputReceived = false;
+        nextAttackIndex = 0;
+    }
+
 }

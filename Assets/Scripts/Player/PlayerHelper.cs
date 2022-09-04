@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHelper : MonoBehaviour
+public class PlayerHelper : Helper
 {
-    [SerializeField] private PlayerController player;
-    
-    public void DisplaySword1(int par){player.DisplaySword1(par);}
-    public void DisplaySword2(int par){player.DisplaySword2(par);}
-    public void DisplaySword3(int par){player.DisplaySword3(par);}
-    public void DisplayNothing(int par){player.DisplayNothing(par);}
+    private PlayerController player
+    {
+        get { return (PlayerController)entity; }
+    }
 
-
-    public void EndRoll(int par){player.EndRoll(par);}
+    public void StartAttack(int par) { player.StartAttack(); }
+    public void ReadyForAttackInput(int par) { player.ReadyForAttackInput(); }
+    public void ReadyForNextAttack(int par) { player.ReadyForNextAttack(); }
 }

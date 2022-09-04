@@ -5,6 +5,8 @@ using UnityEngine;
 public class CombatStats
 {
     [field: SerializeField] public Stat AttackSpeed { get; private set; }
+    [field: SerializeField] public Stat AttackRange { get; private set; }
+
     [field: SerializeField] public Counter AttackCooldownCounter { get; private set; }
     [field: SerializeField] public Stat Damage { get; private set; }
 }
@@ -23,7 +25,7 @@ public class EntityStats : MonoBehaviour
         CurrentHealth = MaxHealth.Value;
     }
 
-    public void TakeDamage(DamageReport dr)
+    public void TakeDamage(DamageReport dr, EntityController dealer)
     {
         CurrentHealth -= dr.damage * armourDamageReduction(this.Armour.Value);
     }
