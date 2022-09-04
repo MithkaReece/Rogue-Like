@@ -27,28 +27,22 @@ public class BaseEnemyController : EnemyController
 
                 break;
             case State.Attack:
-
-                HandleAttack();
+                HandleAttackLunge();
                 break;
         }
 
     }
-    void HandleAttack()
+    void HandleAttackLunge()
     {
-        if (base.AES.EndAttack)
-        {
-            state = State.Default;
-            enemyStats.Combat.AttackCooldownCounter.Reset(1f / enemyStats.Combat.AttackSpeed.Value);
-            base.AES.ResetAttack();
-        }
-
-        if (base.AES.StartLunge && !base.AES.EndLunge)
+        if (attackLunging)
         {
             rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * intendedAttack.LungeSpeed, 0);
         }
         else
             rb.velocity = Vector2.zero;
     }
+
+
 
     void BasicAI()
     {

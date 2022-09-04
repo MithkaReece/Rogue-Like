@@ -37,7 +37,6 @@ public class PlayerController : EntityController
 
         swordSR = sword.GetComponent<SpriteRenderer>();
         playerStats = GetComponent<PlayerStats>();
-        entityStats = GetComponent<PlayerStats>();
         //Equip first weapon
         SwapSword(swordEquiped);
     }
@@ -143,7 +142,6 @@ public class PlayerController : EntityController
     float BlockCooldownCounter = 0f;
     void HandleParryBlock()
     {//Go into block state on input
-        //Debug.Log(BlockCooldownCounter);
         if (BlockCooldownCounter > 0) { BlockCooldownCounter -= Time.deltaTime; }
         if (Input.GetButton("Attack2") && BlockCooldownCounter <= 0)
         {
@@ -194,12 +192,11 @@ public class PlayerController : EntityController
 
 
 
-    private bool attackLunging = false; //Controlled by animation triggers
-    private float attackLungeSpeed = 1f; //TODO: Put into stats object
     //Moves forward in a certain portion of attack animation
     void HandleAttackLunge()
     {
-        if (attackLunging)
+        float attackLungeSpeed = 1f;
+        if (base.attackLunging)
             rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * attackLungeSpeed, 0);
         else
             rb.velocity = Vector2.zero;
@@ -223,13 +220,9 @@ public class PlayerController : EntityController
     //Called: Stage of attack starting
     //Sets sword image
     public void StartAttack() { swordSR.sprite = SwordDefault; }
-    //Called: Stage when attack starts lunging (moving)
-    public void StartAttackLunge() { attackLunging = true; }
-    //Called: Stage when attack lunge ends (stops moving)
-    public void EndAttackLunge() { attackLunging = false; }
     //Called: End of attack animation, without transition to another attack
     //Sets attacks back to the first attack and makes the sword invisible
-    public void EndAttack()
+    public override void EndAttack()
     {
         canMove = true;
         state = State.Default;
@@ -261,7 +254,7 @@ public class PlayerController : EntityController
         rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * rollSpeed, 0);
     }
     //Ends roll: called by animation trigger
-    public void EndRoll()
+    public override void EndRoll()
     {
         canMove = true;
         state = State.Default;
@@ -296,24 +289,6 @@ public class PlayerController : EntityController
         }
     }
 
-    void StopBlocking()
-    {
-        bodyAnimator.SetBool("Blocking", false);
-        BlockCooldownCounter = BlockCooldown;
-        bodyAnimator.SetTrigger("Block");
-        state = State.Default;
-    }
-
-    //--------------------------------------------------------------------------------
-    //Animation Events
-    //--------------------------------------------------------------------------------
-    //Called: End of parry animation
-    public void EndParry()
-    {
-        state = State.Default;
-    }
-
-
     //================================================================================
     //Player hitting enemy
     //================================================================================
@@ -326,7 +301,6 @@ public class PlayerController : EntityController
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
             //Player hitting enemy
-            Debug.Log("Hit");
             collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value }, this);
         }
     }
@@ -362,7 +336,6 @@ public class PlayerController : EntityController
     //================================================================================
     //Player damage
     //================================================================================
-    private bool invulnerable;
     public override void TakeDamage(DamageReport dr, EntityController dealer)
     {
         if (state == State.Blocking)
@@ -379,36 +352,20 @@ public class PlayerController : EntityController
             return;
         }
         if (invulnerable) { return; }
-        base.TakeDamage(dr, dealer);
-        rb.velocity = Vector2.zero;
-
-        //Debug.Log("p: " + playerStats.CurrentHealth);
         swordSR.sprite = null;
-        if (playerStats.CurrentHealth <= 0)
-        {
-            state = State.Die;
-        }
-        else
-        {
-            state = State.Hit;
-            bodyAnimator.SetTrigger("Hit");
-        }
+        base.TakeDamage(dr, dealer);
     }
 
-    public void EndHit()
+    public override void EndHit()
     {
-        state = State.Default;
+        base.EndHit();
         attacks.HardReset();
     }
+    public override void EndDie()
+    {
+        //TODO: Player dies
+    }
 
-    public void StartInv()
-    {
-        invulnerable = true;
-    }
-    public void EndInv()
-    {
-        invulnerable = false;
-    }
 }
 
 

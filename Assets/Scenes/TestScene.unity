@@ -128,6 +128,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2167714494123728709, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
   m_PrefabInstance: {fileID: 963795820}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &55578896 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7818806211370284725, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
+  m_PrefabInstance: {fileID: 4776006602582102783}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d23a6c48411e4b3eb6e8a9e7b442ce6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &81886270
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,6 +465,10 @@ PrefabInstance:
       propertyPath: <MaxHealth>k__BackingField.currentValue
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 1900625222, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
+      propertyPath: entity
+      value: 
+      objectReference: {fileID: 1366380805}
     - target: {fileID: 2698467642931595888, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -8652,6 +8667,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1739412928, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
+      propertyPath: entity
+      value: 
+      objectReference: {fileID: 55578896}
     - target: {fileID: 607807276786642508, guid: bcf4b76cd2407445ba845b401f5c7671, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.3

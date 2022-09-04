@@ -12,6 +12,7 @@ public class EntityController : MonoBehaviour
     protected EntityStats entityStats;
     public EntityObserver EntityObserver { get; } = new EntityObserver();
 
+
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -42,17 +43,18 @@ public class EntityController : MonoBehaviour
 
     public virtual void TakeDamage(DamageReport dr, EntityController dealer)
     {
+        rb.velocity = Vector2.zero;
         entityStats.TakeDamage(dr, dealer);
 
-        if (repos == poise)
-        {
-            state = State.Stun;
-            bodyAnimator.SetTrigger("Stun");
-        }
-        else if (entityStats.CurrentHealth <= 0)
+        if (entityStats.CurrentHealth <= 0)
         {
             state = State.Die;
             bodyAnimator.SetTrigger("Die");
+        }
+        else if (repos == poise)
+        {
+            state = State.Stun;
+            bodyAnimator.SetTrigger("Stun");
         }
         else
         {
@@ -72,10 +74,7 @@ public class EntityController : MonoBehaviour
         bodyAnimator.SetTrigger("Block");
     }
 
-    public void StopBlocking()
-    {
-        state = State.Default;
-    }
+
 
     public virtual void Parried()
     {
@@ -199,19 +198,57 @@ public class EntityController : MonoBehaviour
 
 
 
-    protected bool StunMovement;
-    public void StartStun()
+
+
+
+
+    //-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
+
+    protected bool attackLunging;
+    //Called: Stage when attack starts lunging (moving)
+    public virtual void StartAttackLunge() { attackLunging = true; }
+    //Called: Stage when attack lunge ends (stops moving)
+    public virtual void EndAttackLunge() { attackLunging = false; }
+    public virtual void EndAttack()
     {
-        StunMovement = true;
+        state = State.Default;
+        entityStats.Combat.AttackCooldownCounter.Reset(1f / entityStats.Combat.AttackSpeed.Value);
     }
 
-    public void EndStunMovement()
+    public virtual void EndHit() { state = State.Default; }
+    public virtual void EndDie()
     {
-        StunMovement = false;
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        transform.Find("Collision Blocker").GetComponent<CapsuleCollider2D>().enabled = false;
+        transform.Find("HitBox").GetComponent<CapsuleCollider2D>().enabled = false;
+        transform.Find("HealthRing").GetComponent<SpriteRenderer>().enabled = false;
+        transform.Find("HealthRing").Find("ReposRing").GetComponent<SpriteRenderer>().enabled = false;
+        this.enabled = false;
     }
+
+    protected bool StunMovement;
+    public void StartStun() { StunMovement = true; }
+
+    public void EndStunMovement() { StunMovement = false; }
     public void EndStun()
     {
         state = State.Default;
         bodyAnimator.SetBool("Stun", false);
     }
+
+    public void StopBlocking() { state = State.Default; }
+
+
+
+    protected bool invulnerable;
+    public void StartInv() { invulnerable = true; }
+    public void EndInv() { invulnerable = false; }
+    //TODO: Do for enemy as well as player
+    public virtual void EndRoll() { }
+
+    public void EndParry() { state = State.Default; }
+
+
 }
