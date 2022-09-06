@@ -42,24 +42,35 @@ public class PlayerController : EntityController
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         switch (state)
         {
             case State.Default:
                 //Hides sword when not using it
                 swordSR.sprite = null;
-                HandleWalk();
                 LeftRightFlip();
-                HandleSwordSwap();
+                break;
+        }
+    }
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        switch (state)
+        {
+            case State.Default:
                 HandleNextAttack();
+                HandleWalk();
                 HandleParryBlock();
+                HandleSwordSwap();
                 HandleDodgeRoll();
                 break;
             case State.Attack:
                 HandleNextAttack();
-                HandleAttackLunge();
                 HandleQuickMove();
+                HandleAttackLunge();
                 break;
             case State.DodgeRoll:
                 HandleDodgeRollMotion();
@@ -70,17 +81,7 @@ public class PlayerController : EntityController
         }
     }
 
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
-
-    //================================================================================
-    //State: Default Functions
-    //================================================================================
-
-
-
+    #region Default State Functions
     [SerializeField] private float moveSpeed; //TODO: Should be moved into player stats
     private Vector2 inputDirection;
     void HandleWalk()
@@ -165,10 +166,9 @@ public class PlayerController : EntityController
             state = State.DodgeRoll;
         }
     }
+    #endregion
+    #region Attack State Functions
 
-    //================================================================================
-    //State Attack Functions
-    //================================================================================
 
 
     //Consecutive attacks
@@ -242,10 +242,8 @@ public class PlayerController : EntityController
         attacks.CanDoNextAttack();
     }
 
-    //================================================================================
-    //State: DodgeRoll Functions
-    //================================================================================
-
+    #endregion
+    #region DodgeRoll State Functions
 
     [SerializeField] private float rollSpeed = 3f; //TODO: Put into stats object
     void HandleDodgeRollMotion()
@@ -260,9 +258,9 @@ public class PlayerController : EntityController
         state = State.Default;
     }
 
-    //================================================================================
-    //State Block-Parry Functions
-    //================================================================================
+    #endregion
+    #region Block-Parry State Functions
+
     float ParryWindowCooldown = 1f;
     float ParryWindowCooldownCounter = 0f;
     void HandleParryBlocking()
@@ -288,10 +286,9 @@ public class PlayerController : EntityController
             }
         }
     }
+    #endregion
+    #region Player hitting enemy
 
-    //================================================================================
-    //Player hitting enemy
-    //================================================================================
     [SerializeField] private LayerMask enemyLayers;
     //So far the only trigger is the collider around the sword when swinging
     void OnTriggerEnter2D(Collider2D collider)
@@ -306,10 +303,8 @@ public class PlayerController : EntityController
             collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = swordDamage }, this);
         }
     }
-
-    //================================================================================
-    //Player collisions
-    //================================================================================
+    #endregion
+    #region Player collisions
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.layer == 9) //Ignore player's second collider
@@ -317,10 +312,8 @@ public class PlayerController : EntityController
             Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
         }
     }
-
-    //================================================================================
-    //Player damage
-    //================================================================================
+    #endregion
+    #region Player damage
     public override void TakeDamage(DamageReport dr, EntityController dealer)
     {
         if (state == State.Blocking)
@@ -350,7 +343,7 @@ public class PlayerController : EntityController
     {
         //TODO: Player dies
     }
-
+    #endregion
 }
 
 
