@@ -6,6 +6,7 @@ public class GameData
 {
     public float health;
     public int kills;
+    public int deaths;
 
     public GameData()
     {

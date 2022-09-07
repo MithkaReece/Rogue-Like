@@ -55,6 +55,9 @@ public class PlayerController : EntityController
             case State.Blocking:
                 HandleParryBlocking();
                 break;
+            case State.Die:
+                EndDie();
+                break;
         }
         if (Input.GetButton("TabSave"))
         {
@@ -355,6 +358,9 @@ public class PlayerController : EntityController
     }
     public override void EndDie()
     {
+        playerStats.ResetOnDeath();
+        transform.position = Vector2.zero;
+        state = State.Default;
         //TODO: Player dies
     }
     #endregion

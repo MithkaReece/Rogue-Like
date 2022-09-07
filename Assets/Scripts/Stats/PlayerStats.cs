@@ -9,15 +9,24 @@ public class PlayerStats : EntityStats, IDataPersistence
 
     private int Kills;
     public void IncrementKills() { Kills++; }
+    private int Deaths;
+
+    public void ResetOnDeath()
+    {
+        Deaths++;
+        CurrentHealth = MaxHealth.Value;
+    }
 
     public void LoadData(GameData data)
     {
         CurrentHealth = data.health;
         Kills = data.kills;
+        Deaths = data.deaths;
     }
     public void SaveData(ref GameData data)
     {
         data.health = CurrentHealth;
         data.kills = Kills;
+        data.deaths = Deaths;
     }
 }

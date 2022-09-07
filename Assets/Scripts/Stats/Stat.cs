@@ -37,7 +37,7 @@ public class Stat
 
     private float CalculateCurrentValue()
     {
-        Debug.Log(modifiers);
+        //Debug.Log(modifiers);
         modifiers.Sort((a, b) => a.Order.CompareTo(b.Order));
 
         float currentValue = BaseValue;

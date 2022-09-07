@@ -177,7 +177,7 @@ public class EntityController : MonoBehaviour
         if (entityStats.CurrentHealth <= 0)
         {
             state = State.Die;
-            bodyAnimator.SetTrigger("Die");
+            //bodyAnimator.SetTrigger("Die");
             dealer.GotKill();
         }
         else if (repos == poise)
