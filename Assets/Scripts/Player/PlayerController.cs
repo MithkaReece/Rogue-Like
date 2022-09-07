@@ -53,6 +53,16 @@ public class PlayerController : EntityController
                 LeftRightFlip();
                 break;
         }
+        if (Input.GetButton("TabSave"))
+        {
+            DataPersistenceManager.instance.SaveGame();
+            Debug.Log("Save");
+        }
+        if (Input.GetButton("PLoad"))
+        {
+            DataPersistenceManager.instance.LoadGame();
+            Debug.Log("Load");
+        }
     }
 
     protected override void FixedUpdate()
@@ -168,9 +178,6 @@ public class PlayerController : EntityController
     }
     #endregion
     #region Attack State Functions
-
-
-
     //Consecutive attacks
     void HandleNextAttack()
     {
