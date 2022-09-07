@@ -178,6 +178,7 @@ public class EntityController : MonoBehaviour
         {
             state = State.Die;
             bodyAnimator.SetTrigger("Die");
+            dealer.GotKill();
         }
         else if (repos == poise)
         {
@@ -212,6 +213,11 @@ public class EntityController : MonoBehaviour
     {
         state = State.Stun;
         bodyAnimator.SetTrigger("Stun");
+    }
+
+    public virtual void GotKill()
+    {
+
     }
 
     #region Animation Events

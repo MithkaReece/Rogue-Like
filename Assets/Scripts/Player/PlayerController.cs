@@ -52,6 +52,9 @@ public class PlayerController : EntityController
                 swordSR.sprite = null;
                 LeftRightFlip();
                 break;
+            case State.Blocking:
+                HandleParryBlocking();
+                break;
         }
         if (Input.GetButton("TabSave"))
         {
@@ -85,9 +88,7 @@ public class PlayerController : EntityController
             case State.DodgeRoll:
                 HandleDodgeRollMotion();
                 break;
-            case State.Blocking:
-                HandleParryBlocking();
-                break;
+
         }
     }
 
@@ -156,7 +157,9 @@ public class PlayerController : EntityController
         if (BlockCooldownCounter > 0) { BlockCooldownCounter -= Time.deltaTime; }
         if (Input.GetButton("Attack2") && BlockCooldownCounter <= 0)
         {
-
+            swordSR.sprite = SwordBlock;
+            bodyAnimator.SetBool("Blocking", true);
+            ParryWindowCooldownCounter = ParryWindowCooldown;
             state = State.Blocking;
             rb.velocity = Vector2.zero;
         }
@@ -272,24 +275,23 @@ public class PlayerController : EntityController
     float ParryWindowCooldownCounter = 0f;
     void HandleParryBlocking()
     {
-        if (Input.GetButton("Attack2"))
-        {//Start blocking in input
-            swordSR.sprite = SwordBlock;
-            bodyAnimator.SetBool("Blocking", true);
-            ParryWindowCooldownCounter = ParryWindowCooldown;
-        }
         //Count down parry window cooldown
-        if (ParryWindowCooldownCounter <= 0)
+        if (ParryWindowCooldownCounter >= 0)
             ParryWindowCooldownCounter -= Time.deltaTime;
 
         if (Input.GetButtonUp("Attack2"))
         {//Stop blocking when input up
             bodyAnimator.SetBool("Blocking", false);
+            BlockCooldownCounter = BlockCooldown;
             if (ParryWindowCooldownCounter > 0)
             {//If let go within parry window -> trigger parry
                 bodyAnimator.SetTrigger("Parry");
                 swordSR.sprite = SwordDefault;
                 state = State.Parry;
+            }
+            else
+            {
+                state = State.Default;
             }
         }
     }
@@ -309,6 +311,11 @@ public class PlayerController : EntityController
             //collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value }, this);
             collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = swordDamage }, this);
         }
+    }
+
+    public override void GotKill()
+    {
+        playerStats.IncrementKills();
     }
     #endregion
     #region Player collisions
