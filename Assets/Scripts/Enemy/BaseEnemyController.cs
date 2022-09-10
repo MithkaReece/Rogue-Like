@@ -7,7 +7,7 @@ public class BaseEnemyController : EnemyController
 {
     private Attack intendedAttack;
     public Attack[] AvailableAttacks = new Attack[]{
-        new Attack("Attack1",0.8f, 1f, 1f, 1f)
+        new Attack("Attack1",0.6f, 1f, 1f, 1f)
     };
 
     protected override void Start()
@@ -59,7 +59,7 @@ public class BaseEnemyController : EnemyController
 
     void FacePlayer()
     {
-        float scale = 2f;
+        float scale = 1f;
         Vector2 playerDirection = player.transform.position - transform.position;
         if (playerDirection.x > 0)
             transform.localScale = new Vector2(scale, scale);
