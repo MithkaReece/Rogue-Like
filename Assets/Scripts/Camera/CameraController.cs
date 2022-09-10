@@ -14,7 +14,8 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        keepPlayerInRect();
+        transform.position = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);
+        //keepPlayerInRect();
     }
 
     //TODO: Could instead use percentage of the screen however would need to
