@@ -17,8 +17,8 @@ public class WallCustomRuleTile : RuleTile<WallCustomRuleTile.Neighbor>
         public const int NotSpecifiedPlus = 2;
         public const int This = 3;
         public const int NotThis = 4;
-        public const int Any = 6;
         public const int Specified = 5;
+        public const int Any = 6;
         public const int Nothing = 7;
 
         //public const int Null = 3;
