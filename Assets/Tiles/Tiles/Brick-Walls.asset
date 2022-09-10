@@ -330,7 +330,7 @@ MonoBehaviour:
     - {x: 1, y: -1, z: 0}
     - {x: 0, y: -1, z: 0}
     m_RuleTransform: 0
-  - m_Id: 35
+  - m_Id: 47
     m_Sprites:
     - {fileID: 805456907, guid: c79a4075d40a645f4bf0bbd38b8a6729, type: 3}
     m_GameObject: {fileID: 0}
@@ -340,11 +340,9 @@ MonoBehaviour:
     m_Output: 0
     m_ColliderType: 1
     m_RandomTransform: 0
-    m_Neighbors: 050000000300000003000000
+    m_Neighbors: 05000000
     m_NeighborPositions:
     - {x: 0, y: 1, z: 0}
-    - {x: -1, y: 0, z: 0}
-    - {x: 1, y: 0, z: 0}
     m_RuleTransform: 0
   - m_Id: 2
     m_Sprites:
@@ -411,11 +409,9 @@ MonoBehaviour:
     m_Output: 0
     m_ColliderType: 1
     m_RandomTransform: 0
-    m_Neighbors: 050000000300000003000000
+    m_Neighbors: 05000000
     m_NeighborPositions:
     - {x: 0, y: -1, z: 0}
-    - {x: 1, y: 0, z: 0}
-    - {x: -1, y: 0, z: 0}
     m_RuleTransform: 0
   - m_Id: 3
     m_Sprites:
@@ -482,11 +478,9 @@ MonoBehaviour:
     m_Output: 0
     m_ColliderType: 1
     m_RandomTransform: 0
-    m_Neighbors: 050000000300000003000000
+    m_Neighbors: 05000000
     m_NeighborPositions:
     - {x: 1, y: 0, z: 0}
-    - {x: 0, y: -1, z: 0}
-    - {x: 0, y: 1, z: 0}
     m_RuleTransform: 0
   - m_Id: 4
     m_Sprites:
@@ -517,13 +511,13 @@ MonoBehaviour:
     m_Output: 0
     m_ColliderType: 1
     m_RandomTransform: 0
-    m_Neighbors: 0500000003000000030000000300000005000000
+    m_Neighbors: 0500000003000000030000000500000003000000
     m_NeighborPositions:
     - {x: -1, y: 0, z: 0}
-    - {x: 0, y: -1, z: 0}
     - {x: 0, y: 1, z: 0}
     - {x: 1, y: 0, z: 0}
     - {x: 1, y: -1, z: 0}
+    - {x: 0, y: -1, z: 0}
     m_RuleTransform: 0
   - m_Id: 43
     m_Sprites:
@@ -553,11 +547,9 @@ MonoBehaviour:
     m_Output: 0
     m_ColliderType: 1
     m_RandomTransform: 0
-    m_Neighbors: 050000000300000003000000
+    m_Neighbors: 05000000
     m_NeighborPositions:
     - {x: -1, y: 0, z: 0}
-    - {x: 0, y: -1, z: 0}
-    - {x: 0, y: 1, z: 0}
     m_RuleTransform: 0
   - m_Id: 5
     m_Sprites:
@@ -861,4 +853,4 @@ MonoBehaviour:
   tilesToConnect:
   - {fileID: 11400000, guid: 513f661b1ca744a8e942e05d0203bad5, type: 2}
   - {fileID: 11400000, guid: 5860b53e38a9f44949819de337b6c771, type: 2}
-  - {fileID: 11400000, guid: eae7f4b95e52c46e48a6c7d0738a2abb, type: 2}
+  - {fileID: 11400000, guid: 24c84a36f1a2a48faa9d5a7c3f545ec6, type: 2}
