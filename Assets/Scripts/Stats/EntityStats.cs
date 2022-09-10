@@ -14,7 +14,7 @@ public class CombatStats
 public class EntityStats : MonoBehaviour
 {
     [field: SerializeField] public Stat MaxHealth { get; private set; }
-    [field: SerializeField] public double CurrentHealth { get; private set; }
+    [field: SerializeField] public float CurrentHealth { get; protected set; }
     [field: SerializeField] public Stat HealthRegen { get; private set; }
     [field: SerializeField] public Stat Armour { get; private set; }
     [field: SerializeField] public Stat MoveSpeed { get; private set; }
@@ -30,13 +30,15 @@ public class EntityStats : MonoBehaviour
         CurrentHealth -= dr.damage * armourDamageReduction(this.Armour.Value);
     }
 
-    public double percentageHealth()
+    public float percentageHealth()
     {
         return CurrentHealth / MaxHealth.Value;
     }
 
-    public static double armourDamageReduction(double armour)
+    public static float armourDamageReduction(float armour)
     {
         return 100 / (100 + armour);
     }
+
+
 }

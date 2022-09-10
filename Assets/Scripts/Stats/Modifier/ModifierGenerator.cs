@@ -22,7 +22,7 @@ public class ModifierGenerator
         return InstantiateModifier(this.numberGenerator.Generate());
     }
 
-    private IModifier InstantiateModifier(double value)
+    private IModifier InstantiateModifier(float value)
     {
         switch (modifierType)
         {

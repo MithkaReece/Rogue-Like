@@ -23,7 +23,7 @@ public class Counter
         currentValue = defaultValue;
     }
 
-    public void Reset(double newDefault) => Reset((float)newDefault);
+    //public void Reset(float newDefault) => Reset((float)newDefault);
 
     public void Reset(Stat newDefault)
     {

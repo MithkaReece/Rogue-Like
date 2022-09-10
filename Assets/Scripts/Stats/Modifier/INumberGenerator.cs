@@ -3,8 +3,8 @@ using System;
 [System.Serializable]
 public abstract class NumberGenerator
 {
-    public virtual double Generate()
+    public virtual float Generate()
     {
-        return default(double);
+        return default(float);
     }
 }
