@@ -5,19 +5,19 @@ using System;
 /// </summary>
 class Range : NumberGenerator
 {
-    public double min;
-    public double max;
+    public float min;
+    public float max;
 
-    public Range(double min, double max)
+    public Range(float min, float max)
     {
         this.min = min;
         this.max = max;
     }
 
-    public override double Generate()
+    public override float Generate()
     {
         Random rand = new Random();
 
-        return (rand.NextDouble() * (max - min) + min);
+        return (rand.Next() * (max - min) + min);
     }
 }

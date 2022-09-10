@@ -41,7 +41,7 @@ public class BaseEnemyController : EnemyController
         if (!enemyStats.Combat.AttackCooldownCounter.Passed)
             enemyStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
         Vector2 playerDirection = player.transform.position - transform.position;
-        double errorAmount = 0.2f;
+        float errorAmount = 0.2f;
         if (playerDirection.magnitude > intendedAttack.Range - errorAmount)
         {
             rb.velocity = playerDirection.normalized * (float)enemyStats.MoveSpeed.Value;

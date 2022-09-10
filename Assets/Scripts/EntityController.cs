@@ -73,7 +73,7 @@ public class EntityController : MonoBehaviour
     #region Health Ring Handling
     void UpdateHealthRing()
     {
-        double Percent = 100 * entityStats.CurrentHealth / entityStats.MaxHealth.Value;
+        float Percent = 100 * entityStats.CurrentHealth / entityStats.MaxHealth.Value;
         int index = 0;
         if (Percent < 90)
         {
@@ -197,7 +197,7 @@ public class EntityController : MonoBehaviour
         dr.causedBy.EntityObserver.OnDamageDealt(dr);
     }
 
-    void AddRepos(double damage)
+    void AddRepos(float damage)
     {
         repos = Mathf.Min(repos + (float)damage, poise);
         reposCountdownCounter = reposCountdown;

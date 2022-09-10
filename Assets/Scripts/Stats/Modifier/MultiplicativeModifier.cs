@@ -9,10 +9,10 @@ public class MultiplicativeModifier : Modifier
 {
     public override int Order { get; } = 1000;
 
-    public MultiplicativeModifier(double value) : base(value) { }
-    public MultiplicativeModifier(double value, StatType statType) : base(value, statType) { }
+    public MultiplicativeModifier(float value) : base(value) { }
+    public MultiplicativeModifier(float value, StatType statType) : base(value, statType) { }
 
-    public override double Calculate(double value)
+    public override float Calculate(float value)
     {
         return value * (this.value as dynamic);
     }
