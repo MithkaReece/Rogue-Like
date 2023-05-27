@@ -310,10 +310,17 @@ public class PlayerController : EntityController
 
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
+            //TODO: Use sword's actual damage
             float swordDamage = 50f;
             //Player hitting enemy
             //collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = playerStats.Combat.Damage.Value }, this);
-            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = swordDamage }, this);
+            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(
+                new DamageReport
+                {
+                    causedBy = this,
+                    target = opponent,
+                    damage = swordDamage
+                }, this);
         }
     }
 
@@ -367,6 +374,21 @@ public class PlayerController : EntityController
     #endregion
 }
 
+
+public class Weapon
+{
+    private SpriteRenderer SR;
+    private string WeaponEquiped;
+    private GameObject weaponObj;
+
+    public Weapon()
+    {
+        //Retrieve sprite
+        //Select default weapon
+        //Get weapon object (child object), given Controller
+    }
+
+}
 
 
 

@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class Helper : MonoBehaviour
 {
-    [SerializeField] protected EntityController entity;
+    protected EntityController entity;
+    protected virtual void Start()
+    {
+        entity = GetComponentInParent<EntityController>();
+    }
+
     public void StartAttackLunge(int par) { entity.StartAttackLunge(); }
     public void EndAttackLunge(int par) { entity.EndAttackLunge(); }
     public void EndAttack(int par) { entity.EndAttack(); }

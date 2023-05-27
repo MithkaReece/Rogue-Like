@@ -5,7 +5,6 @@ using System.Linq;
 
 public class EntityController : MonoBehaviour
 {
-    protected GameObject body;
     protected GameObject healthRing;
 
     protected Rigidbody2D rb;
@@ -20,9 +19,9 @@ public class EntityController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         entityStats = GetComponent<EntityStats>();
-        body = transform.Find("Body").gameObject;
+        GameObject body = transform.GetChild(0).gameObject;
         bodyAnimator = body.GetComponent<Animator>();
-        healthRing = transform.Find("HealthRing").gameObject;
+        healthRing = transform.GetChild(3).gameObject;
         repos = new Repos(healthRing, entityStats);
     }
 
@@ -60,22 +59,16 @@ public class EntityController : MonoBehaviour
     {
         float stunSpeed = 1f;
         if (StunMovement)
-        {
             rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * -stunSpeed, 0);
-        }
         else
-        {
             rb.velocity = Vector2.zero;
-        }
     }
     #endregion
     #region Enity Damage
     public virtual void TakeDamage(DamageReport dr, EntityController dealer)
     {
         if (repos.MaxRepos())
-        {
             dr.damage *= 4;
-        }
         rb.velocity = Vector2.zero;
         entityStats.TakeDamage(dr, dealer);
 
@@ -196,9 +189,7 @@ public class Repos
     {
         //Decay repos
         if (reposCooldownCounter <= 0f)
-        {
             repos = Mathf.Max(0, repos - Stats.ReposRegenSpeed * Time.deltaTime);
-        }
         reposCooldownCounter = Mathf.Max(0, reposCooldownCounter - Time.deltaTime);
         //Update ring sprite
         //TODO: Account for poise = 0
@@ -209,13 +200,9 @@ public class Repos
     public void AddRepos(float damage)
     {
         if (MaxRepos()) //Reset after damaging at max
-        {
             repos = 0f;
-        }
         else //Increase repos based on damage taken
-        {
             repos = Mathf.Min(repos + (float)damage, Stats.Poise);
-        }
         reposCooldownCounter = Stats.ReposCooldown;
     }
 }

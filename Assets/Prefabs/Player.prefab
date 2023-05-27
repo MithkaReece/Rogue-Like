@@ -116,7 +116,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2698467642931595888}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1011333362
 Rigidbody2D:
@@ -164,10 +164,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1011333358}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: caf6a681b51c8493883cd4ed6c3c92ef, type: 3}
+  m_Script: {fileID: 11500000, guid: dbbe0036b76c647308c34aa78df2976d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entity: {fileID: 2698467642931595889}
 --- !u!1 &1295545754
 GameObject:
   m_ObjectHideFlags: 0
@@ -199,7 +198,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2698467642931595888}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1295545757
 Rigidbody2D:
@@ -248,6 +247,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1776761807}
   - component: {fileID: 1776761808}
+  - component: {fileID: 8245745174975487170}
   m_Layer: 6
   m_Name: HealthRing
   m_TagString: Untagged
@@ -323,6 +323,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8245745174975487170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776761806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44e1823857bf64c42b9e049c82ebba12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2167714494123728709
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,7 +454,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4bf388b28fe0495bbf93fee359af541, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entity: {fileID: 2698467642931595889}
 --- !u!1 &2698467642931595900
 GameObject:
   m_ObjectHideFlags: 0
@@ -477,8 +488,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6383470839026555711}
-  - {fileID: 1295545755}
   - {fileID: 1011333359}
+  - {fileID: 1295545755}
   - {fileID: 1776761807}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -495,10 +506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ae19de5752c74828a4c4e922dfb3f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poise: 100
-  repos: 0
-  reposCountdown: 2
-  reposRegenSpeed: 20
+  entityStats: {fileID: 0}
   scale: 2
   swordEquiped: Sword3
   sword: {fileID: 1182178103}
@@ -537,7 +545,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2698467642931595900}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 831cae1d6cbcc47b4a7b2a48394804a1, type: 3}
+  m_Script: {fileID: 11500000, guid: 69699a914ac8345ec93baf87cfdeac48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   characterCollider: {fileID: 6461850834157789636}
@@ -573,7 +581,6 @@ MonoBehaviour:
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 100
     currentValue: 100
-  <CurrentHealth>k__BackingField: 100
   <HealthRegen>k__BackingField:
     <BaseValue>k__BackingField: 0
     currentValue: 0
@@ -595,6 +602,9 @@ MonoBehaviour:
     <Damage>k__BackingField:
       <BaseValue>k__BackingField: 50
       currentValue: 0
+  <Poise>k__BackingField: 0
+  <ReposRegenSpeed>k__BackingField: 0
+  <ReposCooldown>k__BackingField: 0
   <RollSpeed>k__BackingField:
     <BaseValue>k__BackingField: 3
     currentValue: 0

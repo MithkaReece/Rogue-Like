@@ -94,6 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1071372349}
   - component: {fileID: 1071372350}
+  - component: {fileID: 8192698060694098630}
   m_Layer: 6
   m_Name: HealthRing
   m_TagString: Untagged
@@ -169,6 +170,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8192698060694098630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071372348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44e1823857bf64c42b9e049c82ebba12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4461018379799629840
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,7 +385,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 676f58cd8993b4f09ad1e3fa7d6d3a8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entity: {fileID: 7818806211370284725}
 --- !u!1 &7818806211370284717
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,11 +472,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7818806211370284717}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 831cae1d6cbcc47b4a7b2a48394804a1, type: 3}
+  m_Script: {fileID: 11500000, guid: 69699a914ac8345ec93baf87cfdeac48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   characterCollider: {fileID: 7818806211370284719}
-  characterBlockerCollider: {fileID: 7818806211421831495}
+  characterBlockerCollider: {fileID: 4664929464763041150}
 --- !u!114 &7818806211370284722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -474,11 +486,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7818806211370284717}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 831cae1d6cbcc47b4a7b2a48394804a1, type: 3}
+  m_Script: {fileID: 11500000, guid: 69699a914ac8345ec93baf87cfdeac48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   characterCollider: {fileID: 7818806211370284719}
-  characterBlockerCollider: {fileID: 4664929464763041150}
+  characterBlockerCollider: {fileID: 7818806211421831495}
 --- !u!114 &7818806211370284723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -494,10 +506,9 @@ MonoBehaviour:
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 250
     currentValue: 250
-  <CurrentHealth>k__BackingField: 250
   <HealthRegen>k__BackingField:
-    <BaseValue>k__BackingField: 0
-    currentValue: 0
+    <BaseValue>k__BackingField: 100
+    currentValue: 100
   <Armour>k__BackingField:
     <BaseValue>k__BackingField: 0
     currentValue: 0
@@ -512,10 +523,13 @@ MonoBehaviour:
       <BaseValue>k__BackingField: 0
       currentValue: 0
     <AttackCooldownCounter>k__BackingField:
-      defaultValue: 0
+      defaultValue: 2
     <Damage>k__BackingField:
       <BaseValue>k__BackingField: 4
       currentValue: 4
+  <Poise>k__BackingField: 100
+  <ReposRegenSpeed>k__BackingField: 20
+  <ReposCooldown>k__BackingField: 2
   <KnockbackDuration>k__BackingField:
     <BaseValue>k__BackingField: 0
     currentValue: 0
@@ -534,10 +548,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d23a6c48411e4b3eb6e8a9e7b442ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poise: 100
-  repos: 0
-  reposCountdown: 2
-  reposRegenSpeed: 20
+  entityStats: {fileID: 7818806211370284723}
   player: {fileID: 0}
   enemyLayers:
     serializedVersion: 2
@@ -622,10 +633,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7818806211421831492}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: caf6a681b51c8493883cd4ed6c3c92ef, type: 3}
+  m_Script: {fileID: 11500000, guid: dbbe0036b76c647308c34aa78df2976d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entity: {fileID: 7818806211370284725}
 --- !u!1001 &4776006602577634233
 PrefabInstance:
   m_ObjectHideFlags: 0

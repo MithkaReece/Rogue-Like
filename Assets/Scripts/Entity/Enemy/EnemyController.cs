@@ -43,7 +43,12 @@ public class EnemyController : EntityController
 
         if (enemyLayers == (enemyLayers | (1 << collider.gameObject.layer)))
         {
-            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(new DamageReport { causedBy = this, target = opponent, damage = enemyStats.Combat.Damage.Value }, this);
+            collider.gameObject.GetComponent<HitBoxController>().TakeDamage(
+                new DamageReport { 
+                    causedBy = this, 
+                    target = opponent,
+                    damage = enemyStats.Combat.Damage.Value 
+                }, this );
         }
     }
     #endregion
