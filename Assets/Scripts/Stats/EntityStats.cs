@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+
 [System.Serializable]
 public class CombatStats
 {
@@ -14,11 +15,35 @@ public class CombatStats
 public class EntityStats : MonoBehaviour
 {
     [field: SerializeField] public Stat MaxHealth { get; private set; }
-    [field: SerializeField] public float CurrentHealth { get; protected set; }
+
+    
+    public delegate void EventHandler();
+    public event EventHandler OnHealthChanged;
+
+    private float currentHealth;
+    [field: SerializeField] public float CurrentHealth
+    {
+        get
+        {
+            return currentHealth;
+        }
+        set
+        {
+            if (value != currentHealth)
+            {
+                currentHealth = value;
+                OnHealthChanged?.Invoke();
+            }
+        }
+    }
     [field: SerializeField] public Stat HealthRegen { get; private set; }
     [field: SerializeField] public Stat Armour { get; private set; }
     [field: SerializeField] public Stat MoveSpeed { get; private set; }
     [field: SerializeField] public CombatStats Combat { get; private set; }
+
+    [field: SerializeField] public float Poise { get; private set; }
+    [field: SerializeField] public float ReposRegenSpeed { get; private set; }
+    [field: SerializeField] public float ReposCooldown { get; private set; }
 
     public void Start()
     {
