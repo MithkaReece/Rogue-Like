@@ -237,8 +237,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.14954537, y: -0.0009909718}
-  m_Size: {x: 0.04696082, y: 0.15109466}
+  m_Offset: {x: -0.14985996, y: 0.000057920803}
+  m_Size: {x: 0.061853696, y: 0.16325979}
   m_Direction: 0
 --- !u!114 &1802805556497941277
 MonoBehaviour:
@@ -404,7 +404,7 @@ Transform:
   m_GameObject: {fileID: 7818806211370284717}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.02, y: 1.031, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7818806211197280956}
@@ -427,8 +427,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0006742134, y: -0.14883232}
-  m_Size: {x: 0.13224299, y: 0.019889565}
+  m_Offset: {x: -0.00056948815, y: -0.1496714}
+  m_Size: {x: 0.14042388, y: 0.045480106}
   m_Direction: 1
 --- !u!50 &7818806211370284724
 Rigidbody2D:
@@ -492,9 +492,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <MaxHealth>k__BackingField:
-    <BaseValue>k__BackingField: 250
-    currentValue: 250
-  <CurrentHealth>k__BackingField: 250
+    <BaseValue>k__BackingField: 600
+    currentValue: 600
+  <CurrentHealth>k__BackingField: 600
   <HealthRegen>k__BackingField:
     <BaseValue>k__BackingField: 0
     currentValue: 0
@@ -502,8 +502,8 @@ MonoBehaviour:
     <BaseValue>k__BackingField: 0
     currentValue: 0
   <MoveSpeed>k__BackingField:
-    <BaseValue>k__BackingField: 1
-    currentValue: 1
+    <BaseValue>k__BackingField: 0.5
+    currentValue: 0.5
   <Combat>k__BackingField:
     <AttackSpeed>k__BackingField:
       <BaseValue>k__BackingField: 2
@@ -516,6 +516,9 @@ MonoBehaviour:
     <Damage>k__BackingField:
       <BaseValue>k__BackingField: 4
       currentValue: 4
+  <Poise>k__BackingField: 100
+  <ReposRegenSpeed>k__BackingField: 20
+  <ReposCooldown>k__BackingField: 2
   <KnockbackDuration>k__BackingField:
     <BaseValue>k__BackingField: 0
     currentValue: 0
@@ -534,10 +537,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d23a6c48411e4b3eb6e8a9e7b442ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poise: 100
-  repos: 0
-  reposCountdown: 2
-  reposRegenSpeed: 20
+  body: {fileID: 7818806211197280955}
+  healthRing: {fileID: 1071372348}
   player: {fileID: 0}
   enemyLayers:
     serializedVersion: 2
@@ -610,8 +611,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.011876444, y: -0.6774592}
-  m_Size: {x: 0.69111943, y: 0.60350275}
+  m_Offset: {x: 0.011877484, y: -0.70196354}
+  m_Size: {x: 0.7487775, y: 0.57755685}
   m_Direction: 1
 --- !u!114 &7818806211421831494
 MonoBehaviour:
