@@ -5,6 +5,28 @@ using System.Linq;
 
 public class EntityController : MonoBehaviour
 {
+    protected GameObject body;
+    protected GameObject healthRing;
+
+    protected Rigidbody2D rb;
+    protected Animator bodyAnimator;
+    protected EntityStats entityStats;
+    public EntityObserver EntityObserver { get; } = new EntityObserver();
+
+    #region Initialisation
+    // Start is called before the first frame update
+    protected virtual void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        entityStats = GetComponent<EntityStats>();
+        body = transform.Find("Body").gameObject;
+        bodyAnimator = body.GetComponent<Animator>();
+        healthRing = transform.Find("HealthRing").gameObject;
+        InitHealthRings();
+        InitReposRings();
+    }
+    #endregion
+
     protected State state;
     protected enum State
     {
@@ -18,33 +40,10 @@ public class EntityController : MonoBehaviour
         Stun,
         Die,
     }
-
-    [SerializeField] protected GameObject body;
-    [SerializeField] protected GameObject healthRing;
-
-    protected Rigidbody2D rb;
-    protected Animator bodyAnimator;
-    public EntityStats entityStats { get; private set; }
-    public EntityObserver EntityObserver { get; } = new EntityObserver();
-
-    private Repos repos;
-
-    // Start is called before the first frame update
-    protected virtual void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        entityStats = GetComponent<EntityStats>();
-        bodyAnimator = body.GetComponent<Animator>();
-        //InitHealthRings();
-
-        repos = new Repos(healthRing, entityStats);
-    }
-
-
     protected virtual void Update()
     {
-        //UpdateHealthRing();a
-        repos.UpdateRepos();
+        UpdateHealthRing();
+        HandleReposDecay();
     }
     //Used for rigidbody (physics)
     protected virtual void FixedUpdate()
@@ -66,17 +65,60 @@ public class EntityController : MonoBehaviour
         HealthRings = Resources.LoadAll<Sprite>("Health Ring");
     }
     // Maps health percentage to health ring sprite
-    // TODO: Instead of on update, setup an event so this is only updated
-    // TODO: when the health stat changes (On change event)
     void UpdateHealthRing()
     {
         float HealthLeft = 100 * entityStats.CurrentHealth / entityStats.MaxHealth.Value;
-        int[] Stages = { 90, 75, 55, 45, 30, 20, 10, 5, 0 };
-        int index = Stages.Count(s => s >= HealthLeft);
+        int[] Stages = { 90, 75, 55, 45, 30, 20, 10, 5 };
+        int index = Stages.Count(s => s > HealthLeft);
         HealthRingSR.sprite = HealthRings[index];
     }
     #endregion
 
+    #region Repos Handling
+    private Sprite[] ReposRings;
+    private SpriteRenderer ReposRingSR;
+    void InitReposRings()
+    {
+        GameObject reposRing = healthRing.transform.Find("ReposRing").gameObject;
+        ReposRingSR = reposRing.GetComponent<SpriteRenderer>();
+        ReposRings = Resources.LoadAll<Sprite>("Repos Ring");
+    }
+
+    //TODO: Wrap all these together
+    [SerializeField] protected float poise = 100f;
+    [SerializeField] protected float repos = 0f;
+    [SerializeField] protected float reposCountdown = 2f;
+    private float reposCountdownCounter = 0f;
+    [SerializeField] protected float reposRegenSpeed = 20f;
+    private bool resetRepos;
+    void HandleReposDecay()
+    {
+        if (resetRepos)
+        {
+            resetRepos = false;
+            repos = 0f;
+        }
+
+        if (reposCountdownCounter <= 0f)
+        {
+            if (repos > 0f)
+            {
+                repos = Mathf.Max(0, repos - reposRegenSpeed * Time.deltaTime);
+            }
+        }
+        else
+        {
+            reposCountdownCounter -= Time.deltaTime;
+        }
+        UpdateReposRing();
+    }
+    //TODO: Account for poise = 0
+    void UpdateReposRing()
+    {
+        int index = (int)Mathf.Floor(10f * repos / poise);
+        ReposRingSR.sprite = ReposRings[index];
+    }
+    #endregion
     #region Stun State Functions
     void HandleStun()
     {
@@ -91,28 +133,24 @@ public class EntityController : MonoBehaviour
         }
     }
     #endregion
-
     #region Enity Damage
-    //TODO: Remove DamageReport from use
-    //TODO: Or rename damagereport
     public virtual void TakeDamage(DamageReport dr, EntityController dealer)
     {
-        //TODO: Integrate this into an editable system
-        if (repos.MaxRepos())
+        if (repos == poise)
         {
             dr.damage *= 4;
+            resetRepos = true;
         }
-
         rb.velocity = Vector2.zero;
         entityStats.TakeDamage(dr, dealer);
 
         if (entityStats.CurrentHealth <= 0)
         {
             state = State.Die;
-            bodyAnimator.SetTrigger("Die");
+            //bodyAnimator.SetTrigger("Die");
             dealer.GotKill();
         }
-        else if (repos.MaxRepos())
+        else if (repos == poise)
         {
             state = State.Stun;
             bodyAnimator.SetTrigger("Stun");
@@ -123,13 +161,17 @@ public class EntityController : MonoBehaviour
             bodyAnimator.SetTrigger("Hit");
         }
 
-        repos.AddRepos(dr.damage);
+        AddRepos(dr.damage);
         //Invoke delegates for observers
         this.EntityObserver.OnDamageTaken(dr);
         dr.causedBy.EntityObserver.OnDamageDealt(dr);
     }
 
-
+    void AddRepos(float damage)
+    {
+        repos = Mathf.Min(repos + (float)damage, poise);
+        reposCountdownCounter = reposCountdown;
+    }
     #endregion
 
     public virtual void Block()
@@ -142,8 +184,7 @@ public class EntityController : MonoBehaviour
         state = State.Stun;
         bodyAnimator.SetTrigger("Stun");
     }
-    // Function for when someone gets a kill
-    // May only be used by player
+
     public virtual void GotKill()
     {
 
@@ -195,57 +236,4 @@ public class EntityController : MonoBehaviour
     public void EndParry() { state = State.Default; }
 
     #endregion
-}
-
-
-public class Repos
-{
-    private Sprite[] RingSprites;
-    private SpriteRenderer RingRenderer;
-    private EntityStats Stats;
-
-    [SerializeField] protected float repos = 0f;
-    private float reposCooldownCounter = 0f;
-
-    //TODO: Make values pointers to the live values (as they may change)
-    //TODO: Could just give reference to stat object then reference needed attributes
-    public Repos(GameObject healthRing, EntityStats stats)
-    {
-        GameObject reposRing = healthRing.transform.GetChild(0).gameObject;
-        RingRenderer = reposRing.GetComponent<SpriteRenderer>();
-        RingSprites = Resources.LoadAll<Sprite>("Repos Ring");
-        Stats = stats;
-    }
-
-    public bool MaxRepos()
-    {
-        return Stats.Poise == repos;
-    }
-
-    public void UpdateRepos()
-    {
-        //Decay repos
-        if (reposCooldownCounter <= 0f)
-        {
-            repos = Mathf.Max(0, repos - Stats.ReposRegenSpeed * Time.deltaTime);
-        }
-        reposCooldownCounter = Mathf.Max(0, reposCooldownCounter - Time.deltaTime);
-        //Update ring sprite
-        //TODO: Account for poise = 0
-        int index = (int)Mathf.Floor(10f * repos / Stats.Poise);
-        RingRenderer.sprite = RingSprites[index];
-    }
-
-    public void AddRepos(float damage)
-    {
-        if (MaxRepos()) //Reset after damaging at max
-        {
-            repos = 0f;
-        }
-        else //Increase repos based on damage taken
-        {
-            repos = Mathf.Min(repos + (float)damage, Stats.Poise);
-        }
-        reposCooldownCounter = Stats.ReposCooldown;
-    }
 }
