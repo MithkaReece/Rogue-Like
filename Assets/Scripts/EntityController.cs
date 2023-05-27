@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class EntityController : MonoBehaviour
 {
@@ -23,22 +24,6 @@ public class EntityController : MonoBehaviour
         healthRing = transform.Find("HealthRing").gameObject;
         InitHealthRings();
         InitReposRings();
-    }
-
-    private Sprite[] HealthRings;
-    private SpriteRenderer HealthRingSR;
-    void InitHealthRings()
-    {
-        HealthRingSR = healthRing.GetComponent<SpriteRenderer>();
-        HealthRings = Resources.LoadAll<Sprite>("Health Ring");
-    }
-    private Sprite[] ReposRings;
-    private SpriteRenderer ReposRingSR;
-    void InitReposRings()
-    {
-        GameObject reposRing = healthRing.transform.Find("ReposRing").gameObject;
-        ReposRingSR = reposRing.GetComponent<SpriteRenderer>();
-        ReposRings = Resources.LoadAll<Sprite>("Repos Ring");
     }
     #endregion
 
@@ -70,51 +55,36 @@ public class EntityController : MonoBehaviour
                 break;
         }
     }
+
     #region Health Ring Handling
+    private Sprite[] HealthRings;
+    private SpriteRenderer HealthRingSR;
+    void InitHealthRings()
+    {
+        HealthRingSR = healthRing.GetComponent<SpriteRenderer>();
+        HealthRings = Resources.LoadAll<Sprite>("Health Ring");
+    }
+    // Maps health percentage to health ring sprite
     void UpdateHealthRing()
     {
-        float Percent = 100 * entityStats.CurrentHealth / entityStats.MaxHealth.Value;
-        int index = 0;
-        if (Percent < 90)
-        {
-            index++;
-        }
-        if (Percent < 75)
-        {
-            index++;
-        }
-        if (Percent < 55)
-        {
-            index++;
-        }
-        if (Percent < 45)
-        {
-            index++;
-        }
-        if (Percent < 30)
-        {
-            index++;
-        }
-        if (Percent < 20)
-        {
-            index++;
-        }
-        if (Percent < 10)
-        {
-            index++;
-        }
-        if (Percent < 5)
-        {
-            index++;
-        }
-        if (Percent <= 0)
-        {
-            index++;
-        }
+        float HealthLeft = 100 * entityStats.CurrentHealth / entityStats.MaxHealth.Value;
+        int[] Stages = { 90, 75, 55, 45, 30, 20, 10, 5 };
+        int index = Stages.Count(s => s > HealthLeft);
         HealthRingSR.sprite = HealthRings[index];
     }
     #endregion
+
     #region Repos Handling
+    private Sprite[] ReposRings;
+    private SpriteRenderer ReposRingSR;
+    void InitReposRings()
+    {
+        GameObject reposRing = healthRing.transform.Find("ReposRing").gameObject;
+        ReposRingSR = reposRing.GetComponent<SpriteRenderer>();
+        ReposRings = Resources.LoadAll<Sprite>("Repos Ring");
+    }
+
+    //TODO: Wrap all these together
     [SerializeField] protected float poise = 100f;
     [SerializeField] protected float repos = 0f;
     [SerializeField] protected float reposCountdown = 2f;
@@ -142,7 +112,7 @@ public class EntityController : MonoBehaviour
         }
         UpdateReposRing();
     }
-
+    //TODO: Account for poise = 0
     void UpdateReposRing()
     {
         int index = (int)Mathf.Floor(10f * repos / poise);

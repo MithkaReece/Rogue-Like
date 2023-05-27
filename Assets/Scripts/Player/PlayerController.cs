@@ -6,8 +6,7 @@ public class PlayerController : EntityController
 {
     [SerializeField] private float scale = 1f;
 
-    //True when movement causes transition back to default
-    private bool canMove = true;
+    private bool canMove = true; //Allows player to move during transition
 
     private SpriteRenderer swordSR;
 
@@ -59,6 +58,8 @@ public class PlayerController : EntityController
                 EndDie();
                 break;
         }
+        //TODO: Saving and loading (only just started)
+        //TODO: Need to separate this to a class
         if (Input.GetButton("TabSave"))
         {
             DataPersistenceManager.instance.SaveGame();
