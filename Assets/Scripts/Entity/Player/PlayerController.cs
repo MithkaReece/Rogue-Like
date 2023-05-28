@@ -111,16 +111,10 @@ public class PlayerController : EntityController
     //TODO: May be a better way than just changing the sign of the x scale
     void LeftRightFlip()
     {
-        if (inputDirection.x < 0)
-        {
-            transform.localScale = new Vector2(-scale, scale);
-            healthRing.transform.localScale = new Vector2(-(scale / Mathf.Abs(scale)) * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
-        }
-        else if (inputDirection.x > 0)
-        {
-            transform.localScale = new Vector2(scale, scale);
-            healthRing.transform.localScale = new Vector2((scale / Mathf.Abs(scale)) * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
-        }
+        float CurrentSign = transform.localScale.x / Mathf.Abs(transform.localScale.x);
+        float sign = inputDirection.x == 0.0 ? CurrentSign : inputDirection.x / Mathf.Abs(inputDirection.x);
+        transform.localScale = new Vector2(sign * Mathf.Abs(transform.localScale.x), transform.localScale.y);
+        healthRing.transform.localScale = new Vector2(sign * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
     }
     //TODO: Temporary function to test out swapping weapons, later it will be done by equipping weapons using UI
     private void HandleSwordSwap()
