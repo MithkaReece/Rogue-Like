@@ -12,6 +12,7 @@ public class BaseEnemyController : EnemyController
         new Attack("Attack1", 0.6f, 1f, 1f, 1f)
     };
 
+
     private FOV fov;
     protected override void Start()
     {
@@ -20,7 +21,18 @@ public class BaseEnemyController : EnemyController
         fov = GetComponent<FOV>();
     }
 
-    private bool PlayerDetected = false;
+    protected override void Update()
+    {
+        if (fov.canSeePlayer)
+        {
+            if (Vector2.Distance(player.transform.position, transform.position) > fov.radius)
+            {
+                fov.canSeePlayer = false;
+                fov.pausedFovSearch = false;
+            }
+        }
+    }
+
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
@@ -28,8 +40,11 @@ public class BaseEnemyController : EnemyController
         {
             case State.Default:
                 //Either wandering or following
+                
                 if (fov.canSeePlayer)
+                {
                     PathFindPlayer();
+                }
                 else
                     Wander();
                 //BasicAI();
@@ -76,7 +91,7 @@ public class BaseEnemyController : EnemyController
 
     void Wander()
     {
-
+        rb.velocity = Vector2.zero;
     }
 
 

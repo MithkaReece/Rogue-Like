@@ -21,13 +21,20 @@ public class FOV : MonoBehaviour
         StartCoroutine(FOVRoutine());
     }
 
+
+    public bool pausedFovSearch = false;
     private IEnumerator FOVRoutine()
     {
-        WaitForSeconds wait = new WaitForSeconds(0.2f);
+        WaitForSeconds wait = new(0.2f);
         while (true)
         {
-            yield return wait;
-            FieldOfViewCheck();
+            if (pausedFovSearch)
+                yield return null;
+            else
+            {
+                yield return wait;
+                FieldOfViewCheck();
+            }
         }
     }
 
@@ -38,13 +45,14 @@ public class FOV : MonoBehaviour
         {
             Transform target = rangeChecks[0].transform;
             Vector2 dirToTarget = (target.position - transform.position).normalized;
-            if (Vector2.Angle(new Vector2(target.localScale.x,0), dirToTarget) < angle / 2)
+            if (Vector2.Angle(new Vector2(transform.localScale.x,0), dirToTarget) < angle / 2)
             {
-                Debug.Log(Vector2.Angle(new Vector2(target.localScale.x, 0), dirToTarget));
                 float distToTarget = Vector2.Distance(transform.position, target.position);
 
-                if (!Physics2D.Raycast(transform.position, dirToTarget, distToTarget, obstructionMask))
+                if (!Physics2D.Raycast(transform.position, dirToTarget, distToTarget, obstructionMask)) {
                     canSeePlayer = true;
+                    pausedFovSearch = true;
+                }
                 else
                     canSeePlayer = false;
             }
