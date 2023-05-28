@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 [System.Serializable]
 
+//TODO: Integrate base enemy into enemy
 public class BaseEnemyController : EnemyController
 {
 
@@ -12,31 +13,13 @@ public class BaseEnemyController : EnemyController
         new Attack("Attack1", 0.6f, 1f, 1f, 1f)
     };
 
-    public bool canSeePlayer;
-    [SerializeField] public float maxFollowDist;
-    [Range(0, 360)]
-    public float FOVAngle;
-    public Vector2 LookingDirection;
+    private EnemyDetection detect;
 
     protected override void Start()
     {
         base.Start();
         intendedAttack = AvailableAttacks[0];
-        LookingDirection = new Vector2(transform.localScale.x, 0);
-    }
-
-    protected override void Update()
-    {
-        //IDK if I need this, or FOV will handle it
-        //Player radius would have to always be larger than follow dit
-        if (canSeePlayer)
-        {
-            LookingDirection = player.transform.position - transform.position;
-            if (LookingDirection.magnitude > Mathf.Pow(maxFollowDist,2))
-            {
-                canSeePlayer = false;
-            }
-        }
+        detect = GetComponent<EnemyDetection>();
     }
 
     protected override void FixedUpdate()
@@ -47,7 +30,7 @@ public class BaseEnemyController : EnemyController
             case State.Default:
                 //Either wandering or following
                 
-                if (canSeePlayer)
+                if (detect.canSeePlayer)
                 {
                     PathFindPlayer();
                 }
@@ -100,40 +83,6 @@ public class BaseEnemyController : EnemyController
         rb.velocity = Vector2.zero;
     }
 
-
-    #region Default State Functions
-    void BasicAI()
-    {
-        FacePlayer();
-        if (!enemyStats.Combat.AttackCooldownCounter.Passed)
-            enemyStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
-        Vector2 playerDirection = player.transform.position - transform.position;
-        float errorAmount = 0.2f;
-        if (playerDirection.magnitude > intendedAttack.Range - errorAmount)
-        {
-            rb.velocity = playerDirection.normalized * (float)enemyStats.MoveSpeed.Value;
-        }
-        else
-        {
-            rb.velocity = Vector2.zero;
-            if (enemyStats.Combat.AttackCooldownCounter.Passed)
-            {
-                state = State.Attack;
-                bodyAnimator.SetTrigger(intendedAttack.Name);
-            }
-        }
-    }
-
-    void FacePlayer()
-    {
-        float scale = 1f;
-        Vector2 playerDirection = player.transform.position - transform.position;
-        if (playerDirection.x > 0)
-            transform.localScale = new Vector2(scale, scale);
-        else if (playerDirection.x < 0)
-            transform.localScale = new Vector2(-scale, scale);
-    }
-    #endregion
     #region Attack State Functions
     void HandleAttackLunge()
     {

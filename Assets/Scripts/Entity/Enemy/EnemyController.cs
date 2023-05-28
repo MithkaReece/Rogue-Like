@@ -6,7 +6,8 @@ public class EnemyController : EntityController
 {
     protected EnemyStats enemyStats;
 
-    [SerializeField] protected PlayerController player;
+    //[SerializeField] protected PlayerController player;
+    public PlayerController player;
     public void SetPlayer(PlayerController inPlayer) { player = inPlayer; }
 
     protected override void Start()

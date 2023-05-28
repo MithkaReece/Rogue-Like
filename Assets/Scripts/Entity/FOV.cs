@@ -22,19 +22,19 @@ public class FOV : MonoBehaviour
         while (true)
         {
             yield return wait;
-            FieldOfViewCheck();
+            CheckEnemyFov();
         }
     }
 
-    private void FieldOfViewCheck()
+    private void CheckEnemyFov()
     {
         //Get enemies close to player
         Collider2D[] rangeChecks = Physics2D.OverlapCircleAll(transform.position, radius, targetMask);
         foreach (Collider2D TargetObj in rangeChecks) 
         {
 ;           Transform target = TargetObj.transform;
-            BaseEnemyController enemy = target.GetComponent<BaseEnemyController>();
-            if (enemy == null)
+            EnemyDetection enemy = target.GetComponent<EnemyDetection>();
+            if (enemy == null || enemy.canSeePlayer)
                 break;
 
             Vector2 targetToPlayer = transform.position - target.position;

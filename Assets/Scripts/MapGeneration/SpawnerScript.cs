@@ -23,18 +23,19 @@ public class SpawnerScript : MonoBehaviour
 
     }
 
+    //TODO: Make generic spawn func
 
     void SpawnSlime(Vector2 spawnPosition)
     {
         GameObject slime = Instantiate(slimePrefab, spawnPosition, Quaternion.identity);
         EnemyController controller = slime.GetComponent<EnemyController>();
-        controller.SetPlayer((GameObject.Find("Player").GetComponent<PlayerController>()));
+        controller.player = player;
     }
 
     void SpawnBase(Vector2 spawnPosition)
     {
         GameObject baseEnemy = Instantiate(basePrefab, spawnPosition, Quaternion.identity);
         EnemyController controller = baseEnemy.GetComponent<EnemyController>();
-        controller.SetPlayer(player);
+        controller.player = player;
     }
 }
