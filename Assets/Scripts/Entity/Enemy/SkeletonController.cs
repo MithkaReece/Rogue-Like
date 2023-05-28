@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkeletonController : BaseEnemyController
+public class SkeletonController : EnemyController
 {
     protected override void Start()
     {
