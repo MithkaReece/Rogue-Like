@@ -12,23 +12,29 @@ public class BaseEnemyController : EnemyController
         new Attack("Attack1", 0.6f, 1f, 1f, 1f)
     };
 
+    public bool canSeePlayer;
+    [SerializeField] public float maxFollowDist;
+    [Range(0, 360)]
+    public float FOVAngle;
+    public Vector2 LookingDirection;
 
-    private FOV fov;
     protected override void Start()
     {
         base.Start();
         intendedAttack = AvailableAttacks[0];
-        fov = GetComponent<FOV>();
+        LookingDirection = new Vector2(transform.localScale.x, 0);
     }
 
     protected override void Update()
     {
-        if (fov.canSeePlayer)
+        //IDK if I need this, or FOV will handle it
+        //Player radius would have to always be larger than follow dit
+        if (canSeePlayer)
         {
-            if (Vector2.Distance(player.transform.position, transform.position) > fov.radius)
+            LookingDirection = player.transform.position - transform.position;
+            if (LookingDirection.magnitude > Mathf.Pow(maxFollowDist,2))
             {
-                fov.canSeePlayer = false;
-                fov.pausedFovSearch = false;
+                canSeePlayer = false;
             }
         }
     }
@@ -41,7 +47,7 @@ public class BaseEnemyController : EnemyController
             case State.Default:
                 //Either wandering or following
                 
-                if (fov.canSeePlayer)
+                if (canSeePlayer)
                 {
                     PathFindPlayer();
                 }

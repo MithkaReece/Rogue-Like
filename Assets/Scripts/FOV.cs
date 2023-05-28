@@ -4,63 +4,59 @@ using UnityEngine;
 public class FOV : MonoBehaviour
 {
     public float radius;
-    [Range(0, 360)]
-    public float angle;
-
-    public GameObject player;
 
     public LayerMask targetMask;
     public LayerMask obstructionMask;
 
-    public bool canSeePlayer;
 
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
         StartCoroutine(FOVRoutine());
     }
 
 
-    public bool pausedFovSearch = false;
     private IEnumerator FOVRoutine()
     {
         WaitForSeconds wait = new(0.2f);
         while (true)
         {
-            if (pausedFovSearch)
-                yield return null;
-            else
-            {
-                yield return wait;
-                FieldOfViewCheck();
-            }
+            yield return wait;
+            FieldOfViewCheck();
         }
     }
 
     private void FieldOfViewCheck()
     {
+        //Get enemies close to player
         Collider2D[] rangeChecks = Physics2D.OverlapCircleAll(transform.position, radius, targetMask);
-        if (rangeChecks.Length != 0)
+        foreach (Collider2D TargetObj in rangeChecks) 
         {
-            Transform target = rangeChecks[0].transform;
-            Vector2 dirToTarget = (target.position - transform.position).normalized;
-            if (Vector2.Angle(new Vector2(transform.localScale.x,0), dirToTarget) < angle / 2)
-            {
-                float distToTarget = Vector2.Distance(transform.position, target.position);
+;           Transform target = TargetObj.transform;
+            BaseEnemyController enemy = target.GetComponent<BaseEnemyController>();
+            if (enemy == null)
+                break;
 
-                if (!Physics2D.Raycast(transform.position, dirToTarget, distToTarget, obstructionMask)) {
-                    canSeePlayer = true;
-                    pausedFovSearch = true;
-                }
-                else
-                    canSeePlayer = false;
+            Vector2 targetToPlayer = transform.position - target.position;
+            float dist = Mathf.Sqrt(targetToPlayer.magnitude);
+            if (dist > enemy.maxFollowDist)
+            {
+                enemy.canSeePlayer = false;
+                break;
             }
-            else
-                canSeePlayer = false;
+
+            //Check if in fov angle
+            if (Vector2.Angle(enemy.LookingDirection, targetToPlayer) < enemy.FOVAngle / 2)
+            {
+                if (!Physics2D.Raycast(target.position, targetToPlayer, dist, obstructionMask))
+                    enemy.canSeePlayer = true;
+                
+                else
+                    enemy.canSeePlayer = false;
+            }
         }
-        else if (canSeePlayer)
-            canSeePlayer = false;
     }
+
+
 
 }

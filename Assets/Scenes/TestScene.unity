@@ -265,7 +265,7 @@ GameObject:
   - component: {fileID: 152434009}
   - component: {fileID: 152434010}
   - component: {fileID: 8192698059918557090}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: HealthRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,28 +357,10 @@ MonoBehaviour:
   enemyLayers:
     serializedVersion: 2
     m_Bits: 512
---- !u!114 &179306252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7818806212146355145}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0656bfb237a3416f80e74ad8d6bb855, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 10
-  angle: 60
-  player: {fileID: 1509458692}
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 64
-  obstructionMask:
-    serializedVersion: 2
-    m_Bits: 1024
   canSeePlayer: 0
+  maxFollowDist: 1
+  FOVAngle: 110
+  LookingDirection: {x: 0, y: 0}
 --- !u!114 &212526925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -475,7 +457,7 @@ GameObject:
   m_Component:
   - component: {fileID: 227851319}
   - component: {fileID: 227851312}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: ReposRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1472,6 +1454,25 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2698467642931595900, guid: 56e4747eec59a4670b631c3ba5479178, type: 3}
   m_PrefabInstance: {fileID: 963795820}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1509458698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1509458692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0656bfb237a3416f80e74ad8d6bb855, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 50
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 128
+  obstructionMask:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!213 &1585710349
 Sprite:
   m_ObjectHideFlags: 0
@@ -112626,12 +112627,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1804940297}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aeaaf391a47f4eff8e4c74c2a64c900, type: 3}
+  m_Script: {fileID: 11500000, guid: 44e1823857bf64c42b9e049c82ebba12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 0}
-  ringSprites: []
-  entityStats: {fileID: 0}
 --- !u!213 &1940684763
 Sprite:
   m_ObjectHideFlags: 0
@@ -113175,7 +113173,7 @@ GameObject:
   m_Component:
   - component: {fileID: 607807276070060840}
   - component: {fileID: 607807276070060841}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113246,7 +113244,7 @@ GameObject:
   m_Component:
   - component: {fileID: 698025467989457903}
   - component: {fileID: 1753325960625790319}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: SwipeCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113265,7 +113263,7 @@ GameObject:
   - component: {fileID: 7535088706240528823}
   - component: {fileID: 4664929464599865370}
   - component: {fileID: 1802805556812394105}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Collision Blocker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113581,7 +113579,7 @@ GameObject:
   - component: {fileID: 7818806212048588762}
   - component: {fileID: 7818806212048588761}
   - component: {fileID: 1365473444}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113600,7 +113598,7 @@ GameObject:
   - component: {fileID: 7818806212130286636}
   - component: {fileID: 7818806212130286627}
   - component: {fileID: 7818806212130286626}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: HitBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113686,8 +113684,7 @@ GameObject:
   - component: {fileID: 7818806212146355158}
   - component: {fileID: 7818806212146355159}
   - component: {fileID: 179306245}
-  - component: {fileID: 179306252}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Skeleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113702,7 +113699,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7818806212146355145}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 33.9573, y: -14.9, z: 0}
+  m_LocalPosition: {x: 33.9573, y: -14.91, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
