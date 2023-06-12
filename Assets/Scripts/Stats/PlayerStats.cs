@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class PlayerStats : EntityStats, IDataPersistence
 {
-    [field: SerializeField] public Stat RollSpeed { get; private set; }
-    [field: SerializeField] public Stat RollCooldown { get; private set; }
+    [field: SerializeField] public float RollSpeed { get; private set; }
+    [field: SerializeField] public float RollCooldown { get; private set; }
     [field: SerializeField] public Counter RollCooldownCounter { get; private set; }
 
     private int Kills;
@@ -14,7 +14,7 @@ public class PlayerStats : EntityStats, IDataPersistence
     public void ResetOnDeath()
     {
         Deaths++;
-        CurrentHealth = MaxHealth.Value;
+        CurrentHealth = MaxHealth;
     }
 
     public void LoadData(GameData data)

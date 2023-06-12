@@ -69,7 +69,7 @@ public class EnemyController : EntityController
         //If outside of range walk
 
         if (playerDirection.magnitude > intendedAttack.Range - 0.2f)
-            rb.velocity = playerDirection.normalized * (float)enemyStats.MoveSpeed.Value;
+            rb.velocity = playerDirection.normalized * (float)enemyStats.MoveSpeed;
         else //If in range and can attack (switch to attack state & attack)
         {
             rb.velocity = Vector2.zero;
@@ -124,7 +124,7 @@ public class EnemyController : EntityController
                 new DamageReport { 
                     causedBy = this, 
                     target = opponent,
-                    damage = enemyStats.Combat.Damage.Value 
+                    damage = enemyStats.Combat.Damage 
                 }, this );
         }
     }

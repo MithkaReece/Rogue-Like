@@ -21,7 +21,7 @@ public class HealthRingController : MonoBehaviour
 
     void UpdateHealthRing()
     {
-        float HealthLeft = 100 * entityStats.CurrentHealth / entityStats.MaxHealth.Value;
+        float HealthLeft = 100 * entityStats.CurrentHealth / entityStats.MaxHealth;
         int[] Stages = { 90, 75, 55, 45, 30, 20, 10, 5, 0 };
         int index = Stages.Count(s => s >= HealthLeft);
         spriteRenderer.sprite = ringSprites[index];

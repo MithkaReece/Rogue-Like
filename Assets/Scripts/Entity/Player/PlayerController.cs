@@ -235,7 +235,7 @@ public class PlayerController : EntityController
         canMove = true;
         state = State.Default;
         attacks.HardReset();
-        playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed.Value);
+        playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed);
     }
     //Called: Stage of the attack animation which you can input to trigger another attack
     public void ReadyForAttackInput()
@@ -369,13 +369,13 @@ public class PlayerController : EntityController
 }
 
 
-public class Weapon
+public class WeaponPlayer
 {
     private SpriteRenderer SR;
     private string WeaponEquiped;
     private GameObject weaponObj;
 
-    public Weapon()
+    public WeaponPlayer()
     {
         //Retrieve sprite
         //Select default weapon

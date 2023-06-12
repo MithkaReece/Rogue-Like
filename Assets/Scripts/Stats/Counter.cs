@@ -23,14 +23,6 @@ public class Counter
         currentValue = defaultValue;
     }
 
-    //public void Reset(float newDefault) => Reset((float)newDefault);
-
-    public void Reset(Stat newDefault)
-    {
-        defaultValue = (float)newDefault.Value;
-        currentValue = defaultValue;
-    }
-
     /// <summary>
     /// Has the counter reached 0?
     /// </summary>

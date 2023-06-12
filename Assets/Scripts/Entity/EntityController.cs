@@ -122,7 +122,7 @@ public class EntityController : MonoBehaviour
     public virtual void EndAttack()
     {
         state = State.Default;
-        entityStats.Combat.AttackCooldownCounter.Reset(1f / entityStats.Combat.AttackSpeed.Value);
+        entityStats.Combat.AttackCooldownCounter.Reset(1f / entityStats.Combat.AttackSpeed);
     }
 
     public virtual void EndHit() { state = State.Default; }
