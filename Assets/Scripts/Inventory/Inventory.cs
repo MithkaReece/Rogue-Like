@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,6 +6,8 @@ class Inventory
 {
     public List<Item> items = new List<Item>();
     public int capacity = 10;
+
+    private Equipment equipment = new Equipment();
 
     public void AddItem(Item item)
     {
@@ -43,10 +46,13 @@ class Inventory
         }
     }
 
-    public void Equip(int num)
+    public void Equip(int index)
     {
-        //Get item at num
-        //if equiped, remove from inventory
+        if (index < 0 || index > items.Count - 1)
+            return;
+
+        if (equipment.Equip(this, items[index]))
+            RemoveItem(items[index]);
     }
 
     
@@ -59,20 +65,38 @@ class Equipment
     Weapon weapon;
 
 
-    public bool Equip(Inventory inv, Armour armour)
+    public bool Equip(Inventory inv, Item item)
     {
-        if (armour.Type < 0 || armour.Type > 3)
+        if (item is Armour armour)
+        {
+            if (armour.Type < 0 || armour.Type > 3)
+                return false;
+            Armour pastPiece = pieces[armour.Type];
+            pieces[armour.Type] = armour;
+            inv.AddItem(pastPiece);
+            return true;
+        }else if (item is Weapon newWeapon)
+        {
+            Weapon pastWeapon = weapon;
+            weapon = newWeapon;
+            inv.AddItem(pastWeapon);
+            return true;
+        }
+        return false;
+    }
+
+    public bool UnEquip(Inventory inv, int Index)
+    {
+        if (Index < 0 || Index > 3)
             return false;
-        Armour pastPiece = pieces[armour.Type];
-        pieces[armour.Type] = armour;
+        Armour pastPiece = pieces[Index];
         inv.AddItem(pastPiece);
         return true;
     }
 
-    public bool Equip(Inventory inv, Weapon newWeapon)
+    public bool UnEquip(Inventory inv)
     {
         Weapon pastWeapon = weapon;
-        weapon = newWeapon;
         inv.AddItem(pastWeapon);
         return true;
     }

@@ -5,6 +5,8 @@ using UnityEngine;
 public class Item
 {
     public string name;
+    //Icon image
+
 }
 
 /** What does an item need
@@ -25,6 +27,7 @@ public class Weapon : Item
      * Damage
      * Crit chance
      * 
+     * Animation Frames
      */
 
 }
@@ -35,6 +38,8 @@ public class Armour : Item
     // Armour stat
     // Location where armour fits
     // How much poise is added
+    //
+    // Wearing image/overlay
 
     // Extra:
     //  Weight
