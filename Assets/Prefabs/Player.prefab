@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 451509037}
   - component: {fileID: 451509038}
+  - component: {fileID: 6342942095290803912}
   m_Layer: 6
   m_Name: ReposRing
   m_TagString: Untagged
@@ -84,6 +85,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6342942095290803912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451509036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dfdb961f903040caa4f0651c4c34774, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1011333358
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,39 +591,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a7b4c2a29d12741bde645bcec6807c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <MaxHealth>k__BackingField:
-    <BaseValue>k__BackingField: 100
-    currentValue: 100
-  <HealthRegen>k__BackingField:
-    <BaseValue>k__BackingField: 0
-    currentValue: 0
-  <Armour>k__BackingField:
-    <BaseValue>k__BackingField: 0
-    currentValue: 0
-  <MoveSpeed>k__BackingField:
-    <BaseValue>k__BackingField: 15
-    currentValue: 0
-  <Combat>k__BackingField:
-    <AttackSpeed>k__BackingField:
-      <BaseValue>k__BackingField: 2
-      currentValue: 0
-    <AttackRange>k__BackingField:
-      <BaseValue>k__BackingField: 0
-      currentValue: 0
+  <MaxHealth>k__BackingField: 0
+  HealthRegen: 0
+  Armour: 0
+  MoveSpeed: 0
+  Combat:
+    <AttackSpeed>k__BackingField: 0
+    <AttackRange>k__BackingField: 0
     <AttackCooldownCounter>k__BackingField:
       defaultValue: 0
-    <Damage>k__BackingField:
-      <BaseValue>k__BackingField: 50
-      currentValue: 0
-  <Poise>k__BackingField: 0
-  <ReposRegenSpeed>k__BackingField: 0
-  <ReposCooldown>k__BackingField: 0
-  <RollSpeed>k__BackingField:
-    <BaseValue>k__BackingField: 3
-    currentValue: 0
-  <RollCooldown>k__BackingField:
-    <BaseValue>k__BackingField: 0
-    currentValue: 0
+    <Damage>k__BackingField: 0
+  Poise: 0
+  ReposRegenSpeed: 0
+  ReposCooldown: 0
+  <RollSpeed>k__BackingField: 0
+  <RollCooldown>k__BackingField: 0
   <RollCooldownCounter>k__BackingField:
     defaultValue: 0
 --- !u!1001 &4745346810634546446

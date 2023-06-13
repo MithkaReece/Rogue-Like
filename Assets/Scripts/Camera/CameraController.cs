@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private PlayerController player;
+    public PlayerController player;
     // Start is called before the first frame update
     void Start()
     {

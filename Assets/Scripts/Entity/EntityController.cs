@@ -12,7 +12,7 @@ public class EntityController : MonoBehaviour
     public EntityStats entityStats;
     public EntityObserver EntityObserver { get; } = new EntityObserver();
 
-    private Repos repos;
+    private ReposController repos;
 
     // Start is called before the first frame update
     protected virtual void Start()
@@ -22,7 +22,7 @@ public class EntityController : MonoBehaviour
         GameObject body = transform.GetChild(0).gameObject;
         bodyAnimator = body.GetComponent<Animator>();
         healthRing = transform.GetChild(3).gameObject;
-        repos = new Repos(healthRing, entityStats);
+        repos = healthRing.transform.GetChild(0).gameObject.GetComponent<ReposController>();
     }
 
 
@@ -126,6 +126,7 @@ public class EntityController : MonoBehaviour
     }
 
     public virtual void EndHit() { state = State.Default; }
+    //TODO: Make faster and doesn't apply to player, prob move to player and enemy controller
     public virtual void EndDie()
     {
         GetComponent<CapsuleCollider2D>().enabled = false;
@@ -161,48 +162,3 @@ public class EntityController : MonoBehaviour
     #endregion
 }
 
-public class Repos
-{
-    private Sprite[] RingSprites;
-    private SpriteRenderer RingRenderer;
-    private EntityStats Stats;
-
-    [SerializeField] protected float repos = 0f;
-    private float reposCooldownCounter = 0f;
-
-    //TODO: Make values pointers to the live values (as they may change)
-    //TODO: Could just give reference to stat object then reference needed attributes
-    public Repos(GameObject healthRing, EntityStats stats)
-    {
-        GameObject reposRing = healthRing.transform.GetChild(0).gameObject;
-        RingRenderer = reposRing.GetComponent<SpriteRenderer>();
-        RingSprites = Resources.LoadAll<Sprite>("Repos Ring");
-        Stats = stats;
-    }
-
-    public bool MaxRepos()
-    {
-        return Stats.Poise == repos;
-    }
-
-    public void UpdateRepos()
-    {
-        //Decay repos
-        if (reposCooldownCounter <= 0f)
-            repos = Mathf.Max(0, repos - Stats.ReposRegenSpeed * Time.deltaTime);
-        reposCooldownCounter = Mathf.Max(0, reposCooldownCounter - Time.deltaTime);
-        //Update ring sprite
-        //TODO: Account for poise = 0
-        int index = (int)Mathf.Floor(10f * repos / Stats.Poise);
-        RingRenderer.sprite = RingSprites[index];
-    }
-
-    public void AddRepos(float damage)
-    {
-        if (MaxRepos()) //Reset after damaging at max
-            repos = 0f;
-        else //Increase repos based on damage taken
-            repos = Mathf.Min(repos + (float)damage, Stats.Poise);
-        reposCooldownCounter = Stats.ReposCooldown;
-    }
-}
