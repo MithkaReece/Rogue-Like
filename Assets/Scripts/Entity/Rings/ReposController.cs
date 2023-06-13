@@ -25,7 +25,7 @@ public class ReposController : MonoBehaviour
         return Stats.Poise == repos;
     }
 
-    public void UpdateRepos()
+    public void Update()
     {
         if (Stats.Poise < 0)
         {

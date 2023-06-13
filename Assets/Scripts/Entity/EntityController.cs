@@ -5,16 +5,15 @@ using System.Linq;
 
 public class EntityController : MonoBehaviour
 {
-    protected GameObject healthRing;
-
     protected Rigidbody2D rb;
     protected Animator bodyAnimator;
+    protected GameObject healthRing;
+
     public EntityStats entityStats;
     public EntityObserver EntityObserver { get; } = new EntityObserver();
 
     private ReposController repos;
 
-    // Start is called before the first frame update
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -39,10 +38,7 @@ public class EntityController : MonoBehaviour
         Stun,
         Die,
     }
-    protected virtual void Update()
-    {
-        repos.UpdateRepos();
-    }
+
     //Used for rigidbody (physics)
     protected virtual void FixedUpdate()
     {
@@ -54,7 +50,7 @@ public class EntityController : MonoBehaviour
         }
     }
 
-    #region Stun State Functions
+
     void HandleStun()
     {
         float stunSpeed = 1f;
@@ -63,8 +59,7 @@ public class EntityController : MonoBehaviour
         else
             rb.velocity = Vector2.zero;
     }
-    #endregion
-    #region Enity Damage
+
     public virtual void TakeDamage(DamageReport dr, EntityController dealer)
     {
         if (repos.MaxRepos())
@@ -95,7 +90,6 @@ public class EntityController : MonoBehaviour
         dr.causedBy.EntityObserver.OnDamageDealt(dr);
     }
 
-    #endregion
 
     public virtual void Block()
     {

@@ -16,6 +16,13 @@ public class PlayerSpawner : MonoBehaviour
 
         GameObject cameraInst = Instantiate(cameraPrefab);
         cameraInst.GetComponent<CameraController>().player = playerInst.GetComponent<PlayerController>();
+
+
+        //TODO: TEMPORARY
+        Inventory inv = playerInst.GetComponent<Inventory>();
+        inv.PrintItems();
+        inv.AddItem(new Weapon("Crude Long Sword", 10, 0.1f));
+        inv.PrintItems();
     }
 
     void SetupPlayerStats(EntityStats entityStats)

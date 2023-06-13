@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-class Inventory
+class Inventory : MonoBehaviour
 {
     public List<Item> items = new List<Item>();
     public int capacity = 10;
@@ -19,6 +19,26 @@ class Inventory
             return;
         }
         items.Add(item);
+        AutoEquip(item);
+    }
+
+    //Auto Equips the best item
+    private void AutoEquip(Item item)
+    {
+        if (item is Armour armour)
+        {
+            if (equipment.pieces[armour.Type] is null || armour.DamageNegation > equipment.pieces[armour.Type].DamageNegation)
+            {
+                equipment.Equip(this, armour);
+            }
+        }
+        if (item is Weapon weapon)
+        {
+            if (equipment.weapon is null || weapon.Damage > equipment.weapon.Damage)
+            {
+                equipment.Equip(this, weapon);
+            }
+        }
     }
 
     public void RemoveItem(Item item)
@@ -40,9 +60,11 @@ class Inventory
     //WILL REMOVE LATER 
     public void PrintItems()
     {
+        if (items.Count == 0)
+            Debug.Log("Empty Inventory");
         foreach (Item item in items)
         {
-            Debug.Log(item.name);
+            Debug.Log(item.Name);
         }
     }
 
@@ -61,16 +83,19 @@ class Inventory
 
 class Equipment
 {
-    Armour[] pieces; //Head, Chest, Legs, Boots
-    Weapon weapon;
+    public Armour[] pieces { get; private set; } //Head, Chest, Legs, Boots
+    public Weapon weapon { get; private set; }
+
+    public Equipment()
+    {
+        pieces = new Armour[4];
+    }
 
 
     public bool Equip(Inventory inv, Item item)
     {
         if (item is Armour armour)
         {
-            if (armour.Type < 0 || armour.Type > 3)
-                return false;
             Armour pastPiece = pieces[armour.Type];
             pieces[armour.Type] = armour;
             inv.AddItem(pastPiece);

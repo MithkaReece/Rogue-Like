@@ -41,9 +41,8 @@ public class PlayerController : EntityController
     }
 
     // Update is called once per frame
-    protected override void Update()
+    protected void Update()
     {
-        base.Update();
         switch (state)
         {
             case State.Default:

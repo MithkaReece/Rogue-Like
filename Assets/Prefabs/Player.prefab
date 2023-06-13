@@ -482,6 +482,7 @@ GameObject:
   - component: {fileID: 1366380809}
   - component: {fileID: 6461850834157789636}
   - component: {fileID: 1652801089}
+  - component: {fileID: 22237601863630555}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -609,6 +610,19 @@ MonoBehaviour:
   <RollCooldown>k__BackingField: 0
   <RollCooldownCounter>k__BackingField:
     defaultValue: 0
+--- !u!114 &22237601863630555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2698467642931595900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51777d2366a56416a8854072f28cf3d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capacity: 10
 --- !u!1001 &4745346810634546446
 PrefabInstance:
   m_ObjectHideFlags: 0

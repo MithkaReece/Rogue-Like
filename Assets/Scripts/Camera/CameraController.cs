@@ -52,7 +52,6 @@ public class CameraController : MonoBehaviour
 
         float clampedX = Mathf.Clamp(playerViewPos.x, minX, maxX);
         float clampedY = Mathf.Clamp(playerViewPos.y, minY, maxY);
-        Debug.Log(clampedX.ToString()+clampedY.ToString());
 
         Vector3 clampedWorldPos = cameraComponent.ViewportToWorldPoint(new Vector3(clampedX, clampedY, playerViewPos.z));
         Vector3 diff = player.transform.position - clampedWorldPos;
