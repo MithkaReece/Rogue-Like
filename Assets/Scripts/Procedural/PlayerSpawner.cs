@@ -11,6 +11,7 @@ public class PlayerSpawner : MonoBehaviour
     {
         GameObject playerInst = Instantiate(playerPrefab, transform.position, transform.rotation);
         PlayerController playerController = playerInst.GetComponent<PlayerController>();
+        playerController.Name = "Player";
         EntityStats entityStats = playerInst.GetComponent<EntityStats>();
         SetupNewPlayerStats(entityStats);
 
@@ -21,7 +22,7 @@ public class PlayerSpawner : MonoBehaviour
         //TODO: TEMPORARY
         Inventory inv = playerInst.GetComponent<Inventory>();
         inv.PrintItems();
-        inv.AddItem(new Weapon("Crude Long Sword", 10, 0.1f, 10f));
+        playerController.ReceiveItem(new Weapon("Crude Long Sword", 10, 0.1f, 10f, "Attack1"));
         inv.PrintItems();
     }
 
@@ -35,7 +36,6 @@ public class PlayerSpawner : MonoBehaviour
 
     void SetupNewPlayerStats(EntityStats entityStats)
     {
-
         entityStats.Poise = 100f;
         entityStats.ReposRegenSpeed = 20f;
         entityStats.ReposCooldown = 2f;

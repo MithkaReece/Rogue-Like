@@ -14,6 +14,7 @@ public class EntityController : MonoBehaviour
 
     public EntityStats entityStats;
     public EntityObserver EntityObserver { get; } = new EntityObserver();
+    public string Name; //Identifier for the entity
 
     private ReposController repos;
 
@@ -21,6 +22,12 @@ public class EntityController : MonoBehaviour
     private string _currentState;
     const string IDLE = "Idle";
     const string WALK = "Walk";
+
+    protected void Awake()
+    {
+        inv = GetComponent<Inventory>();
+        equipment = GetComponent<Equipment>();
+    }
 
     protected virtual void Start()
     {
@@ -30,10 +37,33 @@ public class EntityController : MonoBehaviour
         bodyAnimator = body.GetComponent<Animator>();
         healthRing = transform.GetChild(3).gameObject;
         repos = healthRing.transform.GetChild(0).gameObject.GetComponent<ReposController>();
-        inv = GetComponent<Inventory>();
-        equipment = GetComponent<Equipment>();
+        
     }
-    
+
+
+    public void ReceiveItem(Item item)
+    {
+        if (item is Weapon weapon)
+        {
+            //Retrieve animation clip
+            string clipPath = "Animation/" + Name + "/" + weapon.AttackAnimationName;
+            AnimationClip[] clips0 = Resources.LoadAll<AnimationClip>(clipPath+"_0");
+            if (clips0.Length == 0)
+            {
+                Debug.Log("Clip:" + clipPath + "_0 was not found");
+                return;
+            }
+            AnimationClip[] clips1 = Resources.LoadAll<AnimationClip>(clipPath + "_1");
+            if (clips1.Length == 0)
+            {
+                Debug.Log("Clip:" + clipPath + "_1 was not found");
+                return;
+            }
+            Debug.Log("Successfully loaded animation clip");
+            inv.AddItem(item);
+
+        }
+    }
 
     protected State state;
     protected enum State

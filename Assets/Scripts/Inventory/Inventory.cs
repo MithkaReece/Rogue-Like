@@ -24,7 +24,7 @@ public class Inventory : MonoBehaviour
             return;
         }
         items.Add(item);
-        AutoEquip(item);
+        //AutoEquip(item);
     }
 
     //Auto Equips the best item

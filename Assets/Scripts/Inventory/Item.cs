@@ -30,11 +30,14 @@ public class Weapon : Item
     private float attackSeconds; //How many seconds between attack
     public float AttackSpeed { get { return 1f / attackSeconds;  } set { attackSeconds = 1f/value; } }
 
-    public Weapon(string name, int damage, float critChance, float attackSpeed) : base(name)
+    public string AttackAnimationName;
+
+    public Weapon(string name, int damage, float critChance, float attackSpeed, string attackAnimationName) : base(name)
     {
         Damage = damage;
         CritChance = critChance;
         AttackSpeed = attackSpeed;
+        AttackAnimationName = attackAnimationName;
     }
 
     private System.DateTime LastAttackTime = System.DateTime.MaxValue;

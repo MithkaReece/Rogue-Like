@@ -38,6 +38,7 @@ public class PlayerController : EntityController
     protected override void Start()
     {
         base.Start();
+        Name = "Player";
 
         //TODO: Remove
         //Setup consecutive attack system
