@@ -30,6 +30,8 @@ public class StatsManager : MonoBehaviour
      */
 
 
+
+    // Updates dynamic stats
     public void Update_Stats(EntityStats entityStats)
     {
 

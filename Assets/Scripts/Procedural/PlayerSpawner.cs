@@ -21,7 +21,7 @@ public class PlayerSpawner : MonoBehaviour
         //TODO: TEMPORARY
         Inventory inv = playerInst.GetComponent<Inventory>();
         inv.PrintItems();
-        inv.AddItem(new Weapon("Crude Long Sword", 10, 0.1f));
+        inv.AddItem(new Weapon("Crude Long Sword", 10, 0.1f, 10f));
         inv.PrintItems();
     }
 

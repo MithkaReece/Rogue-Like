@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor.Animations;
 
 public class PlayerController : EntityController
 {
@@ -27,17 +28,81 @@ public class PlayerController : EntityController
 
     [SerializeField] private GameObject sword;
 
+    //TODO: Implement a way to tell up and down
+    //Have a naming convention for up and down
+    //E.g IDLE_0 for down, IDLE_1 for up
+
+    
+    private int _up;//Flips animations between up and down
+    private string _currentState;
+    const string PLAYER_IDLE = "Idle";
+    const string PLAYER_WALK = "Walk";
+    const string PLAYER_ATTACK1 = "Attack1";
+
+    void ChangeState(string _newState)
+    {
+        string newState = _newState + "_" + _up.ToString();
+        if (newState == _currentState)
+            return;
+        bodyAnimator.Play(newState);
+        _currentState = newState;
+    }
+
+
+    bool isAnimationPlaying(Animator animator, string stateName)
+    {
+        return animator.GetCurrentAnimatorStateInfo(0).IsName(stateName+"_"+_up.ToString()) &&
+            animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
+    }
+
+    public AnimationClip attack1_0;
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
+
+        //Adds attack and function
+        if(attack1_0 != null)
+            AddAnimationClip(attack1_0);
+
+
+        //TODO: Remove
         //Setup consecutive attack system
         attacks = new MultiAttacks(new string[] { "Attack1", "Attack2", "Attack3" });
-
+        //TODO: Remove
         swordSR = sword.GetComponent<SpriteRenderer>();
+
         playerStats = GetComponent<PlayerStats>();
         //Equip first weapon
         SwapSword(swordEquiped);
+
+        AnimatorController animatorController = bodyAnimator.runtimeAnimatorController as AnimatorController;
+        AnimatorStateMachine stateMachine = animatorController.layers[0].stateMachine;
+        foreach (ChildAnimatorState state in stateMachine.states)
+        {
+            Debug.Log("State Name: " + state.state.name);
+        }
+    }
+    //It should add clip to controller dynamically
+    void AddAnimationClip(AnimationClip animationClip)
+    {
+        //Don't add it already exists (Only checks layer 0 but we don't use any layers)
+        if (bodyAnimator.HasState(0, Animator.StringToHash(animationClip.name)))
+            return;
+
+        AnimatorController animatorController = bodyAnimator.runtimeAnimatorController as AnimatorController;
+
+        if (animatorController != null)
+        {
+            AnimatorControllerLayer[] layers = animatorController.layers;
+
+            if (layers.Length > 0)
+            {
+                AnimatorStateMachine stateMachine = layers[0].stateMachine;
+                AnimatorState state = stateMachine.AddState(animationClip.name);
+                state.motion = animationClip;
+            }
+        }
     }
 
     // Update is called once per frame
@@ -48,7 +113,6 @@ public class PlayerController : EntityController
             case State.Default:
                 //Hides sword when not using it
                 swordSR.sprite = null;
-                LeftRightFlip();
                 break;
             case State.Blocking:
                 HandleParryBlocking();
@@ -77,7 +141,8 @@ public class PlayerController : EntityController
         switch (state)
         {
             case State.Default:
-                HandleNextAttack();
+                HandleAttack();
+                //HandleNextAttack();
                 HandleWalk();
                 HandleParryBlock();
                 HandleSwordSwap();
@@ -95,26 +160,57 @@ public class PlayerController : EntityController
         }
     }
 
-    #region Default State Functions
+    #region Movement
     [SerializeField] private float moveSpeed; //TODO: Should be moved into player stats
     private Vector2 inputDirection;
     void HandleWalk()
     {
         inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
         rb.velocity = inputDirection * moveSpeed;
-        bodyAnimator.SetFloat("Speed", inputDirection.magnitude);
-        bodyAnimator.SetFloat("yDir", inputDirection.y);
+        //Update up/down direction
+        if (rb.velocity.y != 0.0f)
+            _up = rb.velocity.y > 0.0f ? 1 : 0;
+            
+        float error = 0.05f;
+        if (inputDirection.magnitude > error)
+        {
+            ChangeState(PLAYER_WALK);
+            if (inputDirection.x != 0.0)
+            {
+                //Flip player (left/right)
+                float sign = inputDirection.x / Mathf.Abs(inputDirection.x);
+                transform.localScale = new Vector2(sign * Mathf.Abs(transform.localScale.x), transform.localScale.y);
+                healthRing.transform.localScale = new Vector2(sign * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
+            }
+        }
+        else
+            ChangeState(PLAYER_IDLE);
+    }
+    #endregion
+
+   
+
+    void HandleAttack()
+    {
+        if (Input.GetButton("Attack1"))
+        {
+            if (equipment.weapon?.CanAttack() ?? false)
+            {
+                rb.velocity = Vector2.zero;
+                //state = State.Attack;
+                canMove = false;
+                //attacks.ReceiveInput();
+
+                //TODO: Change this,
+                //Instead get animation clip from weapon information
+                //Add animation clip as a state
+                //Transition to newly added state
+                ChangeState(attack1_0.name.Substring(0, attack1_0.name.Length - 2));
+            }
+        }
     }
 
-    //Allows right animation to be flipped and used as left
-    //TODO: May be a better way than just changing the sign of the x scale
-    void LeftRightFlip()
-    {
-        float CurrentSign = transform.localScale.x / Mathf.Abs(transform.localScale.x);
-        float sign = inputDirection.x == 0.0 ? CurrentSign : inputDirection.x / Mathf.Abs(inputDirection.x);
-        transform.localScale = new Vector2(sign * Mathf.Abs(transform.localScale.x), transform.localScale.y);
-        healthRing.transform.localScale = new Vector2(sign * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
-    }
+
     //TODO: Temporary function to test out swapping weapons, later it will be done by equipping weapons using UI
     private void HandleSwordSwap()
     {
@@ -176,7 +272,7 @@ public class PlayerController : EntityController
             state = State.DodgeRoll;
         }
     }
-    #endregion
+
     #region Attack State Functions
     //Consecutive attacks
     void HandleNextAttack()

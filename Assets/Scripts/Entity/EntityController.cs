@@ -8,11 +8,15 @@ public class EntityController : MonoBehaviour
     protected Rigidbody2D rb;
     protected Animator bodyAnimator;
     protected GameObject healthRing;
+    protected Inventory inv;
+    protected Equipment equipment;
 
     public EntityStats entityStats;
     public EntityObserver EntityObserver { get; } = new EntityObserver();
 
     private ReposController repos;
+
+
 
     protected virtual void Start()
     {
@@ -22,8 +26,10 @@ public class EntityController : MonoBehaviour
         bodyAnimator = body.GetComponent<Animator>();
         healthRing = transform.GetChild(3).gameObject;
         repos = healthRing.transform.GetChild(0).gameObject.GetComponent<ReposController>();
+        inv = GetComponent<Inventory>();
+        equipment = GetComponent<Equipment>();
     }
-
+    
 
     protected State state;
     protected enum State

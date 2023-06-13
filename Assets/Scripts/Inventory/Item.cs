@@ -22,16 +22,36 @@ public class Item
  * 
  */
 
+//Basic Weapon, one attack move
 public class Weapon : Item
 {
     public int Damage;
     public float CritChance;
+    private float attackSeconds; //How many seconds between attack
+    public float AttackSpeed { get { return 1f / attackSeconds;  } set { attackSeconds = 1f/value; } }
 
-    public Weapon(string name, int damage, float critChance) : base(name)
+    public Weapon(string name, int damage, float critChance, float attackSpeed) : base(name)
     {
         Damage = damage;
         CritChance = critChance;
+        AttackSpeed = attackSpeed;
     }
+
+    private System.DateTime LastAttackTime = System.DateTime.MaxValue;
+
+    public bool CanAttack()
+    {
+        System.TimeSpan diff = LastAttackTime - System.DateTime.Now;
+        if (diff.TotalSeconds > attackSeconds)
+        {
+            LastAttackTime = System.DateTime.Now;
+            return true;
+        }
+        return false;
+    }
+
+    
+
     /**
      * Damage
      * Crit chance

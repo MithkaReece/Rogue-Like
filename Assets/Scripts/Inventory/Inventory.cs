@@ -2,12 +2,17 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-class Inventory : MonoBehaviour
+public class Inventory : MonoBehaviour
 {
     public List<Item> items = new List<Item>();
     public int capacity = 10;
 
-    private Equipment equipment = new Equipment();
+    private Equipment equipment;
+
+    void Awake()
+    {
+        equipment = GetComponent<Equipment>();    
+    }
 
     public void AddItem(Item item)
     {
@@ -25,6 +30,8 @@ class Inventory : MonoBehaviour
     //Auto Equips the best item
     private void AutoEquip(Item item)
     {
+        if (ReferenceEquals(equipment, null))
+            return;
         if (item is Armour armour)
         {
             if (equipment.pieces[armour.Type] is null || armour.DamageNegation > equipment.pieces[armour.Type].DamageNegation)
@@ -37,6 +44,7 @@ class Inventory : MonoBehaviour
             if (equipment.weapon is null || weapon.Damage > equipment.weapon.Damage)
             {
                 equipment.Equip(this, weapon);
+                Debug.Log("Equiped");
             }
         }
     }
@@ -81,49 +89,3 @@ class Inventory : MonoBehaviour
 
 }
 
-class Equipment
-{
-    public Armour[] pieces { get; private set; } //Head, Chest, Legs, Boots
-    public Weapon weapon { get; private set; }
-
-    public Equipment()
-    {
-        pieces = new Armour[4];
-    }
-
-
-    public bool Equip(Inventory inv, Item item)
-    {
-        if (item is Armour armour)
-        {
-            Armour pastPiece = pieces[armour.Type];
-            pieces[armour.Type] = armour;
-            inv.AddItem(pastPiece);
-            return true;
-        }else if (item is Weapon newWeapon)
-        {
-            Weapon pastWeapon = weapon;
-            weapon = newWeapon;
-            inv.AddItem(pastWeapon);
-            return true;
-        }
-        return false;
-    }
-
-    public bool UnEquip(Inventory inv, int Index)
-    {
-        if (Index < 0 || Index > 3)
-            return false;
-        Armour pastPiece = pieces[Index];
-        inv.AddItem(pastPiece);
-        return true;
-    }
-
-    public bool UnEquip(Inventory inv)
-    {
-        Weapon pastWeapon = weapon;
-        inv.AddItem(pastWeapon);
-        return true;
-    }
-
-}
