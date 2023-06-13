@@ -126,7 +126,7 @@ public class EntityController : MonoBehaviour
     }
 
     public virtual void EndHit() { state = State.Default; }
-    //TODO: Make faster and doesn't apply to player, prob move to player and enemy controller
+    //TODO: Make faster (player doesn't use, overrides)
     public virtual void EndDie()
     {
         GetComponent<CapsuleCollider2D>().enabled = false;
