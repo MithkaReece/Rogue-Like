@@ -39,6 +39,8 @@ public class PlayerSpawner : MonoBehaviour
         entityStats.Poise = 100f;
         entityStats.ReposRegenSpeed = 20f;
         entityStats.ReposCooldown = 2f;
+
+        entityStats.MoveSpeed = 1f;
     }
 
     // Update is called once per frame

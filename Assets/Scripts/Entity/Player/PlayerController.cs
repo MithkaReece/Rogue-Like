@@ -32,39 +32,12 @@ public class PlayerController : EntityController
     //Have a naming convention for up and down
     //E.g IDLE_0 for down, IDLE_1 for up
 
-    
-    private int _up;//Flips animations between up and down
-    private string _currentState;
-    const string PLAYER_IDLE = "Idle";
-    const string PLAYER_WALK = "Walk";
-    const string PLAYER_ATTACK1 = "Attack1";
-
-    void ChangeState(string _newState)
-    {
-        string newState = _newState + "_" + _up.ToString();
-        if (newState == _currentState)
-            return;
-        bodyAnimator.Play(newState);
-        _currentState = newState;
-    }
-
-
-    bool isAnimationPlaying(Animator animator, string stateName)
-    {
-        return animator.GetCurrentAnimatorStateInfo(0).IsName(stateName+"_"+_up.ToString()) &&
-            animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
-    }
 
     public AnimationClip attack1_0;
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
-
-        //Adds attack and function
-        if(attack1_0 != null)
-            AddAnimationClip(attack1_0);
-
 
         //TODO: Remove
         //Setup consecutive attack system
@@ -76,34 +49,15 @@ public class PlayerController : EntityController
         //Equip first weapon
         SwapSword(swordEquiped);
 
-        AnimatorController animatorController = bodyAnimator.runtimeAnimatorController as AnimatorController;
+        //TODO: Temp, show states
+        /*AnimatorController animatorController = bodyAnimator.runtimeAnimatorController as AnimatorController;
         AnimatorStateMachine stateMachine = animatorController.layers[0].stateMachine;
         foreach (ChildAnimatorState state in stateMachine.states)
         {
             Debug.Log("State Name: " + state.state.name);
-        }
+        }*/
     }
-    //It should add clip to controller dynamically
-    void AddAnimationClip(AnimationClip animationClip)
-    {
-        //Don't add it already exists (Only checks layer 0 but we don't use any layers)
-        if (bodyAnimator.HasState(0, Animator.StringToHash(animationClip.name)))
-            return;
 
-        AnimatorController animatorController = bodyAnimator.runtimeAnimatorController as AnimatorController;
-
-        if (animatorController != null)
-        {
-            AnimatorControllerLayer[] layers = animatorController.layers;
-
-            if (layers.Length > 0)
-            {
-                AnimatorStateMachine stateMachine = layers[0].stateMachine;
-                AnimatorState state = stateMachine.AddState(animationClip.name);
-                state.motion = animationClip;
-            }
-        }
-    }
 
     // Update is called once per frame
     protected void Update()
@@ -143,7 +97,7 @@ public class PlayerController : EntityController
             case State.Default:
                 HandleAttack();
                 //HandleNextAttack();
-                HandleWalk();
+                base.Move((new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized);
                 HandleParryBlock();
                 HandleSwordSwap();
                 HandleDodgeRoll();
@@ -160,35 +114,6 @@ public class PlayerController : EntityController
         }
     }
 
-    #region Movement
-    [SerializeField] private float moveSpeed; //TODO: Should be moved into player stats
-    private Vector2 inputDirection;
-    void HandleWalk()
-    {
-        inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized;
-        rb.velocity = inputDirection * moveSpeed;
-        //Update up/down direction
-        if (rb.velocity.y != 0.0f)
-            _up = rb.velocity.y > 0.0f ? 1 : 0;
-            
-        float error = 0.05f;
-        if (inputDirection.magnitude > error)
-        {
-            ChangeState(PLAYER_WALK);
-            if (inputDirection.x != 0.0)
-            {
-                //Flip player (left/right)
-                float sign = inputDirection.x / Mathf.Abs(inputDirection.x);
-                transform.localScale = new Vector2(sign * Mathf.Abs(transform.localScale.x), transform.localScale.y);
-                healthRing.transform.localScale = new Vector2(sign * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
-            }
-        }
-        else
-            ChangeState(PLAYER_IDLE);
-    }
-    #endregion
-
-   
 
     void HandleAttack()
     {
@@ -205,7 +130,7 @@ public class PlayerController : EntityController
                 //Instead get animation clip from weapon information
                 //Add animation clip as a state
                 //Transition to newly added state
-                ChangeState(attack1_0.name.Substring(0, attack1_0.name.Length - 2));
+                //ChangeState(attack1_0.name.Substring(0, attack1_0.name.Length - 2));
             }
         }
     }
@@ -307,13 +232,13 @@ public class PlayerController : EntityController
     //Allows player to move after attack swing but still in attack state
     void HandleQuickMove()
     {
-        if (!canMove || attacks.ReadyForNextAttack()) { return; }
+        /*if (!canMove || attacks.ReadyForNextAttack()) { return; }
         inputDirection = (new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
         if (inputDirection.magnitude > 0.01)
         {
             bodyAnimator.SetTrigger("Default");
             EndAttack();
-        }
+        }*/
     }
 
     //--------------------------------------------------------------------------------

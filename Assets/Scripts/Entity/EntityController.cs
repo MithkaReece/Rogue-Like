@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEditor.Animations;
 
 public class EntityController : MonoBehaviour
 {
@@ -16,7 +17,10 @@ public class EntityController : MonoBehaviour
 
     private ReposController repos;
 
-
+    private int _up;//Flips animations between up and down
+    private string _currentState;
+    const string IDLE = "Idle";
+    const string WALK = "Walk";
 
     protected virtual void Start()
     {
@@ -55,7 +59,70 @@ public class EntityController : MonoBehaviour
                 break;
         }
     }
+    #region Animation Helpers
+    void ChangeState(string _newState)
+    {
+        string newState = _newState + "_" + _up.ToString();
+        if (newState == _currentState)
+            return;
+        bodyAnimator.Play(newState);
+        _currentState = newState;
+    }
 
+
+    bool isAnimationPlaying(Animator animator, string stateName)
+    {
+        return animator.GetCurrentAnimatorStateInfo(0).IsName(stateName + "_" + _up.ToString()) &&
+            animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
+    }
+
+    //It should add clip to controller dynamically
+    //TODO: This should be called when you equip a weapon
+    //to make sure the player has all the animations required for the weapon
+    void AddAnimationClip(AnimationClip animationClip)
+    {
+        //Don't add it already exists (Only checks layer 0 but we don't use any layers)
+        if (bodyAnimator.HasState(0, Animator.StringToHash(animationClip.name)))
+            return;
+
+        AnimatorController animatorController = bodyAnimator.runtimeAnimatorController as AnimatorController;
+
+        if (animatorController != null)
+        {
+            AnimatorControllerLayer[] layers = animatorController.layers;
+
+            if (layers.Length > 0)
+            {
+                AnimatorStateMachine stateMachine = layers[0].stateMachine;
+                AnimatorState state = stateMachine.AddState(animationClip.name);
+                state.motion = animationClip;
+            }
+        }
+    }
+    #endregion
+
+    protected void Move(Vector2 inputDir)
+    {
+        rb.velocity = inputDir * entityStats.MoveSpeed;
+        //Update up/down direction
+        if (rb.velocity.y != 0.0f)
+            _up = rb.velocity.y > 0.0f ? 1 : 0;
+
+        float error = 0.05f;
+        if (inputDir.magnitude > error)
+        {
+            ChangeState(WALK);
+            if (inputDir.x != 0.0)
+            {
+                //Flip entity (left/right)
+                float sign = inputDir.x / Mathf.Abs(inputDir.x);
+                transform.localScale = new Vector2(sign * Mathf.Abs(transform.localScale.x), transform.localScale.y);
+                healthRing.transform.localScale = new Vector2(sign * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
+            }
+        }
+        else
+            ChangeState(IDLE);
+    }
 
     void HandleStun()
     {

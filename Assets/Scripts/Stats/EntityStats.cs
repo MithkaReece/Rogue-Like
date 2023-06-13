@@ -15,7 +15,6 @@ public class CombatStats
 public class EntityStats : MonoBehaviour
 {
     [field: SerializeField] public float MaxHealth { get; private set; }
-
     
     public delegate void EventHandler();
     public event EventHandler OnHealthChanged;
@@ -38,10 +37,10 @@ public class EntityStats : MonoBehaviour
     }
     [field: SerializeField] public float HealthRegen;
     [field: SerializeField] public float Armour;
-    [field: SerializeField] public float MoveSpeed;
+    [field: SerializeField] public float MoveSpeed = 1f;
     [field: SerializeField] public CombatStats Combat;
 
-    [field: SerializeField] public float Poise;
+    [field: SerializeField] public float Poise = 1f;
     [field: SerializeField] public float ReposRegenSpeed;
     [field: SerializeField] public float ReposCooldown;
 
