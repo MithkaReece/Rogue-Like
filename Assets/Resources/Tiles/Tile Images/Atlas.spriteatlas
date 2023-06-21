@@ -49,6 +49,7 @@ SpriteAtlas:
     - {fileID: 2800000, guid: c79a4075d40a645f4bf0bbd38b8a6729, type: 3}
     - {fileID: 2800000, guid: 424546c03a2d64f3ea78b9c319d0b197, type: 3}
     - {fileID: 2800000, guid: b6af63f7f8b4e4c61ac8ceaa593a3da2, type: 3}
+    - {fileID: 2800000, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -152,6 +153,19 @@ SpriteAtlas:
   - {fileID: -1432870872, guid: c79a4075d40a645f4bf0bbd38b8a6729, type: 3}
   - {fileID: 391989357, guid: c79a4075d40a645f4bf0bbd38b8a6729, type: 3}
   - {fileID: -750574572, guid: c79a4075d40a645f4bf0bbd38b8a6729, type: 3}
+  - {fileID: -504374436, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: 739026209, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: 1429846205, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: 2032794742, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: 1873373251, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: -1522175635, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: 1000711905, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: -983471764, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: -246838965, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: -1045590107, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: -223333042, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: 272591147, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
+  - {fileID: -1457448409, guid: a73db2b7c109e4dcdb5730b0949dde4c, type: 3}
   - {fileID: -1680382998, guid: b6af63f7f8b4e4c61ac8ceaa593a3da2, type: 3}
   - {fileID: 1966954614, guid: b6af63f7f8b4e4c61ac8ceaa593a3da2, type: 3}
   - {fileID: 1556918983, guid: b6af63f7f8b4e4c61ac8ceaa593a3da2, type: 3}
@@ -289,6 +303,19 @@ SpriteAtlas:
   - Brick-Wall_29
   - Brick-Wall_39
   - Brick-Wall_38
+  - Prison_11
+  - Prison_9
+  - Prison_8
+  - Prison_3
+  - Prison_2
+  - Prison_1
+  - Prison_0
+  - Prison_7
+  - Prison_6
+  - Prison_5
+  - Prison_4
+  - Prison_12
+  - Prison_10
   - Concrete_3
   - Concrete_2
   - Concrete_1
