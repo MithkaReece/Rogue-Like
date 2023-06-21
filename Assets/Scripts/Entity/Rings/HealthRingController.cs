@@ -9,11 +9,15 @@ public class HealthRingController : MonoBehaviour
     private Sprite[] ringSprites;
     private EntityStats entityStats;
 
+    private void Awake()
+    {
+        ringSprites = Resources.LoadAll<Sprite>("Animation/Health Ring");
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        ringSprites = Resources.LoadAll<Sprite>("Health Ring");
         entityStats = GetComponentInParent<EntityStats>();
         entityStats.OnHealthChanged += UpdateHealthRing; //Subscribe to event
     }

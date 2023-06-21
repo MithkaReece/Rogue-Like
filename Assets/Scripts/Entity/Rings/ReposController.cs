@@ -11,11 +11,17 @@ public class ReposController : MonoBehaviour
     [SerializeField] protected float repos = 0f;
     private float reposCooldownCounter = 0f;
 
+
+    void Awake()
+    {
+        RingSprites = Resources.LoadAll<Sprite>("Animation/Repos Ring");
+    }
+
     //TODO: Make values pointers to the live values (as they may change)
     //TODO: Could just give reference to stat object then reference needed attributes
     public void Start()
     {
-        RingSprites = Resources.LoadAll<Sprite>("Repos Ring");
+        
         RingRenderer = GetComponent<SpriteRenderer>();
         Stats = transform.parent.gameObject.transform.parent.gameObject.GetComponent<EntityStats>();
     }

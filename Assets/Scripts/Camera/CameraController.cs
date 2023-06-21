@@ -7,6 +7,12 @@ public class CameraController : MonoBehaviour
     public PlayerController player;
 
     private Camera cameraComponent;
+
+    private void Awake()
+    {
+        PlayArea = new Vector2(0.15f, 0.15f);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,7 +42,7 @@ public class CameraController : MonoBehaviour
 
     //TODO: Could instead use percentage of the screen however would need to
     //TODO: know the current resolution
-    [SerializeField] private Vector2 PlayArea = new Vector2(0.15f, 0.15f);
+    [SerializeField] private Vector2 PlayArea;
     //Keeps player centered within the PlayArea width and height
     //Snaps camera when player crosses boundary
     void keepPlayerInRect()
