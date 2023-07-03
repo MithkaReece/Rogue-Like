@@ -8,6 +8,7 @@ public class EntityController : MonoBehaviour
 {
     protected Rigidbody2D rb;
     protected Animator bodyAnimator;
+    protected Renderer bodyRenderer;
     protected GameObject healthRing;
     protected Inventory inv;
     protected Equipment equipment;
@@ -21,9 +22,9 @@ public class EntityController : MonoBehaviour
     private int _up;//Flips animations between up and down
     protected string _currentState;
     protected const string IDLE = "Idle";
-    protected const string WALK = "Run3D";
+    protected const string WALK = "Run";
     //const string WALK = "Walk";
-    protected const string ROLL = "RunRoll";
+    protected const string ROLL = "Roll";
 
     protected const string ATTACK = "Attack";
 
@@ -38,6 +39,7 @@ public class EntityController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         GameObject body = transform.GetChild(0).gameObject;
         bodyAnimator = body.GetComponent<Animator>();
+        bodyRenderer = body.GetComponent<Renderer>();
         healthRing = transform.GetChild(3).gameObject;
         repos = healthRing.transform.GetChild(0).gameObject.GetComponent<ReposController>();
         ChangeState(IDLE); //START on IDLE state
@@ -122,6 +124,16 @@ public class EntityController : MonoBehaviour
             return;
         bodyAnimator.Play(newState);
         _currentState = newState;
+        UpdateMaterial();
+    }
+
+    //Updates the normal map to current animation
+    void UpdateMaterial() {
+        Material newMaterial = Resources.Load<Material>("Materials/Player/"+GetState());
+        if (newMaterial == null)
+            return;
+        Debug.Log("Set material");
+        bodyRenderer.material = newMaterial;
     }
 
 
