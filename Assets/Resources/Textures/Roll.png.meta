@@ -861,7 +861,6 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Run-Roll_34: -239239693
       Run-Roll_23: 1402286136
       Run-Roll_27: -1142696982
       Run-Roll_25: -33701009
@@ -889,6 +888,7 @@ TextureImporter:
       Run-Roll_10: -1996727966
       Run-Roll_22: 1012860873
       Run-Roll_11: -1786291394
+      Run-Roll_34: -239239693
       Run-Roll_15: -558198817
       Run-Roll_33: 269724074
       Run-Roll_12: 936796247
