@@ -23,7 +23,7 @@ public class ReposController : MonoBehaviour
     {
         
         RingRenderer = GetComponent<SpriteRenderer>();
-        Stats = transform.parent.gameObject.transform.parent.gameObject.GetComponent<EntityStats>();
+        Stats = transform.parent.gameObject.transform.parent.gameObject.GetComponent<EntityController>().entityStats;
     }
 
     public bool MaxRepos()
@@ -59,6 +59,6 @@ public class ReposController : MonoBehaviour
             repos = 0f;
         else //Increase repos based on damage taken
             repos = Mathf.Min(repos + (float)damage, Stats.Poise);
-        reposCooldownCounter = Stats.ReposCooldown;
+        reposCooldownCounter = Stats.ReposCooldownSeconds;
     }
 }

@@ -12,8 +12,8 @@ public class PlayerSpawner : MonoBehaviour
         GameObject playerInst = Instantiate(playerPrefab, transform.position, transform.rotation);
         PlayerController playerController = playerInst.GetComponent<PlayerController>();
         playerController.Name = "Player";
-        EntityStats entityStats = playerInst.GetComponent<EntityStats>();
-        SetupNewPlayerStats(entityStats);
+        EntityStats entityStats = playerController.entityStats;
+        SetupNewPlayerStats(playerController);
 
         GameObject cameraInst = Instantiate(cameraPrefab);
         cameraInst.GetComponent<CameraController>().player = playerInst.GetComponent<PlayerController>();
@@ -25,22 +25,20 @@ public class PlayerSpawner : MonoBehaviour
         playerController.ReceiveItem(new Weapon("Crude Long Sword", 10, 0.1f, 10f, "Attack1"));
         inv.PrintItems();
     }
-
+    //TODO
     void SetupPlayerStats(EntityStats entityStats)
     {
         //Either
         //retrieve from saved
         //generate from new
-        SetupNewPlayerStats(entityStats);
+        //SetupNewPlayerStats(entityStats);
     }
 
-    void SetupNewPlayerStats(EntityStats entityStats)
+    void SetupNewPlayerStats(PlayerController playerController)
     {
-        entityStats.Poise = 100f;
-        entityStats.ReposRegenSpeed = 20f;
-        entityStats.ReposCooldown = 2f;
-
-        entityStats.MoveSpeed = 1f;
+        playerController.entityStats = new EntityStats(100f,
+            100f, 20f, 2f,
+            1f, 2f);
     }
 
     // Update is called once per frame

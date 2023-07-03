@@ -15,7 +15,8 @@ public class PlayerController : EntityController
     private float swapCooldown = 2f;
     private float swapCooldownCounter = 0f;
 
-    private PlayerStats playerStats;
+    //TODO: Remove after finding new place for it
+
     private MultiAttacks attacks;
 
     private AttackState attackState;
@@ -46,7 +47,6 @@ public class PlayerController : EntityController
         //TODO: Remove
         swordSR = sword.GetComponent<SpriteRenderer>();
 
-        playerStats = GetComponent<PlayerStats>();
         //Equip first weapon
         SwapSword(swordEquiped);
 
@@ -63,11 +63,13 @@ public class PlayerController : EntityController
     // Update is called once per frame
     protected void Update()
     {
+        HandleInputs();
+        //TODO: Refactor, put somewhere or remove
         switch (state)
         {
-            case State.Default:
+            case State.Idle:
                 //Hides sword when not using it
-                swordSR.sprite = null;
+                //swordSR.sprite = null;
                 break;
             case State.Blocking:
                 HandleParryBlocking();
@@ -90,9 +92,31 @@ public class PlayerController : EntityController
         }
     }
 
+    void HandleInputs() {
+        switch (GetState())
+        {
+            case IDLE:
+            case WALK:
+                if (HandleAttack())
+                    break;
+                if (HandleDodgeRoll())
+                    break;
+                break;
+            case ATTACK:
+                //HandleConsecutiveAttack()
+                break;         
+        }
+    }
+
+    //List of states
+    //What can you do in those states
+
+
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+        HandlePhysicalInputs();
+        /*
         switch (state)
         {
             case State.Default:
@@ -112,11 +136,27 @@ public class PlayerController : EntityController
                 HandleDodgeRollMotion();
                 break;
 
+        }*/
+    }
+
+    void HandlePhysicalInputs() {
+        switch (GetState())
+        {
+            case IDLE:
+            case WALK:
+                HandleWalking();
+                break;
         }
     }
 
 
-    void HandleAttack()
+    #region Handle User Inputs
+
+    void HandleWalking() {
+        base.Move((new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))).normalized);
+    }
+
+    bool HandleAttack()
     {
         if (Input.GetButton("Attack1"))
         {
@@ -132,9 +172,25 @@ public class PlayerController : EntityController
                 //Add animation clip as a state
                 //Transition to newly added state
                 //ChangeState(attack1_0.name.Substring(0, attack1_0.name.Length - 2));
+                Debug.Log("ATTACK");
+                return true;
             }
         }
+        return false;
     }
+
+    bool HandleDodgeRoll()
+    {
+        if (Input.GetButton("Jump")) {
+            base.DodgeRoll();
+            return true;
+        }
+        return false;
+    }
+
+    #endregion
+
+
 
 
     //TODO: Temporary function to test out swapping weapons, later it will be done by equipping weapons using UI
@@ -184,23 +240,11 @@ public class PlayerController : EntityController
         }
     }
 
-    void HandleDodgeRoll()
-    {
-        //Count down roll cooldown
-        if (!playerStats.RollCooldownCounter.Passed)
-            playerStats.RollCooldownCounter.PassTime(Time.deltaTime);
-        //On input start rolling
-        if (Input.GetButton("Jump") && playerStats.RollCooldownCounter.Passed)
-        {
-            bodyAnimator.SetTrigger("Roll");
-            playerStats.RollCooldownCounter.Reset(playerStats.RollCooldown);
-            canMove = false;
-            state = State.DodgeRoll;
-        }
-    }
+
 
     #region Attack State Functions
     //Consecutive attacks
+    /*
     void HandleNextAttack()
     {
         //Count down attack cooldown
@@ -217,7 +261,7 @@ public class PlayerController : EntityController
         //If attack ready then trigger next attack
         if (attacks.ReadyForNextAttack())
             bodyAnimator.SetTrigger(attacks.GetNextAttack());
-    }
+    }*/
 
 
 
@@ -254,9 +298,9 @@ public class PlayerController : EntityController
     public override void EndAttack()
     {
         canMove = true;
-        state = State.Default;
+        state = State.Idle;
         attacks.HardReset();
-        playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed);
+        //playerStats.Combat.AttackCooldownCounter.Reset(1f / playerStats.Combat.AttackSpeed);
     }
     //Called: Stage of the attack animation which you can input to trigger another attack
     public void ReadyForAttackInput()
@@ -284,7 +328,7 @@ public class PlayerController : EntityController
     public override void EndRoll()
     {
         canMove = true;
-        state = State.Default;
+        state = State.Idle;
     }
 
     #endregion
@@ -310,7 +354,7 @@ public class PlayerController : EntityController
             }
             else
             {
-                state = State.Default;
+                state = State.Idle;
             }
         }
     }
@@ -341,7 +385,7 @@ public class PlayerController : EntityController
 
     public override void GotKill()
     {
-        playerStats.IncrementKills();
+        //playerStats.IncrementKills();
     }
     #endregion
     #region Player collisions
@@ -381,9 +425,9 @@ public class PlayerController : EntityController
     }
     public override void EndDie()
     {
-        playerStats.ResetOnDeath();
+        //playerStats.ResetOnDeath();
         transform.position = Vector2.zero;
-        state = State.Default;
+        state = State.Idle;
         //TODO: Player dies
     }
     #endregion
@@ -462,3 +506,40 @@ public class MultiAttacks
     }
 
 }
+
+/**
+ * Old PlayerStats but shows how to load and save data
+ * 
+ * public class PlayerStats : EntityStats, IDataPersistence
+{
+    [field: SerializeField] public float RollSpeed { get; private set; }
+    [field: SerializeField] public float RollCooldown { get; private set; }
+    [field: SerializeField] public Counter RollCooldownCounter { get; private set; }
+
+    private int Kills;
+    public void IncrementKills() { Kills++; }
+    private int Deaths;
+
+    public void ResetOnDeath()
+    {
+        Deaths++;
+        CurrentHealth = MaxHealth;
+    }
+
+    public void LoadData(GameData data)
+    {
+        CurrentHealth = data.health;
+        Kills = data.kills;
+        Deaths = data.deaths;
+    }
+    public void SaveData(ref GameData data)
+    {
+        data.health = CurrentHealth;
+        data.kills = Kills;
+        data.deaths = Deaths;
+    }
+}
+ * 
+ * 
+ * 
+ */

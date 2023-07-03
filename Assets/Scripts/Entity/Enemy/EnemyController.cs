@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EnemyController : EntityController
 {
-    protected EnemyStats enemyStats;
 
     //[SerializeField] protected PlayerController player;
     public PlayerController player;
@@ -21,7 +20,6 @@ public class EnemyController : EntityController
     protected override void Start()
     {
         base.Start();
-        enemyStats = GetComponent<EnemyStats>();
         intendedAttack = AvailableAttacks[0];
         detect = GetComponent<EnemyDetection>();
     }
@@ -31,7 +29,7 @@ public class EnemyController : EntityController
         base.FixedUpdate();
         switch (state)
         {
-            case State.Default:
+            case State.Idle:
                 //Either wandering or following
 
                 if (detect.canSeePlayer)
@@ -64,16 +62,16 @@ public class EnemyController : EntityController
             transform.localScale.y
         );
         //Decrease attack cooldown
-        if (!enemyStats.Combat.AttackCooldownCounter.Passed)
-            enemyStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
+        if (!entityStats.Combat.AttackCooldownCounter.Passed)
+            entityStats.Combat.AttackCooldownCounter.PassTime(Time.deltaTime);
         //If outside of range walk
 
         if (playerDirection.magnitude > intendedAttack.Range - 0.2f)
-            rb.velocity = playerDirection.normalized * (float)enemyStats.MoveSpeed;
+            rb.velocity = playerDirection.normalized * (float)entityStats.MoveSpeed;
         else //If in range and can attack (switch to attack state & attack)
         {
             rb.velocity = Vector2.zero;
-            if (enemyStats.Combat.AttackCooldownCounter.Passed)
+            if (entityStats.Combat.AttackCooldownCounter.Passed)
             {
                 state = State.Attack;
                 bodyAnimator.SetTrigger(intendedAttack.Name);
@@ -124,7 +122,7 @@ public class EnemyController : EntityController
                 new DamageReport { 
                     causedBy = this, 
                     target = opponent,
-                    damage = enemyStats.Combat.Damage 
+                    damage = entityStats.Combat.Damage 
                 }, this );
         }
     }

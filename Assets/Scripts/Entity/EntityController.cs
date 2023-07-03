@@ -19,10 +19,13 @@ public class EntityController : MonoBehaviour
     private ReposController repos;
 
     private int _up;//Flips animations between up and down
-    private string _currentState;
-    const string IDLE = "Idle";
-    const string WALK = "Run3D";
+    protected string _currentState;
+    protected const string IDLE = "Idle";
+    protected const string WALK = "Run3D";
     //const string WALK = "Walk";
+    protected const string ROLL = "RunRoll";
+
+    protected const string ATTACK = "Attack";
 
     protected void Awake()
     {
@@ -33,13 +36,13 @@ public class EntityController : MonoBehaviour
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        entityStats = GetComponent<EntityStats>();
         GameObject body = transform.GetChild(0).gameObject;
         bodyAnimator = body.GetComponent<Animator>();
         healthRing = transform.GetChild(3).gameObject;
         repos = healthRing.transform.GetChild(0).gameObject.GetComponent<ReposController>();
-        
+        ChangeState(IDLE); //START on IDLE state
     }
+
 
 
     public void ReceiveItem(Item item)
@@ -69,27 +72,48 @@ public class EntityController : MonoBehaviour
     protected State state;
     protected enum State
     {
-        Default,
+        Idle,
         DodgeRoll,
         Attack,
         Block,
         Blocking,
         Parry,
         Hit,
-        Stun,
+        Stunned,
         Die,
     }
 
     //Used for rigidbody (physics)
     protected virtual void FixedUpdate()
     {
-        switch (state)
+        Debug.Log(GetState());
+        switch (GetState())
         {
-            case State.Stun:
-                HandleStun();
+            case ATTACK:
+                //UpdateAttackLunge();
                 break;
+            case ROLL:
+                UpdateDodgeRoll();
+                break;
+            //case d:
+                //HandleStun();
+            //    break;
         }
     }
+
+    #region Update Movements
+
+    void UpdateDodgeRoll() {
+        if (!isAnimationPlaying(bodyAnimator, ROLL)) {
+            ChangeState(IDLE);
+            return;
+        }
+        rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * entityStats.RollSpeed, 0);
+    }
+
+    #endregion
+
+
     #region Animation Helpers
     void ChangeState(string _newState)
     {
@@ -100,6 +124,13 @@ public class EntityController : MonoBehaviour
         _currentState = newState;
     }
 
+
+    protected string GetState() {
+        if(_currentState == null) {
+            return "";
+        }
+        return _currentState.Substring(0, _currentState.Length - 2);
+    }
 
     bool isAnimationPlaying(Animator animator, string stateName)
     {
@@ -130,6 +161,16 @@ public class EntityController : MonoBehaviour
             }
         }
     }
+
+    bool IsAnimationFinished()
+    {
+        AnimatorStateInfo stateInfo = bodyAnimator.GetCurrentAnimatorStateInfo(0);
+        float animationLength = stateInfo.length;
+        float normalizedTime = stateInfo.normalizedTime;
+
+        return normalizedTime+FloatError >= animationLength;
+    }
+
     #endregion
 
     protected void Move(Vector2 inputDir)
@@ -138,22 +179,43 @@ public class EntityController : MonoBehaviour
         //Update up/down direction
         if (rb.velocity.y != 0.0f)
             _up = rb.velocity.y > 0.0f ? 1 : 0;
-
-        float error = 0.05f;
-        if (inputDir.magnitude > error)
+        Debug.Log(inputDir.magnitude);
+        if (inputDir.magnitude > FloatError)
         {
             ChangeState(WALK);
-            if (inputDir.x != 0.0)
-            {
-                //Flip entity (left/right)
-                float sign = inputDir.x / Mathf.Abs(inputDir.x);
-                transform.localScale = new Vector2(sign * Mathf.Abs(transform.localScale.x), transform.localScale.y);
-                healthRing.transform.localScale = new Vector2(sign * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
-            }
+            LeftRightFlipping(inputDir);
         }
         else
             ChangeState(IDLE);
     }
+    //TODO: Put this in a better place
+    private const float FloatError = 0.01f;
+    private bool IsFloatZero(float number) {
+        return number < FloatError && number > -FloatError;
+    }
+
+    //Flip entity (left/right)
+    private void LeftRightFlipping(Vector2 inputDir) {
+        if (IsFloatZero(inputDir.x))
+            return;
+        float sign = inputDir.x / Mathf.Abs(inputDir.x);
+        transform.localScale = new Vector2(sign * Mathf.Abs(transform.localScale.x), transform.localScale.y);
+        healthRing.transform.localScale = new Vector2(sign * Mathf.Abs(healthRing.transform.localScale.x), healthRing.transform.localScale.y);
+    }
+
+
+    protected void DodgeRoll() {
+        if (entityStats.CanRoll()) {
+            ChangeState(ROLL);
+        }
+    }
+
+
+
+
+
+    //TODO: Unrefactored below (some aren't even used anymore)
+
 
     void HandleStun()
     {
@@ -179,7 +241,7 @@ public class EntityController : MonoBehaviour
         }
         else if (repos.MaxRepos())
         {
-            state = State.Stun;
+            state = State.Stunned;
             bodyAnimator.SetTrigger("Stun");
         }
         else
@@ -202,7 +264,7 @@ public class EntityController : MonoBehaviour
     }
     public virtual void Parried()
     {
-        state = State.Stun;
+        state = State.Stunned;
         bodyAnimator.SetTrigger("Stun");
     }
 
@@ -219,11 +281,11 @@ public class EntityController : MonoBehaviour
     public virtual void EndAttackLunge() { attackLunging = false; }
     public virtual void EndAttack()
     {
-        state = State.Default;
+        state = State.Idle;
         entityStats.Combat.AttackCooldownCounter.Reset(1f / entityStats.Combat.AttackSpeed);
     }
 
-    public virtual void EndHit() { state = State.Default; }
+    public virtual void EndHit() { state = State.Idle; }
     //TODO: Make faster (player doesn't use, overrides)
     public virtual void EndDie()
     {
@@ -241,11 +303,11 @@ public class EntityController : MonoBehaviour
     public void EndStunMovement() { StunMovement = false; }
     public void EndStun()
     {
-        state = State.Default;
+        state = State.Idle;
         bodyAnimator.SetBool("Stun", false);
     }
 
-    public void StopBlocking() { state = State.Default; }
+    public void StopBlocking() { state = State.Idle; }
 
 
 
@@ -255,7 +317,7 @@ public class EntityController : MonoBehaviour
     //TODO: Do for enemy as well as player
     public virtual void EndRoll() { }
 
-    public void EndParry() { state = State.Default; }
+    public void EndParry() { state = State.Idle; }
 
     #endregion
 }

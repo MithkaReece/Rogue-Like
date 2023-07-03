@@ -18,7 +18,7 @@ public class HealthRingController : MonoBehaviour
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        entityStats = GetComponentInParent<EntityStats>();
+        entityStats = GetComponentInParent<EntityController>().entityStats;
         entityStats.OnHealthChanged += UpdateHealthRing; //Subscribe to event
     }
 
