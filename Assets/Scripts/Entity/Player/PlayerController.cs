@@ -69,7 +69,7 @@ public class PlayerController : EntityController
         {
             case State.Idle:
                 //Hides sword when not using it
-                //swordSR.sprite = null;
+                swordSR.sprite = null;
                 break;
             case State.Blocking:
                 HandleParryBlocking();

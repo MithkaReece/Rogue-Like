@@ -116,7 +116,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Run-RollNormalMap_0
+      name: RollNormalMap_0
       rect:
         serializedVersion: 2
         x: 0
@@ -130,14 +130,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 821aa310fcf134749a9fd95cd475d20a
-      internalID: 1555164615
+      spriteID: 090fa450e8cff455e8781bc5def9c1b0
+      internalID: -649059899
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_1
+      name: RollNormalMap_1
       rect:
         serializedVersion: 2
         x: 32
@@ -151,14 +151,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cae55280f6a364168a059ae0ac349e61
-      internalID: -854992807
+      spriteID: 2a2fb621890d340e4b32d00d47d442c8
+      internalID: 2145579586
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_2
+      name: RollNormalMap_2
       rect:
         serializedVersion: 2
         x: 64
@@ -172,14 +172,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 767e66722c5c345249776a9b94071eb0
-      internalID: 1331249332
+      spriteID: 8d808282d6f3f492480d238e7865c5c2
+      internalID: -1275636330
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_3
+      name: RollNormalMap_3
       rect:
         serializedVersion: 2
         x: 96
@@ -193,14 +193,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 128c989bfd3af45cbab80ec061f0ae85
-      internalID: 1218846715
+      spriteID: a20430f5fbfb94629a74648e89d5e7b6
+      internalID: 1865897224
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_4
+      name: RollNormalMap_4
       rect:
         serializedVersion: 2
         x: 128
@@ -214,14 +214,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c5333aa4d06b14bac9d239b31b2b6440
-      internalID: -618383796
+      spriteID: 97217ecd36f8140b5af1eba6687b8813
+      internalID: -1489929047
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_5
+      name: RollNormalMap_5
       rect:
         serializedVersion: 2
         x: 160
@@ -235,14 +235,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 00f27d40615164611becf8a3e55983c5
-      internalID: -1684000707
+      spriteID: 4668d101b18b444cc88cd60151fa94ef
+      internalID: 641835542
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_6
+      name: RollNormalMap_6
       rect:
         serializedVersion: 2
         x: 0
@@ -256,14 +256,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4f71ef11eaeef4153ba35f7921c12d4b
-      internalID: -1432493137
+      spriteID: 62c20bb2a3fe14489a015ad93b448c7a
+      internalID: -395417926
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_7
+      name: RollNormalMap_7
       rect:
         serializedVersion: 2
         x: 32
@@ -277,14 +277,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5d66cd448a87f42449e069d80152e21c
-      internalID: -737211539
+      spriteID: 2fac8a18bcb7d44cfa89975218141f5a
+      internalID: -1136743237
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_8
+      name: RollNormalMap_8
       rect:
         serializedVersion: 2
         x: 64
@@ -298,14 +298,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9bb8bfd10be9a4772a0a8398c1db20b8
-      internalID: -985130677
+      spriteID: 39a129cce0aba44c1b63940e51229304
+      internalID: 222633617
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_9
+      name: RollNormalMap_9
       rect:
         serializedVersion: 2
         x: 96
@@ -319,14 +319,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 658d9a02dc0e24b549f405a97068a5d9
-      internalID: 275945088
+      spriteID: 807e8dcd7a4294af3ace1b6434853fd1
+      internalID: -2089839517
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_10
+      name: RollNormalMap_10
       rect:
         serializedVersion: 2
         x: 128
@@ -340,14 +340,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bf222745bf0584ca9ac26632d13d9d16
-      internalID: -872209116
+      spriteID: 6a6283b1bca074077a1c35c46d552dbc
+      internalID: 1951272024
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_11
+      name: RollNormalMap_11
       rect:
         serializedVersion: 2
         x: 160
@@ -361,14 +361,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 52bd0a04996044099bda335b4d000d12
-      internalID: 285287161
+      spriteID: cec070796af57444a986599610c1be18
+      internalID: 443221353
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_12
+      name: RollNormalMap_12
       rect:
         serializedVersion: 2
         x: 0
@@ -382,14 +382,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 65dcd20c4175b44a9b100f197009fcf2
-      internalID: -1030812488
+      spriteID: eeedd9b18b09c4244bf1cd93776fc98d
+      internalID: -1092537203
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_13
+      name: RollNormalMap_13
       rect:
         serializedVersion: 2
         x: 32
@@ -403,14 +403,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 94330f5b36f7a40f9b0042e9463e0abf
-      internalID: 600069471
+      spriteID: aa7cef7f0bdae4296b359ce432b19801
+      internalID: 1221110927
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_14
+      name: RollNormalMap_14
       rect:
         serializedVersion: 2
         x: 64
@@ -424,14 +424,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 64c5118973b69431c9df0c29be73efc6
-      internalID: 988386382
+      spriteID: 7c9432af6fa1f47329498b3060ab8671
+      internalID: -399258023
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_15
+      name: RollNormalMap_15
       rect:
         serializedVersion: 2
         x: 96
@@ -445,14 +445,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a9e6741652e7c42c8baadfbe1051bd7d
-      internalID: -1627889258
+      spriteID: 3c0569a5558dd48038d5c2deda9b9e31
+      internalID: -234962344
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_16
+      name: RollNormalMap_16
       rect:
         serializedVersion: 2
         x: 128
@@ -466,14 +466,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 00f4f043f96fc4f4b9e48f0f35ca3183
-      internalID: -1042477765
+      spriteID: 5b90003d5085b4ae2a90503f705e8cfe
+      internalID: 1233017289
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_17
+      name: RollNormalMap_17
       rect:
         serializedVersion: 2
         x: 160
@@ -487,14 +487,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0570d109b413141099ed1eb4ff949aee
-      internalID: 2125084977
+      spriteID: 17f5e350c58a04354a267e75a79a87c4
+      internalID: 431841487
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_18
+      name: RollNormalMap_18
       rect:
         serializedVersion: 2
         x: 0
@@ -508,14 +508,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5472f2c450e9b414e8418d1e7ce431dd
-      internalID: 418245813
+      spriteID: ae47e71871e3c471295290231da645a6
+      internalID: -1252448938
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_19
+      name: RollNormalMap_19
       rect:
         serializedVersion: 2
         x: 32
@@ -529,14 +529,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 479acf5673c354233a95fbbcb38731c3
-      internalID: -1708238913
+      spriteID: e87e08edf2117497698a32deff7b6fde
+      internalID: -534701240
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_20
+      name: RollNormalMap_20
       rect:
         serializedVersion: 2
         x: 64
@@ -550,14 +550,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0911022e08510441083bce540cd5e6d7
-      internalID: 1090285840
+      spriteID: 8580f77fc31cd4fd5b5fd991c25c326c
+      internalID: 1385686881
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_21
+      name: RollNormalMap_21
       rect:
         serializedVersion: 2
         x: 96
@@ -571,14 +571,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 02706a03ea0344f2a8f6ad468e37de7a
-      internalID: 592978148
+      spriteID: c564919a8e7ea46d79e84c58bda172d5
+      internalID: -1620683556
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_22
+      name: RollNormalMap_22
       rect:
         serializedVersion: 2
         x: 128
@@ -592,14 +592,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ab48d6143bbbf4b718a434b498e857ec
-      internalID: -2047738155
+      spriteID: 5fb9fb7110b604bf8838db935f555229
+      internalID: -274287955
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_23
+      name: RollNormalMap_23
       rect:
         serializedVersion: 2
         x: 160
@@ -613,14 +613,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 21000be106b70451980787f8ec82243d
-      internalID: -2016490175
+      spriteID: 7244b2e8821c2440b80534363eb3ea53
+      internalID: 1730665967
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_24
+      name: RollNormalMap_24
       rect:
         serializedVersion: 2
         x: 0
@@ -634,14 +634,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 49f11776948644b4c810351cde53da91
-      internalID: -295006900
+      spriteID: 35634845712494deebf100d72bdc3c51
+      internalID: -1391994444
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_25
+      name: RollNormalMap_25
       rect:
         serializedVersion: 2
         x: 32
@@ -655,14 +655,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f3b82c1d240f24970ada77ce8dcd46b6
-      internalID: -53020639
+      spriteID: 54630e22bf2264b46ba7d5476de92555
+      internalID: 1655066850
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_26
+      name: RollNormalMap_26
       rect:
         serializedVersion: 2
         x: 64
@@ -676,14 +676,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 65a54d0f8114f4c93801056635d65028
-      internalID: 8342394
+      spriteID: c5f54768b2b424f34a6484082c2f9d7c
+      internalID: 1816743601
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_27
+      name: RollNormalMap_27
       rect:
         serializedVersion: 2
         x: 96
@@ -697,14 +697,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 003234f4baf9d44d08f0819fbc87a636
-      internalID: 205831592
+      spriteID: 960b0b8c831a744238c695660f960da2
+      internalID: 2081790066
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_28
+      name: RollNormalMap_28
       rect:
         serializedVersion: 2
         x: 128
@@ -718,14 +718,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cf30d27d77405458d8c48a27a512a1a8
-      internalID: 1467761552
+      spriteID: f835519c9c40a4c52959f2ce82eb39ec
+      internalID: -1195186952
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_29
+      name: RollNormalMap_29
       rect:
         serializedVersion: 2
         x: 160
@@ -739,14 +739,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4223ba37d7031472297eccbcf22c4d9c
-      internalID: -682924172
+      spriteID: fc4a8e745719146f6bfbf48ef321b21c
+      internalID: -1178053993
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_30
+      name: RollNormalMap_30
       rect:
         serializedVersion: 2
         x: 0
@@ -760,14 +760,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bf45a5e719db44b22b19e6e743bca1c0
-      internalID: 928165920
+      spriteID: 933ac297e7bd1416c917215675fd44bf
+      internalID: -1803731792
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_31
+      name: RollNormalMap_31
       rect:
         serializedVersion: 2
         x: 32
@@ -781,14 +781,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6bab2f1004ba743b9bb96a807ccc8b5b
-      internalID: -378735084
+      spriteID: a868574ecf1964980ba2f77e09a87292
+      internalID: -1503961138
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_32
+      name: RollNormalMap_32
       rect:
         serializedVersion: 2
         x: 64
@@ -802,14 +802,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bec97636d26eb45239a10185ec289ef9
-      internalID: -378349701
+      spriteID: 07fb0204168114efeba407e3c92c1669
+      internalID: 1171675227
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_33
+      name: RollNormalMap_33
       rect:
         serializedVersion: 2
         x: 96
@@ -823,14 +823,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 74c14a5f16c5b4069badabc7ce069c73
-      internalID: -1338174365
+      spriteID: fd439018e0f224dbcac1049fa4f4ac2c
+      internalID: -1251949605
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Run-RollNormalMap_34
+      name: RollNormalMap_34
       rect:
         serializedVersion: 2
         x: 128
@@ -844,8 +844,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b0701483f63cb48ecaa3c010abf41904
-      internalID: 1666027878
+      spriteID: 245e8a504178b4b8292ced823bd4bf8d
+      internalID: 419184807
       vertices: []
       indices: 
       edges: []
@@ -861,41 +861,41 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Run-RollNormalMap_2: 1331249332
-      Run-RollNormalMap_16: -1042477765
-      Run-RollNormalMap_34: 1666027878
-      Run-RollNormalMap_20: 1090285840
-      Run-RollNormalMap_30: 928165920
-      Run-RollNormalMap_10: -872209116
-      Run-RollNormalMap_32: -378349701
-      Run-RollNormalMap_8: -985130677
-      Run-RollNormalMap_17: 2125084977
-      Run-RollNormalMap_24: -295006900
-      Run-RollNormalMap_26: 8342394
-      Run-RollNormalMap_5: -1684000707
-      Run-RollNormalMap_15: -1627889258
-      Run-RollNormalMap_7: -737211539
-      Run-RollNormalMap_33: -1338174365
-      Run-RollNormalMap_4: -618383796
-      Run-RollNormalMap_14: 988386382
-      Run-RollNormalMap_22: -2047738155
-      Run-RollNormalMap_23: -2016490175
-      Run-RollNormalMap_3: 1218846715
-      Run-RollNormalMap_6: -1432493137
-      Run-RollNormalMap_27: 205831592
-      Run-RollNormalMap_12: -1030812488
-      Run-RollNormalMap_0: 1555164615
-      Run-RollNormalMap_28: 1467761552
-      Run-RollNormalMap_18: 418245813
-      Run-RollNormalMap_31: -378735084
-      Run-RollNormalMap_11: 285287161
-      Run-RollNormalMap_21: 592978148
-      Run-RollNormalMap_19: -1708238913
-      Run-RollNormalMap_13: 600069471
-      Run-RollNormalMap_25: -53020639
-      Run-RollNormalMap_1: -854992807
-      Run-RollNormalMap_9: 275945088
-      Run-RollNormalMap_29: -682924172
+      RollNormalMap_34: 419184807
+      RollNormalMap_2: -1275636330
+      RollNormalMap_18: -1252448938
+      RollNormalMap_5: 641835542
+      RollNormalMap_13: 1221110927
+      RollNormalMap_9: -2089839517
+      RollNormalMap_14: -399258023
+      RollNormalMap_10: 1951272024
+      RollNormalMap_21: -1620683556
+      RollNormalMap_29: -1178053993
+      RollNormalMap_24: -1391994444
+      RollNormalMap_25: 1655066850
+      RollNormalMap_28: -1195186952
+      RollNormalMap_17: 431841487
+      RollNormalMap_7: -1136743237
+      RollNormalMap_12: -1092537203
+      RollNormalMap_19: -534701240
+      RollNormalMap_16: 1233017289
+      RollNormalMap_26: 1816743601
+      RollNormalMap_15: -234962344
+      RollNormalMap_30: -1803731792
+      RollNormalMap_31: -1503961138
+      RollNormalMap_8: 222633617
+      RollNormalMap_33: -1251949605
+      RollNormalMap_3: 1865897224
+      RollNormalMap_20: 1385686881
+      RollNormalMap_1: 2145579586
+      RollNormalMap_4: -1489929047
+      RollNormalMap_11: 443221353
+      RollNormalMap_6: -395417926
+      RollNormalMap_32: 1171675227
+      RollNormalMap_27: 2081790066
+      RollNormalMap_23: 1730665967
+      RollNormalMap_0: -649059899
+      RollNormalMap_22: -274287955
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

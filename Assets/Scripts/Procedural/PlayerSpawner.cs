@@ -38,7 +38,7 @@ public class PlayerSpawner : MonoBehaviour
     {
         playerController.entityStats = new EntityStats(100f,
             100f, 20f, 2f,
-            1f, 2f);
+            3f, 1f);
     }
 
     // Update is called once per frame

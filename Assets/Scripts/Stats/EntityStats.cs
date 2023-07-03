@@ -42,7 +42,7 @@ public class EntityStats
     }
     #endregion
 
-    [field: SerializeField] public float MoveSpeed = 1f;
+    [field: SerializeField] public float MoveSpeed = 2f;
     [field: SerializeField] public CombatStats Combat;
 
     [field: SerializeField] public float Poise = 1f;

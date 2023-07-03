@@ -110,7 +110,8 @@ public class EntityController : MonoBehaviour
             ChangeState(IDLE);
             return;
         }
-        rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * entityStats.RollSpeed, 0);
+        rb.velocity = rb.velocity.normalized * entityStats.RollSpeed;
+        //rb.velocity = new Vector2((transform.localScale.x / Mathf.Abs(transform.localScale.x)) * entityStats.RollSpeed, 0);
     }
 
     #endregion
