@@ -21,7 +21,8 @@ public class EntityController : MonoBehaviour
     private int _up;//Flips animations between up and down
     private string _currentState;
     const string IDLE = "Idle";
-    const string WALK = "Walk";
+    const string WALK = "Run3D";
+    //const string WALK = "Walk";
 
     protected void Awake()
     {

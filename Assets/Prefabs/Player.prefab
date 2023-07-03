@@ -405,7 +405,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 11c9c72921c514322a875f20d3b39616, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -536,11 +536,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityStats: {fileID: 0}
+  Name: 
   scale: 2
   swordEquiped: Sword3
   sword: {fileID: 1182178103}
   attack1_0: {fileID: 7400000, guid: 1d6cf02df265043fab8078b9854916c0, type: 2}
-  moveSpeed: 2
   rollSpeed: 3
   enemyLayers:
     serializedVersion: 2
